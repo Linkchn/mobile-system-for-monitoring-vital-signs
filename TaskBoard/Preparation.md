@@ -15,7 +15,7 @@
 
 4. Branch: every member need to create his/her own branch. For the text content, we can change on master branch directly while for project code, need to be updated on own branch and then merge.
 
-5. for git commit format: "change Content(feature/fix/docs/style/refactor/test/chore) + Date
+5. for git commit format: "change Content(feature/fix/docs/style/ refactor/test/chore) + Date
 
    Reading: [https://www.jianshu.com/p/201bd81e7dc9](https://www.jianshu.com/p/201bd81e7dc9)
 

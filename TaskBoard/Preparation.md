@@ -19,9 +19,7 @@
 
    Reading: [https://www.jianshu.com/p/201bd81e7dc9](https://www.jianshu.com/p/201bd81e7dc9)
 
-   
-
-
-
-
-
+#### 今天会议大致内容
+1. 选leader
+2. 角色划分
+3. 确定初期任务：1个人负责网站模板的修改和初步成立，用户需求和规范三个人，分工有user story， persona

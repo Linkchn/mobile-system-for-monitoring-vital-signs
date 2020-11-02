@@ -23,7 +23,7 @@
 #### Functional Requirement
 
 2. The system could receive vital sign data both from the simulators and true sensors by bluetooth.
-3. The system could storage the data captured from the sensor in the **local disk or server**.
+3. The system could storage the data captured from the sensor in the local disk or mobile device
 5. The application can capture the users' vital signs for a period of time and analysis the health conditions or states of the users. 
 6. The application could use algorithms to calculate the vital signs and make a conclusion according to the  result.
 5. The application should have the access authority to push notification when the time users set.

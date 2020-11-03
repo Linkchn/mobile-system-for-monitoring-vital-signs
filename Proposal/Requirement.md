@@ -1,55 +1,87 @@
 
 
+### 								Requirement Specification
+
 #### User Requirement
 
-1. User could use this mobile system (Android Application) to connect with the wearable devices which include heart rate belts, brain ware, smart scale, temperature sensor, breathing rate sensor, blood pressure sensor.
+This mobile system is designed for the preganant women to monitor their vital signs and help them keep healthy during the preganancy. To be easy to use for most of the preganant women, the application should be easy enough to operate and understand. 
 
-2. User can choose the kinds of data to view.
-
-3. User can see the statistics of his/her body data.
-
-4. The user can see his/her current real-time vital signs in the application.
-
-5. User can set the everyday message-push time and receive a piece of message about the vital status analysis and advice.
-
-6. *User can register an account and log in this application. 
-
-7. *User can store the vital data in the device/server.
-
-8. Users can export their data for further use.
-
-   
+1. Users can open the application directly without log in. (Easy to start useing)
+2. Users can click the buttom menu to select module. 
+3. Users could use  this application to connect the wearable device (given type)
+4. Users would recieve a caution every day to record the bodyweight and can type the body weight number manually.
+5. Users can choose the kinds of data to view.
+6. Users can be given guidances of life and health.
+7. Users' data should be collected every half an hour.
+8. User can see the long term data for a period of time.
+9. Users can see the vital data in the mobile phone/PC.
+10. Users can store their reports for further use.
+11. Users can get help by application about operations.
+12. Users can enter the personal body information.
 
 #### Functional Requirement
 
-2. The system could receive vital sign data both from the simulators and true sensors by bluetooth.
-3. The system could storage the data captured from the sensor in the local disk or mobile device
-5. The application can capture the users' vital signs for a period of time and analysis the health conditions or states of the users. 
-6. The application could use algorithms to calculate the vital signs and make a conclusion according to the  result.
-5. The application should have the access authority to push notification when the time users set.
-6. The application should include a database to store the users' data.
-7. *The application could allow user to register and log in the main menu.
-8. The application should include multiple part for data viewing, analysis, statistics and have a buttom menu for user to choose and switch.
-9. *The application could allow users to export the initial data and statistics.
-10. This application Allows users to record the bodyweight and height munually.
-
-
+- **Data Capture module**
+  1. The mobile system (Android Application) can connect with the wearable devices which include heart rate belts, brain ware, smart scale, temperature sensor, breathing rate sensor, blood pressure sensor.
+  2. The vital signs will be measure every minute.The vital data will be sent from wearable device to mobile application every 30 minutes.
+  3. The bodyweight data is captured by manual record.
+  4. The year and height is recorded from users.
+  5. The data will be sent to the integration module for the next step.
+  6. The connection between device and system is bluetooth.
+- **Data integration module**
+  1. The data will be updated every 30 minutes when the system collects data from wearable device.
+  2. The data will be proccessed and temporarily store in the application's memory.
+  3. Multiply types of data can be integration in the mobile system.
+  4. The recieved data will be stored for a month in the application memory for users' views.
+  5. The data will be split into different categories and shown to the users.
+  6. The data will be sent to the analysis module for the next step.
+- **Data report and anlaysis module**
+  1. Application could send a piece of message (every-day report) about the vital status analysis and advices at 8 a.m. 
+  2. The report is about his/her body vital data. The report will includes every-day vital signs data after processing and will give some advices according to the anlaysis algorithm such as having more sleep or having abnormal status and need to see doctor.
+  3. The system could generate the report by the suggestion data and analysis algorithm daily and monthly (weekly).
+  4. The report could be preserved by users and exported.
+- **Data storage module**
+  1. The data from users should be stored both in PC and mobile system.
+  2. Considering the limited memory, the details of past data will be cleaned up and the daily report will be stored in the mobile system.
+  3. The user could to connect with the PC monthly and send the data for the long-term storage.
+- **Task management module (interface)**
+  1. The system will push the every-day reports, suggestions and anlysis at 8 a.m.
+  2. The system will send a message to user if user does not. wear the devices.
+  3. The data capture function can be switch on/off.
+  4. The system will send a message if the user does not record the body weight until 8p.m every day.
+  5. The user can view three mode of application: 
+     - current/last measured data
+     - today's report
+     - Long term report
+     - Settings
 
 ### Non-functional Requirement
 
 - **Safety**
-  1. The corretness and safety of the data should be confirmed during the bluetooth.
   2. The security of personal data should be guaranteed.
-  3. The user password should be complex.
-  4. The wearable device connections should be allowed by users.
+  4. The wearable device connections should be allowed by users. User can cancel the connections at any time.
 - **Performance**
-  1. The advice should be accurate and on time.
-  2. The  correctness of data analysis algorithm should be guaranteed.
-  3. The connection between mobile application and wearable device should be real-time and delay should be very low.
-  4. The current status function also need to keep short delay.
+  1. The advice and message should be accurate and on time.
+  2. The correctness of data analysis algorithm should be guaranteed.
 - **compatibility**
   1. The application should be compatible for android platform.
   2. The application UI should be compatible for different size of screen.
   3. The advice should be given according to user status.
   4. System should deal with the exception of data.
+
+
+
+### Technical Requirement
+
+1. The mobile system should support the device types:
+   - (Heart Rate) Chest belt: **Polar H10**
+   - (Brain Wave) Brain belt: **NeuroSky TGAM**
+   - Smart Scale: **Yunmai**
+   - ...
+2. The data transmission between wearable devices and mobile application is based on bluetooth protocol.
+3. The wearable devices official SDK is open-source for the development and will be used during the project.
+4. The development platform is android studio and the development language is Java and Kotlin.
+5. The mobile system will operate in PC for demonstration (simulator) and on android cellular phone with Android 11 system
+6. The simulator of mobile system is genymotion. It will be used to simulate the process of mobile system for demonstration and test.
+7. The data to test is from the research group which include the weight change of pregnant women and references. 
 

@@ -1,12 +1,10 @@
-
-
 ### 								Requirement Specification
 
 #### User Requirement
 
 This mobile system is designed for the preganant women to monitor their vital signs and help them keep healthy during the preganancy. To be easy to use for most of the preganant women, the application should be easy enough to operate and understand. 
 
-1. Users can open the application directly without log in. (Easy to start useing)
+1. Users can open the application directly without log in. (Easy to start using)
 2. Users can click the buttom menu to select module. 
 3. Users could use  this application to connect the wearable device (given type)
 4. Users would recieve a caution every day to record the bodyweight and can type the body weight number manually.

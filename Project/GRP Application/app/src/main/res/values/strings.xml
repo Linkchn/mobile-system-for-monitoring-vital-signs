@@ -1,0 +1,38 @@
+<resources>
+    <string name="app_name">GRP App</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="real_time_data">Real Time Data</string>
+    <string name="brain_wave">Brain Wave</string>
+    <string name="heart_rate">Heart Rate</string>
+    <string name="daily">Daily</string>
+    <string name="weekly">Weekly</string>
+    <string name="monthly">Monthly</string>
+    <string name="health_report">Health Report</string>
+    <string name="report_text">Pregnancy, also known as gestation, is the time during which one or more offspring develops inside a woman. A multiple pregnancy involves more than one offspring, such as with twins. Pregnancy usually occurs by sexual intercourse, but can occur through assisted reproductive technology procedures.</string>
+    <string name="save">Save</string>
+    <string name="export">Export</string>
+    <string name="logo">Logo</string>
+    <string name="pregnant_data">Pregnant Data</string>
+    <string name="weight_record">Weight Record</string>
+    <string name="report">Report</string>
+    <string name="me">Me</string>
+
+    <!-- Preference Titles -->
+    <string name="messages_header">Messages</string>
+    <string name="sync_header">Sync</string>
+
+    <!-- Messages Preferences -->
+    <string name="signature_title">Your signature</string>
+    <string name="reply_title">Default reply action</string>
+
+    <!-- Sync Preferences -->
+    <string name="sync_title">Sync email periodically</string>
+    <string name="attachment_title">Download incoming attachments</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails
+    </string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <string name="settings">Settings</string>
+    <string name="ecg">ECG</string>
+</resources>

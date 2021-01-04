@@ -39,20 +39,14 @@ public class SettingsFragment extends Fragment {
         mainActivity.setSwitchView(msgOnNotCaptureDataSwitch, Switches.MSG_ON_NOT_CAPTURE_DATA);
         mainActivity.setSwitchView(msgOnReportGenerated, Switches.MSG_ON_REPORT_GENERATED);
 
-        hrConnectButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        hrConnectButton.setOnClickListener((buttonView) -> {
                 mainActivity.toggleDevice(Devices.HEART_RATE_DEVICE);
                 mainActivity.setDeviceView(symbolHrDevice,hrConnectButton,Devices.HEART_RATE_DEVICE);
-            }
         });
 
-        brainWaveConnectButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        brainWaveConnectButton.setOnClickListener((buttonView) -> {
                 mainActivity.toggleDevice(Devices.BRAIN_WAVE_DEVICE);
                 mainActivity.setDeviceView(symbolBrainWaveDevice,brainWaveConnectButton,Devices.BRAIN_WAVE_DEVICE);
-            }
         });
 
         msgOnNotWearDeviceSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {

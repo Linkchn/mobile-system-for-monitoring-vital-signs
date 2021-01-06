@@ -22,43 +22,60 @@
 
             android:textSize="22sp"
 
-            android:layout_marginBottom="80dp"/>
+            android:layout_marginBottom="30dp"/>
 
-        <ImageView
-            android:id="@+id/imageView1"
-            android:scaleType="fitXY"
-            android:layout_width="220dp"
-            android:layout_height="150dp"
-            android:src="@drawable/test_01"
-            android:layout_gravity="center"
-            android:contentDescription="@string/ecg"
-            android:layout_marginBottom="5dp"/>
+        <com.androidplot.xy.XYPlot
+            android:id="@+id/plot_ecg"
+            style="@style/FullScreenGraph"
+            android:layout_width="fill_parent"
+            android:layout_height="200dp"
+            android:layout_marginStart="40dp"
+            android:layout_marginEnd="40dp"
+            app:graphBackgroundColor="@color/white"
+            app:gridBackgroundColor="@color/white"
+            app:lineLabelInsetLeft="12dp"
+            app:lineLabels="left"
+            app:renderMode="use_background_thread"
+            app:title="" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginTop="5dp"
             android:text="ECG"
             android:textSize="16sp"
-            android:layout_marginBottom="40dp" />
+            android:layout_marginBottom="20dp" />
 
-        <ImageView
-            android:id="@+id/imageView2"
-            android:scaleType="fitXY"
-            android:layout_width="220dp"
-            android:layout_height="150dp"
-            android:src="@drawable/test_01"
+        <TextView
+            android:id="@+id/number_heart_rate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:contentDescription="@string/heart_rate"
-            android:layout_marginBottom="5dp"/>
+            android:layout_marginBottom="5dp"
+            android:textSize="16sp"/>
+
+        <com.androidplot.xy.XYPlot
+            android:id="@+id/plot_hr"
+            style="@style/FullScreenGraph"
+            android:layout_width="fill_parent"
+            android:layout_height="200dp"
+            android:layout_marginStart="40dp"
+            android:layout_marginEnd="40dp"
+            app:graphBackgroundColor="@color/white"
+            app:gridBackgroundColor="@color/white"
+            app:lineLabelInsetLeft="12dp"
+            app:lineLabels="left"
+            app:renderMode="use_background_thread" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginTop="5dp"
             android:text="@string/heart_rate"
             android:textSize="16sp"
-            android:layout_marginBottom="60dp" />
+            android:layout_marginBottom="40dp" />
 
         <com.google.android.material.switchmaterial.SwitchMaterial
             android:id="@+id/startCaptureDataSwitch"

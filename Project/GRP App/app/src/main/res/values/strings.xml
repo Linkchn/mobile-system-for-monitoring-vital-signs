@@ -35,4 +35,6 @@
     <string name="attachment_summary_off">Only download attachments when manually requested</string>
     <string name="settings">Settings</string>
     <string name="ecg">ECG</string>
+    <string name="text_device_not_connected">Connect</string>
+    <string name="text_device_connected">Connected</string>
 </resources>

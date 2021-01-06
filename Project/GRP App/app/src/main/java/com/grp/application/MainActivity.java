@@ -1,5 +1,9 @@
 package com.grp.application;
 
+import android.Manifest;
+import android.bluetooth.BluetoothAdapter;
+import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -35,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        checkBT();
         BottomNavigationView navView = findViewById(R.id.nav_view);
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
@@ -67,8 +72,10 @@ public class MainActivity extends AppCompatActivity {
         boolean isConnected = isDeviceConnected(devices);
         if (isConnected) {
             symbol.setImageDrawable(getDrawable(R.drawable.ic_baseline_check_circle_outline_24));
+            button.setText(R.string.text_device_connected);
         } else {
             symbol.setImageDrawable(getDrawable(R.drawable.ic_outline_cancel_24));
+            button.setText(R.string.text_device_not_connected);
         }
         button.setEnabled(!isConnected);
     }
@@ -136,4 +143,14 @@ public class MainActivity extends AppCompatActivity {
         }
         return isConnected;
     }
+
+    public void checkBT() {
+        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (mBluetoothAdapter != null && !mBluetoothAdapter.isEnabled()) {
+            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableBtIntent, 2);
+        }
+        this.requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+    }
+
 }

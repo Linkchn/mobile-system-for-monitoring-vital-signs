@@ -58,10 +58,11 @@
 
         <Button
             android:id="@+id/button_connect_hr_device"
-            android:layout_width="wrap_content"
+            android:layout_width="120dp"
             android:layout_height="40dp"
             android:layout_gravity="center"
-            android:text="Connect"
+            android:text="@string/text_device_not_connected"
+            android:textSize="12sp"
             android:layout_marginStart="10dp"
             style="?attr/materialButtonOutlinedStyle"
             app:strokeColor="@color/main_color" />
@@ -90,10 +91,11 @@
 
             <Button
                 android:id="@+id/button_connect_brain_wave_device"
-                android:layout_width="wrap_content"
+                android:layout_width="120dp"
                 android:layout_height="40dp"
                 android:layout_gravity="center"
-                android:text="Connect"
+                android:text="@string/text_device_not_connected"
+                android:textSize="12sp"
                 android:layout_marginStart="10dp"
                 style="?attr/materialButtonOutlinedStyle"
                 app:strokeColor="@color/main_color" />

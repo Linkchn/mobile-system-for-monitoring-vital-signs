@@ -1,6 +1,5 @@
 package com.grp.application.pages;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.LayoutInflater;
@@ -14,20 +13,28 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
-import com.grp.application.MainActivity;
 import com.example.application.R;
-import com.grp.application.components.Devices;
-import com.grp.application.components.Switches;
 import com.google.android.material.switchmaterial.SwitchMaterial;
+import com.grp.application.monitor.Monitor;
 import com.grp.application.polar.PolarDevice;
 
-import polar.com.sdk.api.PolarBleApi;
 import polar.com.sdk.api.PolarBleApiCallback;
 import polar.com.sdk.api.errors.PolarInvalidArgument;
 import polar.com.sdk.api.model.PolarDeviceInfo;
+import polar.com.sdk.api.model.PolarHrData;
 
 public class SettingsFragment extends Fragment {
+
+    private Monitor monitor;
     private PolarDevice polarDevice;
+    private ImageView symbolHrDevice;
+    private ImageView symbolBrainWaveDevice;
+    private Button hrConnectButton;
+    private Button brainWaveConnectButton;
+    private SwitchMaterial msgOnNotWearDeviceSwitch;
+    private SwitchMaterial msgOnNotCaptureDataSwitch;
+    private SwitchMaterial msgOnReportGenerated;
+
 
     public SettingsFragment() {}
 
@@ -35,72 +42,90 @@ public class SettingsFragment extends Fragment {
             ViewGroup container, Bundle savedInstanceState) {
 
         View root = inflater.inflate(R.layout.fragment_settings, container, false);
-        MainActivity mainActivity = (MainActivity) getActivity();
-        polarDevice = PolarDevice.getInstance(mainActivity);
-        ImageView symbolHrDevice = root.findViewById(R.id.symbol_hr_device);
-        ImageView symbolBrainWaveDevice = root.findViewById(R.id.symbol_brain_wave_device);
-        Button hrConnectButton = root.findViewById(R.id.button_connect_hr_device);
-        Button brainWaveConnectButton = root.findViewById(R.id.button_connect_brain_wave_device);
-        SwitchMaterial msgOnNotWearDeviceSwitch = root.findViewById(R.id.switch_msg_not_wear_device);
-        SwitchMaterial msgOnNotCaptureDataSwitch = root.findViewById(R.id.switch_msg_not_capture_data);
-        SwitchMaterial msgOnReportGenerated = root.findViewById(R.id.switch_msg_report_generated);
+        monitor = Monitor.getInstance();
+        polarDevice = PolarDevice.getInstance();
+        symbolHrDevice = root.findViewById(R.id.symbol_hr_device);
+        symbolBrainWaveDevice = root.findViewById(R.id.symbol_scale_device);
+        hrConnectButton = root.findViewById(R.id.button_connect_hr_device);
+        brainWaveConnectButton = root.findViewById(R.id.button_connect_scale_device);
+        msgOnNotWearDeviceSwitch = root.findViewById(R.id.switch_msg_not_wear_device);
+        msgOnNotCaptureDataSwitch = root.findViewById(R.id.switch_msg_not_capture_data);
+        msgOnReportGenerated = root.findViewById(R.id.switch_msg_report_generated);
 
-        mainActivity.setDeviceView(symbolHrDevice, hrConnectButton, Devices.HEART_RATE_DEVICE);
-        mainActivity.setDeviceView(symbolBrainWaveDevice,brainWaveConnectButton,Devices.BRAIN_WAVE_DEVICE);
-        mainActivity.setSwitchView(msgOnNotWearDeviceSwitch, Switches.MSG_ON_NOT_WEAR_DEVICE);
-        mainActivity.setSwitchView(msgOnNotCaptureDataSwitch, Switches.MSG_ON_NOT_CAPTURE_DATA);
-        mainActivity.setSwitchView(msgOnReportGenerated, Switches.MSG_ON_REPORT_GENERATED);
-
-        hrConnectButton.setOnClickListener((buttonView) -> {
-            polarDevice.api().setApiCallback(new PolarBleApiCallback() {
-                @Override
-                public void deviceConnected(@NonNull PolarDeviceInfo polarDeviceInfo) {
-                    mainActivity.showToast("Connected");
-                    mainActivity.toggleDevice(Devices.HEART_RATE_DEVICE);
-                    mainActivity.setDeviceView(symbolHrDevice,hrConnectButton,Devices.HEART_RATE_DEVICE);
-                }
-            });
-            showPolarDeviceDialog(buttonView, mainActivity);
-        });
+        resetUI();
+        initDevice();
+        hrConnectButton.setOnClickListener(this::showPolarDeviceDialog);
 
         brainWaveConnectButton.setOnClickListener((buttonView) -> {
-            mainActivity.toggleDevice(Devices.BRAIN_WAVE_DEVICE);
-            mainActivity.setDeviceView(symbolBrainWaveDevice,brainWaveConnectButton,Devices.BRAIN_WAVE_DEVICE);
+            monitor.getMonitorState().connectScaleDeviceConnected();
+            monitor.getViewSetter().setDeviceView(symbolBrainWaveDevice, brainWaveConnectButton, monitor.getMonitorState().isScaleDeviceConnected());
         });
 
         msgOnNotWearDeviceSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
-                mainActivity.showToast("Start Message");
+                monitor.showToast("Start Message");
+                monitor.getMonitorState().enableMsgOnNotWearDevice();
             } else {
-                mainActivity.showToast("Stop Message");
+                monitor.showToast("Stop Message");
+                monitor.getMonitorState().disableMsgOnNotWearDevice();
             }
-            mainActivity.toggleSwitch(Switches.MSG_ON_NOT_WEAR_DEVICE);
         });
         msgOnNotCaptureDataSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
-                mainActivity.showToast("Start Warning");
+                monitor.showToast("Start Warning");
+                monitor.getMonitorState().enableMsgOnNotCaptureData();
             } else {
-                mainActivity.showToast("Stop Warning");
+                monitor.showToast("Stop Warning");
+                monitor.getMonitorState().disableMsgOnNotCaptureData();
             }
-            mainActivity.toggleSwitch(Switches.MSG_ON_NOT_CAPTURE_DATA);
         });
         msgOnReportGenerated.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
-                mainActivity.showToast("Start Alert");
+                monitor.showToast("Start Alert");
+                monitor.getMonitorState().enableMsgOnReportGenerated();
             } else {
-                mainActivity.showToast("Stop Alert");
+                monitor.showToast("Stop Alert");
+                monitor.getMonitorState().disableMsgOnReportGenerated();
             }
-            mainActivity.toggleSwitch(Switches.MSG_ON_REPORT_GENERATED);
         });
 
         return root;
     }
 
-    private void showPolarDeviceDialog(View view, MainActivity mainActivity) {
-        AlertDialog.Builder dialog = new AlertDialog.Builder(mainActivity, R.style.PolarTheme);
+    private void initDevice() {
+        polarDevice.api().setApiCallback(new PolarBleApiCallback() {
+            @Override
+            public void deviceConnected(@NonNull PolarDeviceInfo polarDeviceInfo) {
+                monitor.showToast(polarDeviceInfo.deviceId + " is Connected");
+                monitor.getMonitorState().connectHRDevice();
+                resetUI();
+            }
+
+            @Override
+            public void hrNotificationReceived(@NonNull String identifier, @NonNull PolarHrData data) {
+                    monitor.getPlotterHR().addValues(data);
+            }
+
+            @Override
+            public void ecgFeatureReady(@NonNull String identifier) {
+                monitor.streamECG();
+            }
+        });
+    }
+
+    private void resetUI() {
+        monitor.getViewSetter().setDeviceView(symbolHrDevice, hrConnectButton, monitor.getMonitorState().isHRDeviceConnected());
+        monitor.getViewSetter().setDeviceView(symbolBrainWaveDevice, brainWaveConnectButton, monitor.getMonitorState().isScaleDeviceConnected());
+        monitor.getViewSetter().setSwitchView(msgOnNotWearDeviceSwitch, monitor.getMonitorState().isMsgOnNotWearDeviceEnabled());
+        monitor.getViewSetter().setSwitchView(msgOnNotCaptureDataSwitch, monitor.getMonitorState().isMsgOnNotCaptureDataEnabled());
+        monitor.getViewSetter().setSwitchView(msgOnReportGenerated, monitor.getMonitorState().isMsgOnReportGeneratedEnabled());
+    }
+
+    private void showPolarDeviceDialog(View view) {
+        AlertDialog.Builder dialog = new AlertDialog.Builder(this.getContext(), R.style.PolarTheme);
         dialog.setTitle("Enter your Polar device's ID");
 
-        View viewInflated = LayoutInflater.from(mainActivity.getApplicationContext()).inflate(R.layout.device_id_dialog_layout, (ViewGroup) view.getRootView(), false);
+        View viewInflated = LayoutInflater.from(monitor.getContext()).inflate(R.layout.device_id_dialog_layout, (ViewGroup) view.getRootView(), false);
 
         final EditText input = viewInflated.findViewById(R.id.input);
         input.setInputType(InputType.TYPE_CLASS_TEXT);
@@ -113,7 +138,6 @@ public class SettingsFragment extends Fragment {
             } catch (PolarInvalidArgument polarInvalidArgument) {
                 polarInvalidArgument.printStackTrace();
             }
-            System.out.println("Here\n");
             //SharedPreferences.Editor editor = sharedPreferences.edit();
             //editor.putString(SHARED_PREFS_KEY, deviceId);
             //editor.apply();

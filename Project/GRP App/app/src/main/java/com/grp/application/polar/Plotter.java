@@ -45,7 +45,9 @@ public class Plotter {
 
         ((SimpleXYSeries) series).setModel(Arrays.asList(plotNumbers), SimpleXYSeries.ArrayFormat.Y_VALS_ONLY);
         dataIndex++;
-        listener.update();
+        if (listener != null) {
+            listener.update();
+        }
     }
 
     public void setListener(PlotterListener listener) {

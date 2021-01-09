@@ -1,7 +1,6 @@
 package com.grp.application.pages;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,38 +15,32 @@ import com.androidplot.xy.XYGraphWidget;
 import com.androidplot.xy.XYPlot;
 import com.grp.application.MainActivity;
 import com.example.application.R;
-import com.grp.application.components.Devices;
-import com.grp.application.components.Switches;
 import com.google.android.material.switchmaterial.SwitchMaterial;
+import com.grp.application.monitor.Monitor;
 import com.grp.application.polar.Plotter;
 import com.grp.application.polar.PlotterListener;
 import com.grp.application.polar.PolarDevice;
 import com.grp.application.polar.TimePlotter;
 
-import org.reactivestreams.Publisher;
-
 import java.text.DecimalFormat;
-import java.util.List;
 
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.Disposable;
-import io.reactivex.rxjava3.functions.Function;
 import polar.com.sdk.api.PolarBleApiCallback;
-import polar.com.sdk.api.model.PolarEcgData;
 import polar.com.sdk.api.model.PolarHrData;
-import polar.com.sdk.api.model.PolarSensorSetting;
 
 public class HomeFragment extends Fragment implements PlotterListener {
 
+    private Monitor monitor;
     private MainActivity mainActivity;
     private PolarDevice polarDevice;
+
     private XYPlot plotHR;
     private XYPlot plotECG;
+    private TextView textViewHR;
+    SwitchMaterial startCaptureDataSwitch;
+
     private TimePlotter plotterHR;
     private Plotter plotterECG;
-    private TextView textViewHR;
-
-    private Disposable ecgDisposable = null;
 
     public HomeFragment() {}
 
@@ -55,57 +48,62 @@ public class HomeFragment extends Fragment implements PlotterListener {
             ViewGroup container, Bundle savedInstanceState) {
 
         View root = inflater.inflate(R.layout.fragment_home, container, false);
+        monitor = Monitor.getInstance();
         mainActivity = (MainActivity) getActivity();
-        SwitchMaterial startCaptureDataSwitch = root.findViewById(R.id.startCaptureDataSwitch);
+        startCaptureDataSwitch = root.findViewById(R.id.startCaptureDataSwitch);
 
-        polarDevice = PolarDevice.getInstance(mainActivity);
+        polarDevice = PolarDevice.getInstance();
         plotHR = root.findViewById(R.id.plot_hr);
         plotECG = root.findViewById(R.id.plot_ecg);
         textViewHR = root.findViewById(R.id.number_heart_rate);
 
-        plotterHR = new TimePlotter();
-        plotterECG = new Plotter("ECG");
+        plotterHR = monitor.getPlotterHR();
+        plotterECG = monitor.getPlotterECG();
         plotterHR.setListener(this);
         plotterECG.setListener(this);
 
-        initialDevice();
-        plot();
+        initDevice();
+        initPlot();
+        if (monitor.getMonitorState().isStartCaptureDataEnabled()) {
+            startPlot();
+        }
+        monitor.getViewSetter().setSwitchView(startCaptureDataSwitch, monitor.getMonitorState().isStartCaptureDataEnabled());
 
-
-        mainActivity.setSwitchView(startCaptureDataSwitch, Switches.START_CAPTURE_DATA);
         startCaptureDataSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
-                mainActivity.showToast("Start Capture Data");
+                monitor.showToast("Start Capture Data");
+                monitor.getMonitorState().enableStartCaptureData();
+                startPlot();
             } else {
-                mainActivity.showToast("Stop Capture Data");
+                monitor.showToast("Stop Capture Data");
+                monitor.getMonitorState().disableStartCaptureData();
+                stopPlot();
             }
-            mainActivity.toggleSwitch(Switches.START_CAPTURE_DATA);
         });
 
         return root;
     }
 
-    private void initialDevice() {
+    private void initDevice() {
         polarDevice.api().setApiCallback(new PolarBleApiCallback() {
             @Override
             public void hrNotificationReceived(@NonNull String identifier, @NonNull PolarHrData data) {
-                if (mainActivity.isSwitchChecked(Switches.START_CAPTURE_DATA)) {
+                if (monitor.getMonitorState().isStartCaptureDataEnabled()) {
                     textViewHR.setText(String.valueOf(data.hr));
-                    plotterHR.addValues(data);
+                } else {
+                    textViewHR.setText("");
                 }
+                    monitor.getPlotterHR().addValues(data);
             }
 
             @Override
             public void ecgFeatureReady(@NonNull String identifier) {
-
-                    streamECG();
-
+                    monitor.streamECG();
             }
         });
     }
 
-    private void plot() {
-        plotHR.addSeries(plotterHR.getHrSeries(), plotterHR.getHrFormatter());
+    private void initPlot() {
         plotHR.setRangeBoundaries(50, 100, BoundaryMode.AUTO);
         plotHR.setDomainBoundaries(0, 360000, BoundaryMode.AUTO);
         // Left labels will increment by 10
@@ -117,36 +115,20 @@ public class HomeFragment extends Fragment implements PlotterListener {
         // These don't seem to have an effect
         plotHR.setLinesPerRangeLabel(2);
 
-        plotECG.addSeries(plotterECG.getSeries(), plotterECG.getFormatter());
         plotECG.setRangeBoundaries(-3.3, 3.3, BoundaryMode.FIXED);
         plotECG.setRangeStep(StepMode.INCREMENT_BY_FIT, 0.55);
         plotECG.setDomainBoundaries(0, 500, BoundaryMode.GROW);
         plotECG.setLinesPerRangeLabel(2);
     }
 
-    public void streamECG() {
-        if (ecgDisposable == null) {
-            ecgDisposable =
-                    polarDevice.api().requestEcgSettings(polarDevice.getDeviceId())
-                            .toFlowable()
-                            .flatMap((Function<PolarSensorSetting, Publisher<PolarEcgData>>) sensorSetting ->
-                                    polarDevice.api().startEcgStreaming(polarDevice.getDeviceId(), sensorSetting.maxSettings()))
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(
-                                    polarEcgData -> {
-                                        for (Integer data : polarEcgData.samples) {
-                                            plotterECG.sendSingleSample((float) ((float) data / 1000.0));
-                                        }
-                                    },
-                                    throwable -> {
-                                        ecgDisposable = null;
-                                    }
-                            );
-        } else {
-            // NOTE stops streaming if it is "running"
-            ecgDisposable.dispose();
-            ecgDisposable = null;
-        }
+    private void startPlot() {
+        plotHR.addSeries(plotterHR.getHrSeries(), plotterHR.getHrFormatter());
+        plotECG.addSeries(plotterECG.getSeries(), plotterECG.getFormatter());
+    }
+
+    private void stopPlot() {
+        plotHR.removeSeries(plotterHR.getHrSeries());
+        plotECG.removeSeries(plotterECG.getSeries());
     }
 
     @Override

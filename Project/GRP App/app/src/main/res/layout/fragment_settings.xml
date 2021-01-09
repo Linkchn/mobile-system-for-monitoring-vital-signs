@@ -78,19 +78,19 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center|start"
-                android:text="Brain Wave Device:"
+                android:text="Scale Device:"
                 android:textSize="16sp"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"/>
 
             <ImageView
-                android:id="@+id/symbol_brain_wave_device"
+                android:id="@+id/symbol_scale_device"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:src="@drawable/ic_outline_cancel_24"/>
 
             <Button
-                android:id="@+id/button_connect_brain_wave_device"
+                android:id="@+id/button_connect_scale_device"
                 android:layout_width="120dp"
                 android:layout_height="40dp"
                 android:layout_gravity="center"

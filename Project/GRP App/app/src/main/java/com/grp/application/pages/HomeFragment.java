@@ -1,10 +1,22 @@
 package com.grp.application.pages;
 
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothManager;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -13,6 +25,7 @@ import com.androidplot.xy.BoundaryMode;
 import com.androidplot.xy.StepMode;
 import com.androidplot.xy.XYGraphWidget;
 import com.androidplot.xy.XYPlot;
+import com.google.android.material.textfield.TextInputEditText;
 import com.grp.application.MainActivity;
 import com.example.application.R;
 import com.google.android.material.switchmaterial.SwitchMaterial;
@@ -21,12 +34,16 @@ import com.grp.application.polar.Plotter;
 import com.grp.application.polar.PlotterListener;
 import com.grp.application.polar.PolarDevice;
 import com.grp.application.polar.TimePlotter;
+import com.grp.application.scale.Scale;
+import com.grp.application.scale.bluetooth.BluetoothCommunication;
+import com.grp.application.scale.datatypes.ScaleMeasurement;
 
 import java.text.DecimalFormat;
 
 import io.reactivex.rxjava3.disposables.Disposable;
 import polar.com.sdk.api.PolarBleApiCallback;
 import polar.com.sdk.api.model.PolarHrData;
+import timber.log.Timber;
 
 public class HomeFragment extends Fragment implements PlotterListener {
 
@@ -38,6 +55,8 @@ public class HomeFragment extends Fragment implements PlotterListener {
     private XYPlot plotECG;
     private TextView textViewHR;
     SwitchMaterial startCaptureDataSwitch;
+    TextInputEditText weightText;
+    Button measureButton;
 
     private TimePlotter plotterHR;
     private Plotter plotterECG;
@@ -51,6 +70,8 @@ public class HomeFragment extends Fragment implements PlotterListener {
         monitor = Monitor.getInstance();
         mainActivity = (MainActivity) getActivity();
         startCaptureDataSwitch = root.findViewById(R.id.startCaptureDataSwitch);
+        weightText = root.findViewById(R.id.text_field_weight);
+        measureButton = root.findViewById(R.id.button_measure_weight);
 
         polarDevice = PolarDevice.getInstance();
         plotHR = root.findViewById(R.id.plot_hr);
@@ -81,8 +102,84 @@ public class HomeFragment extends Fragment implements PlotterListener {
             }
         });
 
+        measureButton.setOnClickListener(this::invokeConnectToBluetoothDevice);
+
         return root;
     }
+
+    private void invokeConnectToBluetoothDevice(View view) {
+
+        final Scale scale = Scale.getInstance();
+
+        String deviceName = "QN-Scale";
+        String hwAddress = scale.getHwAddress();
+
+        if (!BluetoothAdapter.checkBluetoothAddress(hwAddress)) {
+            monitor.showToast("No Device Set");
+            return;
+        }
+
+        monitor.showToast("Connect to " + deviceName);
+
+        if (!scale.connectToBluetoothDevice(deviceName, hwAddress, callbackBtHandler)) {
+            monitor.showToast("Device not support");
+        }
+    }
+
+    private final Handler callbackBtHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+
+            BluetoothCommunication.BT_STATUS btStatus = BluetoothCommunication.BT_STATUS.values()[msg.what];
+
+            switch (btStatus) {
+                case RETRIEVE_SCALE_DATA:
+                    ScaleMeasurement scaleBtData = (ScaleMeasurement) msg.obj;
+
+                    Scale scale = Scale.getInstance();
+                    scale.addScaleMeasurement(scaleBtData);
+                    weightText.setText(String.valueOf(monitor.getWeight()));
+                    break;
+                case INIT_PROCESS:
+                    monitor.showToast("Bluetooth initializing");
+                    Timber.d("Bluetooth initializing");
+                    break;
+                case CONNECTION_LOST:
+                    monitor.showToast("Bluetooth connection lost");
+                    Timber.d("Bluetooth connection lost");
+                    break;
+                case NO_DEVICE_FOUND:
+                    monitor.showToast("No Bluetooth device found");
+                    Timber.e("No Bluetooth device found");
+                    break;
+                case CONNECTION_RETRYING:
+                    monitor.showToast("No Bluetooth device found retrying");
+                    Timber.e("No Bluetooth device found retrying");
+                    break;
+                case CONNECTION_ESTABLISHED:
+                    monitor.showToast("Bluetooth connection successful established");
+                    Timber.d("Bluetooth connection successful established");
+                    break;
+                case CONNECTION_DISCONNECT:
+                    monitor.showToast("Bluetooth connection successful established");
+                    Timber.d("Bluetooth connection successful disconnected");
+                    break;
+                case UNEXPECTED_ERROR:
+                    monitor.showToast("Bluetooth unexpected error: " + msg.obj);
+                    Timber.e("Bluetooth unexpected error: %s", msg.obj);
+                    break;
+                case SCALE_MESSAGE:
+                    try {
+                        String toastMessage = String.format(getResources().getString(msg.arg1), msg.obj);
+                        monitor.showToast(toastMessage);
+                        Timber.d("Bluetooth scale message: " + toastMessage);
+                    } catch (Exception ex) {
+                        Timber.e("Bluetooth scale message error: " + ex);
+                    }
+                    break;
+            }
+        }
+    };
 
     private void initDevice() {
         polarDevice.api().setApiCallback(new PolarBleApiCallback() {

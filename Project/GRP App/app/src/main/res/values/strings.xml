@@ -37,4 +37,6 @@
     <string name="ecg">ECG</string>
     <string name="text_device_not_connected">Connect</string>
     <string name="text_device_connected">Connected</string>
+    <string name="info_bluetooth_connection_error_scale_offline">Could not connect to scale, please ensure it is on.</string>
+    <string name="info_step_on_scale">Please step barefoot on the scale</string>
 </resources>

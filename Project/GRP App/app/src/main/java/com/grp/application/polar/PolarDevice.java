@@ -4,27 +4,29 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 
+import com.grp.application.Application;
 import com.grp.application.MainActivity;
+import com.grp.application.monitor.Monitor;
 
 import polar.com.sdk.api.PolarBleApi;
+import polar.com.sdk.api.PolarBleApiCallback;
 import polar.com.sdk.api.PolarBleApiDefaultImpl;
+import polar.com.sdk.api.model.PolarDeviceInfo;
 
 
 public class PolarDevice {
     private String deviceId;
-    private int heartRate;
     private PolarBleApi polarApi;
-    private Context classContext;
+
     private static PolarDevice instance;
 
-    private PolarDevice(Context classContext) {
-        this.classContext = classContext;
-        polarApi = PolarBleApiDefaultImpl.defaultImplementation(this.classContext, PolarBleApi.ALL_FEATURES);
+    private PolarDevice() {
+        polarApi = PolarBleApiDefaultImpl.defaultImplementation(Application.context, PolarBleApi.ALL_FEATURES);
     }
 
-    public static PolarDevice getInstance(Context classContext) {
+    public static PolarDevice getInstance() {
         if (instance == null) {
-            instance = new PolarDevice(classContext);
+            instance = new PolarDevice();
         }
         return instance;
     }
@@ -39,13 +41,5 @@ public class PolarDevice {
 
     public void setDeviceId(String deviceId) {
         this.deviceId = deviceId;
-    }
-
-    public int getHeartRate() {
-        return heartRate;
-    }
-
-    public void setHeartRate(int heartRate) {
-        this.heartRate = heartRate;
     }
 }

@@ -1,11 +1,22 @@
 package com.grp.application.pages;
 
+import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothManager;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+import android.os.Handler;
+import android.os.Message;
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -14,40 +25,41 @@ import com.androidplot.xy.BoundaryMode;
 import com.androidplot.xy.StepMode;
 import com.androidplot.xy.XYGraphWidget;
 import com.androidplot.xy.XYPlot;
+import com.google.android.material.textfield.TextInputEditText;
 import com.grp.application.MainActivity;
 import com.example.application.R;
-import com.grp.application.components.Devices;
-import com.grp.application.components.Switches;
 import com.google.android.material.switchmaterial.SwitchMaterial;
+import com.grp.application.monitor.Monitor;
 import com.grp.application.polar.Plotter;
 import com.grp.application.polar.PlotterListener;
 import com.grp.application.polar.PolarDevice;
 import com.grp.application.polar.TimePlotter;
-
-import org.reactivestreams.Publisher;
+import com.grp.application.scale.Scale;
+import com.grp.application.scale.bluetooth.BluetoothCommunication;
+import com.grp.application.scale.datatypes.ScaleMeasurement;
 
 import java.text.DecimalFormat;
-import java.util.List;
 
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.Disposable;
-import io.reactivex.rxjava3.functions.Function;
 import polar.com.sdk.api.PolarBleApiCallback;
-import polar.com.sdk.api.model.PolarEcgData;
 import polar.com.sdk.api.model.PolarHrData;
-import polar.com.sdk.api.model.PolarSensorSetting;
+import timber.log.Timber;
 
 public class HomeFragment extends Fragment implements PlotterListener {
 
+    private Monitor monitor;
     private MainActivity mainActivity;
     private PolarDevice polarDevice;
+
     private XYPlot plotHR;
     private XYPlot plotECG;
+    private TextView textViewHR;
+    SwitchMaterial startCaptureDataSwitch;
+    TextInputEditText weightText;
+    Button measureButton;
+
     private TimePlotter plotterHR;
     private Plotter plotterECG;
-    private TextView textViewHR;
-
-    private Disposable ecgDisposable = null;
 
     public HomeFragment() {}
 
@@ -55,57 +67,140 @@ public class HomeFragment extends Fragment implements PlotterListener {
             ViewGroup container, Bundle savedInstanceState) {
 
         View root = inflater.inflate(R.layout.fragment_home, container, false);
+        monitor = Monitor.getInstance();
         mainActivity = (MainActivity) getActivity();
-        SwitchMaterial startCaptureDataSwitch = root.findViewById(R.id.startCaptureDataSwitch);
+        startCaptureDataSwitch = root.findViewById(R.id.startCaptureDataSwitch);
+        weightText = root.findViewById(R.id.text_field_weight);
+        measureButton = root.findViewById(R.id.button_measure_weight);
 
-        polarDevice = PolarDevice.getInstance(mainActivity);
+        polarDevice = PolarDevice.getInstance();
         plotHR = root.findViewById(R.id.plot_hr);
         plotECG = root.findViewById(R.id.plot_ecg);
         textViewHR = root.findViewById(R.id.number_heart_rate);
 
-        plotterHR = new TimePlotter();
-        plotterECG = new Plotter("ECG");
+        plotterHR = monitor.getPlotterHR();
+        plotterECG = monitor.getPlotterECG();
         plotterHR.setListener(this);
         plotterECG.setListener(this);
 
-        initialDevice();
-        plot();
+        initDevice();
+        initPlot();
+        if (monitor.getMonitorState().isStartCaptureDataEnabled()) {
+            startPlot();
+        }
+        monitor.getViewSetter().setSwitchView(startCaptureDataSwitch, monitor.getMonitorState().isStartCaptureDataEnabled());
 
-
-        mainActivity.setSwitchView(startCaptureDataSwitch, Switches.START_CAPTURE_DATA);
         startCaptureDataSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
-                mainActivity.showToast("Start Capture Data");
+                monitor.showToast("Start Capture Data");
+                monitor.getMonitorState().enableStartCaptureData();
+                startPlot();
             } else {
-                mainActivity.showToast("Stop Capture Data");
+                monitor.showToast("Stop Capture Data");
+                monitor.getMonitorState().disableStartCaptureData();
+                stopPlot();
             }
-            mainActivity.toggleSwitch(Switches.START_CAPTURE_DATA);
         });
+
+        measureButton.setOnClickListener(this::invokeConnectToBluetoothDevice);
 
         return root;
     }
 
-    private void initialDevice() {
+    private void invokeConnectToBluetoothDevice(View view) {
+
+        final Scale scale = Scale.getInstance();
+
+        String deviceName = "QN-Scale";
+        String hwAddress = scale.getHwAddress();
+
+        if (!BluetoothAdapter.checkBluetoothAddress(hwAddress)) {
+            monitor.showToast("No Device Set");
+            return;
+        }
+
+        monitor.showToast("Connect to " + deviceName);
+
+        if (!scale.connectToBluetoothDevice(deviceName, hwAddress, callbackBtHandler)) {
+            monitor.showToast("Device not support");
+        }
+    }
+
+    private final Handler callbackBtHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+
+            BluetoothCommunication.BT_STATUS btStatus = BluetoothCommunication.BT_STATUS.values()[msg.what];
+
+            switch (btStatus) {
+                case RETRIEVE_SCALE_DATA:
+                    ScaleMeasurement scaleBtData = (ScaleMeasurement) msg.obj;
+
+                    Scale scale = Scale.getInstance();
+                    scale.addScaleMeasurement(scaleBtData);
+                    weightText.setText(String.valueOf(monitor.getWeight()));
+                    break;
+                case INIT_PROCESS:
+                    monitor.showToast("Bluetooth initializing");
+                    Timber.d("Bluetooth initializing");
+                    break;
+                case CONNECTION_LOST:
+                    monitor.showToast("Bluetooth connection lost");
+                    Timber.d("Bluetooth connection lost");
+                    break;
+                case NO_DEVICE_FOUND:
+                    monitor.showToast("No Bluetooth device found");
+                    Timber.e("No Bluetooth device found");
+                    break;
+                case CONNECTION_RETRYING:
+                    monitor.showToast("No Bluetooth device found retrying");
+                    Timber.e("No Bluetooth device found retrying");
+                    break;
+                case CONNECTION_ESTABLISHED:
+                    monitor.showToast("Bluetooth connection successful established");
+                    Timber.d("Bluetooth connection successful established");
+                    break;
+                case CONNECTION_DISCONNECT:
+                    monitor.showToast("Bluetooth connection successful established");
+                    Timber.d("Bluetooth connection successful disconnected");
+                    break;
+                case UNEXPECTED_ERROR:
+                    monitor.showToast("Bluetooth unexpected error: " + msg.obj);
+                    Timber.e("Bluetooth unexpected error: %s", msg.obj);
+                    break;
+                case SCALE_MESSAGE:
+                    try {
+                        String toastMessage = String.format(getResources().getString(msg.arg1), msg.obj);
+                        monitor.showToast(toastMessage);
+                        Timber.d("Bluetooth scale message: " + toastMessage);
+                    } catch (Exception ex) {
+                        Timber.e("Bluetooth scale message error: " + ex);
+                    }
+                    break;
+            }
+        }
+    };
+
+    private void initDevice() {
         polarDevice.api().setApiCallback(new PolarBleApiCallback() {
             @Override
             public void hrNotificationReceived(@NonNull String identifier, @NonNull PolarHrData data) {
-                if (mainActivity.isSwitchChecked(Switches.START_CAPTURE_DATA)) {
+                if (monitor.getMonitorState().isStartCaptureDataEnabled()) {
                     textViewHR.setText(String.valueOf(data.hr));
-                    plotterHR.addValues(data);
+                } else {
+                    textViewHR.setText("");
                 }
+                    monitor.getPlotterHR().addValues(data);
             }
 
             @Override
             public void ecgFeatureReady(@NonNull String identifier) {
-
-                    streamECG();
-
+                    monitor.streamECG();
             }
         });
     }
 
-    private void plot() {
-        plotHR.addSeries(plotterHR.getHrSeries(), plotterHR.getHrFormatter());
+    private void initPlot() {
         plotHR.setRangeBoundaries(50, 100, BoundaryMode.AUTO);
         plotHR.setDomainBoundaries(0, 360000, BoundaryMode.AUTO);
         // Left labels will increment by 10
@@ -117,36 +212,20 @@ public class HomeFragment extends Fragment implements PlotterListener {
         // These don't seem to have an effect
         plotHR.setLinesPerRangeLabel(2);
 
-        plotECG.addSeries(plotterECG.getSeries(), plotterECG.getFormatter());
         plotECG.setRangeBoundaries(-3.3, 3.3, BoundaryMode.FIXED);
         plotECG.setRangeStep(StepMode.INCREMENT_BY_FIT, 0.55);
         plotECG.setDomainBoundaries(0, 500, BoundaryMode.GROW);
         plotECG.setLinesPerRangeLabel(2);
     }
 
-    public void streamECG() {
-        if (ecgDisposable == null) {
-            ecgDisposable =
-                    polarDevice.api().requestEcgSettings(polarDevice.getDeviceId())
-                            .toFlowable()
-                            .flatMap((Function<PolarSensorSetting, Publisher<PolarEcgData>>) sensorSetting ->
-                                    polarDevice.api().startEcgStreaming(polarDevice.getDeviceId(), sensorSetting.maxSettings()))
-                            .observeOn(AndroidSchedulers.mainThread())
-                            .subscribe(
-                                    polarEcgData -> {
-                                        for (Integer data : polarEcgData.samples) {
-                                            plotterECG.sendSingleSample((float) ((float) data / 1000.0));
-                                        }
-                                    },
-                                    throwable -> {
-                                        ecgDisposable = null;
-                                    }
-                            );
-        } else {
-            // NOTE stops streaming if it is "running"
-            ecgDisposable.dispose();
-            ecgDisposable = null;
-        }
+    private void startPlot() {
+        plotHR.addSeries(plotterHR.getHrSeries(), plotterHR.getHrFormatter());
+        plotECG.addSeries(plotterECG.getSeries(), plotterECG.getFormatter());
+    }
+
+    private void stopPlot() {
+        plotHR.removeSeries(plotterHR.getHrSeries());
+        plotECG.removeSeries(plotterECG.getSeries());
     }
 
     @Override

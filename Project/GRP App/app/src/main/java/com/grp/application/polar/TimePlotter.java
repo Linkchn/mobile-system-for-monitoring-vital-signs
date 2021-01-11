@@ -2,6 +2,7 @@ package com.grp.application.polar;
 
 import android.graphics.Color;
 
+import com.androidplot.util.PixelUtils;
 import com.androidplot.xy.LineAndPointFormatter;
 import com.androidplot.xy.SimpleXYSeries;
 import com.androidplot.xy.XYSeriesFormatter;
@@ -69,7 +70,9 @@ public class TimePlotter {
         yHrVals[NVALS - 1] = (double) polarHrData.hr;
         hrSeries.setXY(xHrVals[NVALS - 1], yHrVals[NVALS - 1], NVALS - 1);
 
-        listener.update();
+        if (listener != null) {
+            listener.update();
+        }
     }
 
     public void setListener(PlotterListener listener) {

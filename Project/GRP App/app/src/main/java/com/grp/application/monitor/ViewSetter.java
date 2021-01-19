@@ -38,4 +38,8 @@ public class ViewSetter {
         }
         button.setEnabled(!isConnected);
     }
+
+    public void setButtonView(Button button, boolean isEnabled) {
+        button.setEnabled(isEnabled);
+    }
 }

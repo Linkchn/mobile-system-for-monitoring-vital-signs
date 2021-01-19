@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -17,6 +18,7 @@ import com.example.application.R;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.grp.application.monitor.Monitor;
 import com.grp.application.polar.PolarDevice;
+import com.grp.application.scale.Scale;
 
 import polar.com.sdk.api.PolarBleApiCallback;
 import polar.com.sdk.api.errors.PolarInvalidArgument;
@@ -30,7 +32,8 @@ public class SettingsFragment extends Fragment {
     private ImageView symbolHrDevice;
     private ImageView symbolBrainWaveDevice;
     private Button hrConnectButton;
-    private Button brainWaveConnectButton;
+    private Button scaleConnectButton;
+    private SwitchMaterial simulationSwitch;
     private SwitchMaterial msgOnNotWearDeviceSwitch;
     private SwitchMaterial msgOnNotCaptureDataSwitch;
     private SwitchMaterial msgOnReportGenerated;
@@ -47,7 +50,8 @@ public class SettingsFragment extends Fragment {
         symbolHrDevice = root.findViewById(R.id.symbol_hr_device);
         symbolBrainWaveDevice = root.findViewById(R.id.symbol_scale_device);
         hrConnectButton = root.findViewById(R.id.button_connect_hr_device);
-        brainWaveConnectButton = root.findViewById(R.id.button_connect_scale_device);
+        scaleConnectButton = root.findViewById(R.id.button_connect_scale_device);
+        simulationSwitch = root.findViewById(R.id.switch_simulation);
         msgOnNotWearDeviceSwitch = root.findViewById(R.id.switch_msg_not_wear_device);
         msgOnNotCaptureDataSwitch = root.findViewById(R.id.switch_msg_not_capture_data);
         msgOnReportGenerated = root.findViewById(R.id.switch_msg_report_generated);
@@ -56,9 +60,17 @@ public class SettingsFragment extends Fragment {
         initDevice();
         hrConnectButton.setOnClickListener(this::showPolarDeviceDialog);
 
-        brainWaveConnectButton.setOnClickListener((buttonView) -> {
-            monitor.getMonitorState().connectScaleDeviceConnected();
-            monitor.getViewSetter().setDeviceView(symbolBrainWaveDevice, brainWaveConnectButton, monitor.getMonitorState().isScaleDeviceConnected());
+        scaleConnectButton.setOnClickListener(this::showScaleDialog);
+
+        simulationSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                monitor.showToast("Start Simulation");
+                monitor.getMonitorState().enableSimulation();
+            } else {
+                monitor.showToast("Stop Simulation");
+                monitor.getMonitorState().disableSimulation();
+            }
+            resetUI();
         });
 
         msgOnNotWearDeviceSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -114,8 +126,11 @@ public class SettingsFragment extends Fragment {
     }
 
     private void resetUI() {
-        monitor.getViewSetter().setDeviceView(symbolHrDevice, hrConnectButton, monitor.getMonitorState().isHRDeviceConnected());
-        monitor.getViewSetter().setDeviceView(symbolBrainWaveDevice, brainWaveConnectButton, monitor.getMonitorState().isScaleDeviceConnected());
+        monitor.getViewSetter().setDeviceView(symbolHrDevice, hrConnectButton,
+                monitor.getMonitorState().isHRDeviceConnected() || monitor.getMonitorState().isSimulationEnabled());
+        monitor.getViewSetter().setDeviceView(symbolBrainWaveDevice, scaleConnectButton,
+                monitor.getMonitorState().isScaleDeviceConnected() || monitor.getMonitorState().isSimulationEnabled());
+        monitor.getViewSetter().setSwitchView(simulationSwitch, monitor.getMonitorState().isSimulationEnabled());
         monitor.getViewSetter().setSwitchView(msgOnNotWearDeviceSwitch, monitor.getMonitorState().isMsgOnNotWearDeviceEnabled());
         monitor.getViewSetter().setSwitchView(msgOnNotCaptureDataSwitch, monitor.getMonitorState().isMsgOnNotCaptureDataEnabled());
         monitor.getViewSetter().setSwitchView(msgOnReportGenerated, monitor.getMonitorState().isMsgOnReportGeneratedEnabled());
@@ -141,6 +156,33 @@ public class SettingsFragment extends Fragment {
             //SharedPreferences.Editor editor = sharedPreferences.edit();
             //editor.putString(SHARED_PREFS_KEY, deviceId);
             //editor.apply();
+        });
+        dialog.setNegativeButton("Cancel", (dialog12, which) -> dialog12.cancel());
+        dialog.show();
+    }
+
+    private void showScaleDialog(View view) {
+        AlertDialog.Builder dialog = new AlertDialog.Builder(this.getContext(), R.style.PolarTheme);
+        dialog.setTitle("Enter your Scale MAC address");
+
+        View viewInflated = LayoutInflater.from(monitor.getContext()).inflate(R.layout.scale_connection_dialog_layout, (ViewGroup) view.getRootView(), false);
+
+        final EditText input = viewInflated.findViewById(R.id.input);
+        RadioButton buttonRenpho = viewInflated.findViewById(R.id.button_renpho);
+        RadioButton buttonYunmai = viewInflated.findViewById(R.id.button_yunmai);
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        dialog.setView(viewInflated);
+
+        dialog.setPositiveButton("OK", (dialog1, which) -> {
+            Scale scale = Scale.getInstance();
+            if (buttonRenpho.isChecked()) {
+                scale.setDeviceName("QN-Scale");
+            } else if (buttonYunmai.isChecked()){
+                scale.setDeviceName("YUNMAI-SIGNAL");
+            }
+            scale.setHwAddress(input.getText().toString());
+            monitor.getMonitorState().connectScaleDevice();
+            resetUI();
         });
         dialog.setNegativeButton("Cancel", (dialog12, which) -> dialog12.cancel());
         dialog.show();

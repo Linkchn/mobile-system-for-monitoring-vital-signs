@@ -18,7 +18,7 @@ import polar.com.sdk.api.model.PolarHrData;
  */
 public class TimePlotter {
     private static final String TAG = "TimePlotter";
-    private static final int NVALS = 60;  // 5 min
+    private static final int NVALS = 60;  // 1 min
     private PlotterListener listener;
 
     private XYSeriesFormatter hrFormatter;

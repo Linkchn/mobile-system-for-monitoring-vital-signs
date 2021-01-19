@@ -20,13 +20,13 @@ public class Scale {
 
     private static Scale instance;
 
+    private String deviceName;
     private String hwAddress;
     private Context context;
 
     private Scale(Context context) {
         this.context = context;
         btDeviceDriver = null;
-        hwAddress = "A4:C1:38:98:E8:7E";
     }
 
     public static void createInstance(Context context) {
@@ -86,5 +86,13 @@ public class Scale {
 
     public void setHwAddress(String hwAddress) {
         this.hwAddress = hwAddress;
+    }
+
+    public String getDeviceName() {
+        return deviceName;
+    }
+
+    public void setDeviceName(String deviceName) {
+        this.deviceName = deviceName;
     }
 }

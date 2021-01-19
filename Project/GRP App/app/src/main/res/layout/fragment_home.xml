@@ -83,7 +83,7 @@
             android:layout_marginBottom="40dp" />
 
         <com.google.android.material.switchmaterial.SwitchMaterial
-            android:id="@+id/startCaptureDataSwitch"
+            android:id="@+id/switch_start_capture_data"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Start Capture Data"

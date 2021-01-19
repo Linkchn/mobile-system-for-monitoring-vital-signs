@@ -1,22 +1,14 @@
 package com.grp.application.pages;
 
-import android.annotation.SuppressLint;
-import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
-import android.bluetooth.BluetoothManager;
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.text.Html;
-import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -37,10 +29,13 @@ import com.grp.application.polar.TimePlotter;
 import com.grp.application.scale.Scale;
 import com.grp.application.scale.bluetooth.BluetoothCommunication;
 import com.grp.application.scale.datatypes.ScaleMeasurement;
+import com.grp.application.simulation.HrSimulator;
+import com.grp.application.simulation.WeightSimulator;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.text.DecimalFormat;
 
-import io.reactivex.rxjava3.disposables.Disposable;
 import polar.com.sdk.api.PolarBleApiCallback;
 import polar.com.sdk.api.model.PolarHrData;
 import timber.log.Timber;
@@ -50,11 +45,14 @@ public class HomeFragment extends Fragment implements PlotterListener {
     private Monitor monitor;
     private MainActivity mainActivity;
     private PolarDevice polarDevice;
+    private HrSimulator hrSimulator;
+    private WeightSimulator weightSimulator;
 
     private XYPlot plotHR;
     private XYPlot plotECG;
     private TextView textViewHR;
     SwitchMaterial startCaptureDataSwitch;
+    SwitchMaterial simulationSwitch;
     TextInputEditText weightText;
     Button measureButton;
 
@@ -69,14 +67,32 @@ public class HomeFragment extends Fragment implements PlotterListener {
         View root = inflater.inflate(R.layout.fragment_home, container, false);
         monitor = Monitor.getInstance();
         mainActivity = (MainActivity) getActivity();
-        startCaptureDataSwitch = root.findViewById(R.id.startCaptureDataSwitch);
+        startCaptureDataSwitch = root.findViewById(R.id.switch_start_capture_data);
+        simulationSwitch = root.findViewById(R.id.switch_simulation);
         weightText = root.findViewById(R.id.text_field_weight);
         measureButton = root.findViewById(R.id.button_measure_weight);
+        hrSimulator = HrSimulator.getInstance();
+        weightSimulator = WeightSimulator.getInstance();
 
         polarDevice = PolarDevice.getInstance();
         plotHR = root.findViewById(R.id.plot_hr);
         plotECG = root.findViewById(R.id.plot_ecg);
         textViewHR = root.findViewById(R.id.number_heart_rate);
+
+        Handler simHandler = new Handler();
+        Runnable simulate = new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    PolarHrData data = hrSimulator.getNextHrData();
+                    monitor.getPlotterHR().addValues(data);
+                    textViewHR.setText(String.valueOf(data.hr));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                simHandler.postDelayed(this, 1000);
+            }
+        };
 
         plotterHR = monitor.getPlotterHR();
         plotterECG = monitor.getPlotterECG();
@@ -84,25 +100,43 @@ public class HomeFragment extends Fragment implements PlotterListener {
         plotterECG.setListener(this);
 
         initDevice();
-        initPlot();
+        initUI();
         if (monitor.getMonitorState().isStartCaptureDataEnabled()) {
             startPlot();
+            if (monitor.getMonitorState().isSimulationEnabled()) {
+                simHandler.postDelayed(simulate, 1000);
+            }
         }
-        monitor.getViewSetter().setSwitchView(startCaptureDataSwitch, monitor.getMonitorState().isStartCaptureDataEnabled());
 
         startCaptureDataSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 monitor.showToast("Start Capture Data");
                 monitor.getMonitorState().enableStartCaptureData();
                 startPlot();
+                if (monitor.getMonitorState().isSimulationEnabled()) {
+                    simHandler.postDelayed(simulate, 1000);
+                }
             } else {
                 monitor.showToast("Stop Capture Data");
                 monitor.getMonitorState().disableStartCaptureData();
+                simHandler.removeCallbacks(simulate);
                 stopPlot();
             }
         });
 
-        measureButton.setOnClickListener(this::invokeConnectToBluetoothDevice);
+        measureButton.setOnClickListener((view) -> {
+            if (monitor.getMonitorState().isSimulationEnabled()) {
+                try {
+                    float weight = weightSimulator.readNextWeightData();
+                    weightText.setText(String.format("%.2f", weight));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                monitor.showToast("Simulate Weight Measurement");
+            } else {
+                invokeConnectToBluetoothDevice(view);
+            }
+        });
 
         return root;
     }
@@ -111,7 +145,7 @@ public class HomeFragment extends Fragment implements PlotterListener {
 
         final Scale scale = Scale.getInstance();
 
-        String deviceName = "QN-Scale";
+        String deviceName = scale.getDeviceName();
         String hwAddress = scale.getHwAddress();
 
         if (!BluetoothAdapter.checkBluetoothAddress(hwAddress)) {
@@ -138,7 +172,7 @@ public class HomeFragment extends Fragment implements PlotterListener {
 
                     Scale scale = Scale.getInstance();
                     scale.addScaleMeasurement(scaleBtData);
-                    weightText.setText(String.valueOf(monitor.getWeight()));
+                    weightText.setText(String.format("%.2f", monitor.getWeight()));
                     break;
                 case INIT_PROCESS:
                     monitor.showToast("Bluetooth initializing");
@@ -200,7 +234,9 @@ public class HomeFragment extends Fragment implements PlotterListener {
         });
     }
 
-    private void initPlot() {
+    private void initUI() {
+        monitor.getViewSetter().setSwitchView(startCaptureDataSwitch, monitor.getMonitorState().isStartCaptureDataEnabled());
+
         plotHR.setRangeBoundaries(50, 100, BoundaryMode.AUTO);
         plotHR.setDomainBoundaries(0, 360000, BoundaryMode.AUTO);
         // Left labels will increment by 10
@@ -216,6 +252,9 @@ public class HomeFragment extends Fragment implements PlotterListener {
         plotECG.setRangeStep(StepMode.INCREMENT_BY_FIT, 0.55);
         plotECG.setDomainBoundaries(0, 500, BoundaryMode.GROW);
         plotECG.setLinesPerRangeLabel(2);
+
+        monitor.getViewSetter().setButtonView(measureButton,
+                monitor.getMonitorState().isScaleDeviceConnected() || monitor.getMonitorState().isSimulationEnabled());
     }
 
     private void startPlot() {

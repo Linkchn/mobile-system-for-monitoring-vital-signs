@@ -2,6 +2,7 @@ package com.grp.application.monitor;
 
 public class MonitorState {
     private static boolean startCaptureDataEnabled = false;
+    private static boolean simulationEnabled = false;
     private static boolean msgOnNotWearDeviceEnabled = false;
     private static boolean msgOnNotCaptureDataEnabled = true;
     private static boolean msgOnReportGeneratedEnabled = false;
@@ -29,6 +30,18 @@ public class MonitorState {
 
     public boolean isStartCaptureDataEnabled() {
         return startCaptureDataEnabled;
+    }
+
+    public void enableSimulation() {
+        simulationEnabled = true;
+    }
+
+    public void disableSimulation() {
+        simulationEnabled = false;
+    }
+
+    public boolean isSimulationEnabled() {
+        return simulationEnabled;
     }
 
     public void enableMsgOnNotWearDevice() {
@@ -71,7 +84,7 @@ public class MonitorState {
         hrDeviceConnected = true;
     }
 
-    public void disconnectHRDeviceConnected() {
+    public void disconnectHRDevice() {
         hrDeviceConnected = false;
     }
 
@@ -79,11 +92,11 @@ public class MonitorState {
         return hrDeviceConnected;
     }
 
-    public void connectScaleDeviceConnected () {
+    public void connectScaleDevice () {
         scaleDeviceConnected = true;
     }
 
-    public void disconnectScaleDeviceConnected() {
+    public void disconnectScaleDevice() {
         scaleDeviceConnected = false;
     }
 

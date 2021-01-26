@@ -58,7 +58,7 @@ public class HomeFragment extends Fragment implements PlotterListener {
 
     private TimePlotter plotterHR;
     private Plotter plotterECG;
-
+    
     public HomeFragment() {}
 
     public View onCreateView(@NonNull LayoutInflater inflater,

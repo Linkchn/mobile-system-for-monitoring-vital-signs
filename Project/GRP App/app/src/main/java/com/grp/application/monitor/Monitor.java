@@ -31,7 +31,7 @@ public class Monitor {
 
     private TimePlotter plotterHR;
     private Plotter plotterECG;
-    private double weight;
+    private float weight;
     private Disposable ecgDisposable = null;
 
 
@@ -118,7 +118,7 @@ public class Monitor {
         return weight;
     }
 
-    public void setWeight(double weight) {
+    public void setWeight(float weight) {
         this.weight = weight;
     }
 }

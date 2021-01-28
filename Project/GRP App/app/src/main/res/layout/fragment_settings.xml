@@ -101,6 +101,18 @@
                 app:strokeColor="@color/main_color" />
 
         </LinearLayout>
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/switch_simulation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Simulation"
+            android:textColor="@color/main_color"
+            android:textSize="14sp"
+            android:layout_marginTop="20dp"
+            android:layout_marginStart="80dp"
+            android:layout_marginEnd="80dp"/>
     </LinearLayout>
 
 

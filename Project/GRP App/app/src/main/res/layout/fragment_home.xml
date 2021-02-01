@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<ScrollView xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
 <androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.grp.application.pages.SettingsFragment" >
@@ -92,6 +90,39 @@
             android:layout_marginStart="110dp"
             android:layout_marginEnd="110dp"/>
 
+        <Button
+            android:id="@+id/button_view_recording_hr"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="30dp"
+            android:text="Measure"
+            app:strokeColor="@color/main_color" />
+
+        <Button
+            android:id="@+id/button_stop_recording_hr"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="30dp"
+            android:text="Measure"
+            app:strokeColor="@color/main_color" />
+
+        <Button
+            android:id="@+id/button_start_recording_hr"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="30dp"
+            android:text="Measure"
+            app:strokeColor="@color/main_color" />
+
         <View
             android:layout_width="match_parent"
             android:layout_height="2dp"
@@ -130,9 +161,43 @@
             style="?attr/materialButtonOutlinedStyle"
             app:strokeColor="@color/main_color" />
 
+        <Button
+            android:id="@+id/button_start_recording_weight"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="30dp"
+            android:text="Measure"
+            app:strokeColor="@color/main_color" />
+
+        <Button
+            android:id="@+id/button_stop_recording_weight"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="30dp"
+            android:text="Measure"
+            app:strokeColor="@color/main_color" />
+
+        <Button
+            android:id="@+id/button_view_recording_weight"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="30dp"
+            android:text="Measure"
+            app:strokeColor="@color/main_color" />
+
         <View
             android:layout_width="match_parent"
-            android:layout_height="200dp" />
+            android:layout_height="2dp"
+            android:background="?android:attr/listDivider" />
 
     </LinearLayout>
 

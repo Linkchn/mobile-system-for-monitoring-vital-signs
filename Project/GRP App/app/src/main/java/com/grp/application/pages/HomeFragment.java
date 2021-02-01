@@ -40,6 +40,8 @@ import polar.com.sdk.api.PolarBleApiCallback;
 import polar.com.sdk.api.model.PolarHrData;
 import timber.log.Timber;
 
+import com.grp.application.export.WeightExport;
+
 public class HomeFragment extends Fragment implements PlotterListener {
 
     private Monitor monitor;
@@ -56,13 +58,27 @@ public class HomeFragment extends Fragment implements PlotterListener {
     TextInputEditText weightText;
     Button measureButton;
 
+    private WeightExport weightExport;
+
+    Button startRecordingWeightButton;
+    Button stopRecordingWeightButton;
+    Button viewRecordingWeightButton;
+    Button startRecordingHrButton;
+    Button stopRecordingHrButton;
+    Button viewRecordingHrButton;
+
+    private Boolean weightStatus = false;
+
+    private String weightData;
+    private String Path = System.getProperty("user.dir");
+
     private TimePlotter plotterHR;
     private Plotter plotterECG;
-    
+
     public HomeFragment() {}
 
     public View onCreateView(@NonNull LayoutInflater inflater,
-            ViewGroup container, Bundle savedInstanceState) {
+                             ViewGroup container, Bundle savedInstanceState) {
 
         View root = inflater.inflate(R.layout.fragment_home, container, false);
         monitor = Monitor.getInstance();
@@ -73,6 +89,17 @@ public class HomeFragment extends Fragment implements PlotterListener {
         measureButton = root.findViewById(R.id.button_measure_weight);
         hrSimulator = HrSimulator.getInstance();
         weightSimulator = WeightSimulator.getInstance();
+
+        weightExport = WeightExport.getInstance();
+
+        startRecordingWeightButton = root.findViewById(R.id.button_start_recording_weight);
+        stopRecordingWeightButton = root.findViewById(R.id.button_stop_recording_weight);
+        viewRecordingWeightButton = root.findViewById(R.id.button_view_recording_weight);
+        startRecordingHrButton = root.findViewById(R.id.button_start_recording_hr);
+        stopRecordingHrButton = root.findViewById(R.id.button_stop_recording_hr);
+        viewRecordingHrButton = root.findViewById(R.id.button_view_recording_hr);
+
+
 
         polarDevice = PolarDevice.getInstance();
         plotHR = root.findViewById(R.id.plot_hr);
@@ -129,12 +156,58 @@ public class HomeFragment extends Fragment implements PlotterListener {
                 try {
                     float weight = weightSimulator.readNextWeightData();
                     weightText.setText(String.format("%.2f", weight));
+
+                    // if status is "True, stores every data when the "Simulator Measure" is clicked
+                    if(weightStatus){
+                        weightData = weightData + weight + ",";
+                    }
+
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
                 monitor.showToast("Simulate Weight Measurement");
             } else {
                 invokeConnectToBluetoothDevice(view);
+            }
+        });
+
+        // startRecordWeight
+        startRecordingWeightButton.setOnClickListener((view) -> {
+            if (monitor.getMonitorState().isSimulationEnabled()){
+                // if clicked, changes the status to "True"
+                weightStatus = true;
+            } else {
+                invokeConnectToBluetoothDevice(view);
+            }
+        });
+
+        // stopRecordWeight
+        stopRecordingWeightButton.setOnClickListener((view) -> {
+            if(monitor.getMonitorState().isSimulationEnabled()){
+                // if clicked, changes the status to "False"
+                weightStatus = false;
+                try {
+                    // inverts string to .csv, and export it
+                    weightExport.export(weightData);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                invokeConnectToBluetoothDevice(view);
+            }
+        });
+
+        viewRecordingHrButton.setOnClickListener((view) -> {
+            if(monitor.getMonitorState().isSimulationEnabled()){
+                //if(weightStatus){
+                // warns to stop recording first
+                //}
+                try {
+                    // Open the export document
+                    Runtime.getRuntime().exec("explorer.exe" + Path + "://export");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -224,12 +297,12 @@ public class HomeFragment extends Fragment implements PlotterListener {
                 } else {
                     textViewHR.setText("");
                 }
-                    monitor.getPlotterHR().addValues(data);
+                monitor.getPlotterHR().addValues(data);
             }
 
             @Override
             public void ecgFeatureReady(@NonNull String identifier) {
-                    monitor.streamECG();
+                monitor.streamECG();
             }
         });
     }

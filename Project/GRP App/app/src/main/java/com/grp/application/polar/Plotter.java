@@ -8,6 +8,12 @@ import com.androidplot.xy.XYSeries;
 
 import java.util.Arrays;
 
+/**
+ * Class {@code Plotter} is the class to plot ECG data.
+ *
+ * @author UNNC GRP G19
+ * @version 1.0
+ */
 public class Plotter {
     private static final String TAG = "Plotter";
     private PlotterListener listener;

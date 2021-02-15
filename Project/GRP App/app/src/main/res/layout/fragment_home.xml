@@ -98,7 +98,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="30dp"
-            android:text="Measure"
+            android:text="Start Recording Hr"
             app:strokeColor="@color/main_color" />
 
         <Button
@@ -109,7 +109,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="30dp"
-            android:text="Measure"
+            android:text=" Stop Recording Hr"
             app:strokeColor="@color/main_color" />
 
         <Button
@@ -120,7 +120,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="30dp"
-            android:text="Measure"
+            android:text="View Recording Hr"
             app:strokeColor="@color/main_color" />
 
         <View
@@ -169,7 +169,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="30dp"
-            android:text="Measure"
+            android:text="Start Recording Weight"
             app:strokeColor="@color/main_color" />
 
         <Button
@@ -180,7 +180,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="30dp"
-            android:text="Measure"
+            android:text="Stop Recording Weight"
             app:strokeColor="@color/main_color" />
 
         <Button
@@ -191,7 +191,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="30dp"
-            android:text="Measure"
+            android:text="View Recording Weight"
             app:strokeColor="@color/main_color" />
 
         <View

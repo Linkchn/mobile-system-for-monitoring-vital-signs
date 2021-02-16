@@ -21,6 +21,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.grp.application.MainActivity;
 import com.example.application.R;
 import com.google.android.material.switchmaterial.SwitchMaterial;
+import com.grp.application.export.HrExport;
 import com.grp.application.monitor.Monitor;
 import com.grp.application.polar.Plotter;
 import com.grp.application.polar.PlotterListener;
@@ -32,7 +33,6 @@ import com.grp.application.scale.datatypes.ScaleMeasurement;
 import com.grp.application.simulation.HrSimulator;
 import com.grp.application.simulation.WeightSimulator;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.DecimalFormat;
 
@@ -59,6 +59,7 @@ public class HomeFragment extends Fragment implements PlotterListener {
     Button measureButton;
 
     private WeightExport weightExport;
+    private HrExport hrExport;
 
     Button startRecordingWeightButton;
     Button stopRecordingWeightButton;
@@ -68,8 +69,10 @@ public class HomeFragment extends Fragment implements PlotterListener {
     Button viewRecordingHrButton;
 
     private Boolean weightStatus = false;
+    private Boolean hrStatus = false;
 
     private String weightData;
+    private String hrData;
     private String Path = System.getProperty("user.dir");
 
     private TimePlotter plotterHR;
@@ -92,12 +95,14 @@ public class HomeFragment extends Fragment implements PlotterListener {
 
         weightExport = WeightExport.getInstance();
 
+        // 2/3
+
         startRecordingWeightButton = root.findViewById(R.id.button_start_recording_weight);
         stopRecordingWeightButton = root.findViewById(R.id.button_stop_recording_weight);
         viewRecordingWeightButton = root.findViewById(R.id.button_view_recording_weight);
-        startRecordingHrButton = root.findViewById(R.id.button_start_recording_hr);
+        startRecordingHrButton = root.findViewById(R.id.button_view_recording_hr);
         stopRecordingHrButton = root.findViewById(R.id.button_stop_recording_hr);
-        viewRecordingHrButton = root.findViewById(R.id.button_view_recording_hr);
+        viewRecordingHrButton = root.findViewById(R.id.button_button_start_recording_hr);
 
 
 
@@ -114,6 +119,10 @@ public class HomeFragment extends Fragment implements PlotterListener {
                     PolarHrData data = hrSimulator.getNextHrData();
                     monitor.getPlotterHR().addValues(data);
                     textViewHR.setText(String.valueOf(data.hr));
+
+                    if(hrStatus){
+                        hrData = hrData + data + ",";
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -171,10 +180,11 @@ public class HomeFragment extends Fragment implements PlotterListener {
             }
         });
 
-        // startRecordWeight
+        // startRecordWeight, updated at 2/8
         startRecordingWeightButton.setOnClickListener((view) -> {
             if (monitor.getMonitorState().isSimulationEnabled()){
                 // if clicked, changes the status to "True"
+                // variable 'weightStatus' is used in measureButton.OnClick
                 weightStatus = true;
             } else {
                 invokeConnectToBluetoothDevice(view);
@@ -197,6 +207,44 @@ public class HomeFragment extends Fragment implements PlotterListener {
             }
         });
 
+        // viewRecordWeight
+        viewRecordingWeightButton.setOnClickListener((view) -> {
+            if(monitor.getMonitorState().isSimulationEnabled()){
+                try{
+                    Runtime.getRuntime().exec("D:\\GRP\\mobile-system-for-monitoring-vital-signs\\Project\\GRP App\\export\\Weight");
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        // startRecordHr updated at 2/14
+        startRecordingHrButton.setOnClickListener((view) -> {
+            if (monitor.getMonitorState().isSimulationEnabled()){
+                // if clicked, changes the status to "True"
+                hrStatus = true;
+            } else {
+                invokeConnectToBluetoothDevice(view);
+            }
+        });
+
+        // stopRecordHr
+        stopRecordingHrButton.setOnClickListener((view) -> {
+            if(monitor.getMonitorState().isSimulationEnabled()){
+                // if clicked, changes the status to "False"
+                weightStatus = false;
+                try {
+                    // inverts string to .csv, and export it
+                    hrExport.export(hrData);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                invokeConnectToBluetoothDevice(view);
+            }
+        });
+
+        // viewRecordHr
         viewRecordingHrButton.setOnClickListener((view) -> {
             if(monitor.getMonitorState().isSimulationEnabled()){
                 //if(weightStatus){
@@ -204,12 +252,14 @@ public class HomeFragment extends Fragment implements PlotterListener {
                 //}
                 try {
                     // Open the export document
-                    Runtime.getRuntime().exec("explorer.exe" + Path + "://export");
+                    Runtime.getRuntime().exec("D:\\GRP\\mobile-system-for-monitoring-vital-signs\\Project\\GRP App\\export\\Hr");
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         });
+
+        // updated at 2/17. Problems occur in android simulator.
 
         return root;
     }

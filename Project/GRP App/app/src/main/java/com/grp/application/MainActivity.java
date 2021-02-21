@@ -18,7 +18,12 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
-
+/**
+ * {@code MainActivity} is the root activity for the application.
+ *
+ * @author UNNC GRP G19
+ * @version 1.0
+ */
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -49,13 +54,17 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Check whether Bluetooth is enable.
+     * Request permission if Bluetooth is off.
+     */
     public void checkBT() {
         BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (mBluetoothAdapter != null && !mBluetoothAdapter.isEnabled()) {
             Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
             startActivityForResult(enableBtIntent, 2);
         }
-        this.requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        this.requestPermissions(new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, 1); //Request permission
     }
 
 

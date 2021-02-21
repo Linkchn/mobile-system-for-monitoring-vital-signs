@@ -10,16 +10,29 @@ import java.util.LinkedList;
 
 import polar.com.sdk.api.model.PolarHrData;
 
-public class HrSimulator {
+/**
+ * Class {@code HrSimulator} is the class to simulate hr device.
+ *
+ * @author UNNC GRP G19
+ * @version 1.0
+ */
+public class   HrSimulator {
 
     BufferedReader dataReader;
 
     private static HrSimulator instance;
 
+    /**
+     * Private constructor.
+     */
     private HrSimulator() {
-        dataReader = new BufferedReader(new InputStreamReader(Application.context.getResources().openRawResource(R.raw.hr_long)));
+        dataReader = new BufferedReader(new InputStreamReader(Application.context.getResources().openRawResource(R.raw.hr_long))); // Load heart rate date from csv file
     }
 
+    /**
+     * Get the unique instance of HrSimulator.
+     * @return instance of HrSimulator
+     */
     public static HrSimulator getInstance() {
         if (instance == null) {
             instance = new HrSimulator();
@@ -28,10 +41,20 @@ public class HrSimulator {
         return instance;
     }
 
+    /**
+     * Get next PolarHrData
+     * @return next PolarHrData
+     * @throws IOException IOException
+     */
     public PolarHrData getNextHrData() throws IOException {
         return new PolarHrData(readNextHrData(), new LinkedList<>(), false, false, false);
     }
 
+    /**
+     * Read next hr data from csv file
+     * @return next hr data
+     * @throws IOException IOException
+     */
     private int readNextHrData() throws IOException {
         String line = dataReader.readLine();
         String[] data = line.split(",");

@@ -40,6 +40,12 @@ import polar.com.sdk.api.PolarBleApiCallback;
 import polar.com.sdk.api.model.PolarHrData;
 import timber.log.Timber;
 
+/**
+ * {@code HomeFragment} is class to maintain UI elements and functions of home page.
+ *
+ * @author UNNC GRP G19
+ * @version 1.0
+ */
 public class HomeFragment extends Fragment implements PlotterListener {
 
     private Monitor monitor;
@@ -79,6 +85,7 @@ public class HomeFragment extends Fragment implements PlotterListener {
         plotECG = root.findViewById(R.id.plot_ecg);
         textViewHR = root.findViewById(R.id.number_heart_rate);
 
+        // Set hr simulator
         Handler simHandler = new Handler();
         Runnable simulate = new Runnable() {
             @Override
@@ -108,6 +115,7 @@ public class HomeFragment extends Fragment implements PlotterListener {
             }
         }
 
+        // Set action for "start capture data" switch
         startCaptureDataSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 monitor.showToast("Start Capture Data");
@@ -124,6 +132,7 @@ public class HomeFragment extends Fragment implements PlotterListener {
             }
         });
 
+        // Set action for "measure" button
         measureButton.setOnClickListener((view) -> {
             if (monitor.getMonitorState().isSimulationEnabled()) {
                 try {
@@ -141,6 +150,10 @@ public class HomeFragment extends Fragment implements PlotterListener {
         return root;
     }
 
+    /**
+     * Start connection to scale device.
+     * @param view view
+     */
     private void invokeConnectToBluetoothDevice(View view) {
 
         final Scale scale = Scale.getInstance();
@@ -160,6 +173,9 @@ public class HomeFragment extends Fragment implements PlotterListener {
         }
     }
 
+    /**
+     * Set callback handler for scale operation.
+     */
     private final Handler callbackBtHandler = new Handler() {
         @Override
         public void handleMessage(Message msg) {
@@ -215,6 +231,9 @@ public class HomeFragment extends Fragment implements PlotterListener {
         }
     };
 
+    /**
+     * Initial device.
+     */
     private void initDevice() {
         polarDevice.api().setApiCallback(new PolarBleApiCallback() {
             @Override
@@ -234,6 +253,9 @@ public class HomeFragment extends Fragment implements PlotterListener {
         });
     }
 
+    /**
+     * Initial UI.
+     */
     private void initUI() {
         monitor.getViewSetter().setSwitchView(startCaptureDataSwitch, monitor.getMonitorState().isStartCaptureDataEnabled());
 
@@ -257,16 +279,25 @@ public class HomeFragment extends Fragment implements PlotterListener {
                 monitor.getMonitorState().isScaleDeviceConnected() || monitor.getMonitorState().isSimulationEnabled());
     }
 
+    /**
+     * Start plotting.
+     */
     private void startPlot() {
         plotHR.addSeries(plotterHR.getHrSeries(), plotterHR.getHrFormatter());
         plotECG.addSeries(plotterECG.getSeries(), plotterECG.getFormatter());
     }
 
+    /**
+     * Stop plotting.
+     */
     private void stopPlot() {
         plotHR.removeSeries(plotterHR.getHrSeries());
         plotECG.removeSeries(plotterECG.getSeries());
     }
 
+    /**
+     * Update UI.
+     */
     @Override
     public void update() {
         mainActivity.runOnUiThread(() -> {

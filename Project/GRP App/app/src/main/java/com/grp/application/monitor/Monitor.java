@@ -17,7 +17,13 @@ import io.reactivex.rxjava3.functions.Function;
 import polar.com.sdk.api.model.PolarEcgData;
 import polar.com.sdk.api.model.PolarSensorSetting;
 
-
+/**
+ * Class {@code Monitor} is the class collect monitor data,
+ * maintain monitor state, and set UI elements based on monitor state.
+ *
+ * @author UNNC GRP G19
+ * @version 1.0
+ */
 public class Monitor {
 
     private MonitorState monitorState;
@@ -34,7 +40,10 @@ public class Monitor {
     private float weight;
     private Disposable ecgDisposable = null;
 
-
+    /**
+     * Private constructor.
+     * @param context context of the application
+     */
     private Monitor(Context context) {
         this.context = context;
         monitorState = MonitorState.getInstance();
@@ -45,6 +54,10 @@ public class Monitor {
         plotterECG = new Plotter("ECG");
     }
 
+    /**
+     * Initial Monitor instance.
+     * @param context context of the application
+     */
     public static void createInstance(Context context) {
         if (instance != null) {
             return;
@@ -53,6 +66,10 @@ public class Monitor {
         instance = new Monitor(context);
     }
 
+    /**
+     * Get the unique instance of Monitor.
+     * @return instance of Monitor
+     */
     public static Monitor getInstance() {
         if (instance == null) {
             throw new RuntimeException("No Monitor instance created");
@@ -61,6 +78,9 @@ public class Monitor {
         return instance;
     }
 
+    /**
+     * Collect ECG data from Polar device.
+     */
     public void streamECG() {
         if (ecgDisposable == null) {
             ecgDisposable =
@@ -86,18 +106,34 @@ public class Monitor {
         }
     }
 
+    /**
+     * Get {@code context}.
+     * @return context
+     */
     public Context getContext() {
         return context;
     }
 
+    /**
+     * Get {@code monitorState}.
+     * @return monitorState
+     */
     public MonitorState getMonitorState() {
         return  monitorState;
     }
 
+    /**
+     * Get {@code viewSetter}.
+     * @return viewSetter
+     */
     public ViewSetter getViewSetter() {
         return viewSetter;
     }
 
+    /**
+     * Show toast in current interface.
+     * @param text text to display
+     */
     public void showToast(String text){
         if (toast != null) {
             toast.cancel();
@@ -106,18 +142,34 @@ public class Monitor {
         toast.show();
     }
 
+    /**
+     * Get {@code plotterHR}.
+     * @return plotterHR
+     */
     public TimePlotter getPlotterHR() {
         return plotterHR;
     }
 
+    /**
+     * Get {@code plotterECG}.
+     * @return plotterECG
+     */
     public Plotter getPlotterECG() {
         return plotterECG;
     }
 
+    /**
+     * Get {@code weight}.
+     * @return weight
+     */
     public double getWeight() {
         return weight;
     }
 
+    /**
+     * Get {@code weight}.
+     * @param weight measured weight
+     */
     public void setWeight(float weight) {
         this.weight = weight;
     }

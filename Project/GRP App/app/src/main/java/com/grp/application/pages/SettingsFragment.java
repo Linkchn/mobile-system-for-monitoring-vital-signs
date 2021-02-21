@@ -25,6 +25,12 @@ import polar.com.sdk.api.errors.PolarInvalidArgument;
 import polar.com.sdk.api.model.PolarDeviceInfo;
 import polar.com.sdk.api.model.PolarHrData;
 
+/**
+ * {@code SettingsFragment} is class to maintain UI elements and functions of settings page.
+ *
+ * @author UNNC GRP G19
+ * @version 1.0
+ */
 public class SettingsFragment extends Fragment {
 
     private Monitor monitor;
@@ -58,10 +64,14 @@ public class SettingsFragment extends Fragment {
 
         resetUI();
         initDevice();
+
+        // Set action for connect button of heart rate device
         hrConnectButton.setOnClickListener(this::showPolarDeviceDialog);
 
+        // Set action for connect button of scale device
         scaleConnectButton.setOnClickListener(this::showScaleDialog);
 
+        // Set action for "simulation" switch
         simulationSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 monitor.showToast("Start Simulation");
@@ -73,6 +83,7 @@ public class SettingsFragment extends Fragment {
             resetUI();
         });
 
+        // Set action for "receive message when not wear device" switch
         msgOnNotWearDeviceSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 monitor.showToast("Start Message");
@@ -82,6 +93,8 @@ public class SettingsFragment extends Fragment {
                 monitor.getMonitorState().disableMsgOnNotWearDevice();
             }
         });
+
+        // Set action for "receive warning when not capture data" switch
         msgOnNotCaptureDataSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 monitor.showToast("Start Warning");
@@ -91,6 +104,8 @@ public class SettingsFragment extends Fragment {
                 monitor.getMonitorState().disableMsgOnNotCaptureData();
             }
         });
+
+        // Set action for "receive alert when report generated" switch
         msgOnReportGenerated.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
                 monitor.showToast("Start Alert");
@@ -104,6 +119,9 @@ public class SettingsFragment extends Fragment {
         return root;
     }
 
+    /**
+     * Initial device.
+     */
     private void initDevice() {
         polarDevice.api().setApiCallback(new PolarBleApiCallback() {
             @Override
@@ -125,6 +143,9 @@ public class SettingsFragment extends Fragment {
         });
     }
 
+    /**
+     * Reset UI.
+     */
     private void resetUI() {
         monitor.getViewSetter().setDeviceView(symbolHrDevice, hrConnectButton,
                 monitor.getMonitorState().isHRDeviceConnected() || monitor.getMonitorState().isSimulationEnabled());
@@ -136,6 +157,10 @@ public class SettingsFragment extends Fragment {
         monitor.getViewSetter().setSwitchView(msgOnReportGenerated, monitor.getMonitorState().isMsgOnReportGeneratedEnabled());
     }
 
+    /**
+     * Show heart rate device connection dialog.
+     * @param view view
+     */
     private void showPolarDeviceDialog(View view) {
         AlertDialog.Builder dialog = new AlertDialog.Builder(this.getContext(), R.style.PolarTheme);
         dialog.setTitle("Enter your Polar device's ID");
@@ -161,6 +186,10 @@ public class SettingsFragment extends Fragment {
         dialog.show();
     }
 
+    /**
+     * Show scale device connection dialog.
+     * @param view view
+     */
     private void showScaleDialog(View view) {
         AlertDialog.Builder dialog = new AlertDialog.Builder(this.getContext(), R.style.PolarTheme);
         dialog.setTitle("Enter your Scale MAC address");

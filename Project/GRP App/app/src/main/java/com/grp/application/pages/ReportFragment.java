@@ -13,6 +13,12 @@ import com.example.application.R;
 import com.google.android.material.tabs.TabLayout;
 import com.grp.application.monitor.Monitor;
 
+/**
+ * {@code ReportFragment} is class to maintain UI elements and functions of report page.
+ *
+ * @author UNNC GRP G19
+ * @version 1.0
+ */
 public class ReportFragment extends Fragment {
     private Monitor monitor;
     private MainActivity mainActivity;

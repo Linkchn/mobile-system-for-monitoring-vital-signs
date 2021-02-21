@@ -14,7 +14,10 @@ import java.util.List;
 import polar.com.sdk.api.model.PolarHrData;
 
 /**
- * Implements two series for HR using time for the x values.
+ * Class {@code TimePlotter} is the class to plot HR data.
+ *
+ * @author UNNC GRP G19
+ * @version 1.0
  */
 public class TimePlotter {
     private static final String TAG = "TimePlotter";

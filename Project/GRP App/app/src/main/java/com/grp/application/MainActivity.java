@@ -3,10 +3,14 @@ package com.grp.application;
 import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 
 import com.example.application.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.grp.application.database.Dao;
+import com.grp.application.database.DatabaseHelper;
+import com.grp.application.database.DatabaseSimulator;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
@@ -36,6 +40,18 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         //NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(navView, navController);
+
+        // Create database
+        DatabaseHelper helper = new DatabaseHelper(this);
+        helper.getWritableDatabase();
+
+        // Database simulator
+        DatabaseSimulator databaseSimulator = new DatabaseSimulator(getApplicationContext());
+        databaseSimulator.insertTestData();
+        databaseSimulator.computeInsertTodayData();
+        databaseSimulator.clearTodayData();
+
+
     }
 
     /**

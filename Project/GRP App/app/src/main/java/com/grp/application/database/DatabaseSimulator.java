@@ -50,8 +50,8 @@ public class DatabaseSimulator {
 
     public void computeInsertTodayData() {
         SQLiteDatabase db = dao.getDatabase();
-        long startTime = getDailyStartTime(new Date().getTime());
-        long endTime = getDailyEndTime(new Date().getTime());
+        long startTime = timeHelper.getDailyStartTime(new Date().getTime());
+        long endTime = timeHelper.getDailyEndTime(new Date().getTime());
         String sql = "SELECT timestamp,hr FROM "+Constants.HR_TABLE_NAME_DAY+" WHERE timestamp>"+startTime+" AND timestamp<"+endTime;
         Cursor cursor = db.rawQuery(sql, null);
         long totalHR = 0;
@@ -74,35 +74,12 @@ public class DatabaseSimulator {
 
     public void clearTodayData() {
         SQLiteDatabase db = dao.getDatabase();
-        long startTime = getDailyStartTime(new Date().getTime());
-        long endTime = getDailyEndTime(new Date().getTime());
+        long startTime = timeHelper.getDailyStartTime(new Date().getTime());
+        long endTime = timeHelper.getDailyEndTime(new Date().getTime());
         dao.delete(startTime,endTime,Constants.HR_TABLE_NAME_DAY);
         Log.d(TAG,"Clear data of today");
     }
 
-    public static Long getDailyStartTime(Long timeStamp) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(timeStamp);
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
-        calendar.set(Calendar.SECOND, 0);
-        calendar.set(Calendar.MINUTE, 0);
-        calendar.set(Calendar.MILLISECOND, 0);
-        return calendar.getTimeInMillis();
-    }
 
-    /**
-     *
-     * @param timeStamp
-     * @return
-     */
-    public static Long getDailyEndTime(Long timeStamp) {
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(timeStamp);
-        calendar.set(Calendar.HOUR_OF_DAY, 23);
-        calendar.set(Calendar.MINUTE, 59);
-        calendar.set(Calendar.SECOND, 59);
-        calendar.set(Calendar.MILLISECOND, 999);
-        return calendar.getTimeInMillis();
-    }
 
 }

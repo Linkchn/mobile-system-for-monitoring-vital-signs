@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
         DatabaseSimulator databaseSimulator = new DatabaseSimulator(getApplicationContext());
         databaseSimulator.insertTestData();
         databaseSimulator.computeInsertTodayData();
-        databaseSimulator.clearTodayData();
+//        databaseSimulator.clearTodayData();
 
 
     }

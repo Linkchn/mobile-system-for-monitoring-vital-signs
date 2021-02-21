@@ -38,20 +38,13 @@ public class MainActivity extends AppCompatActivity {
 
         // Create database
         DatabaseHelper helper = new DatabaseHelper(this);
-        SQLiteDatabase db = helper.getWritableDatabase();
+        helper.getWritableDatabase();
 
-//        Dao dao = new Dao(getApplicationContext());
         DatabaseSimulator databaseSimulator = new DatabaseSimulator(getApplicationContext());
         databaseSimulator.insertTestData();
         databaseSimulator.computeInsertTodayData();
-//        dao.insertIntoWeekTable(123,123);
-        //
-//        try {
-//            helper.readInHrData(db);
-//            helper.generateWeekData(db);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+        databaseSimulator.clearTodayData();
+
 
     }
 

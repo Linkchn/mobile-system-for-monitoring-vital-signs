@@ -29,7 +29,7 @@ public class Dao {
 
     public void delete(long startTime, long endTime, String tableName) {
         SQLiteDatabase db = mHelper.getWritableDatabase();
-        db.delete(tableName, "timestamp>? AND timesatmp<?", new String[]{String.valueOf(startTime), String.valueOf(endTime)});
+        db.delete(tableName, "timestamp>? AND timestamp<?", new String[]{String.valueOf(startTime), String.valueOf(endTime)});
         db.close();
     }
 

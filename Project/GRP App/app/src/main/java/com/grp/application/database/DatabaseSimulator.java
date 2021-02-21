@@ -62,17 +62,22 @@ public class DatabaseSimulator {
                 totalCount++;
             }while (cursor.moveToNext());
         }
-        Log.d(TAG,"totalCount"+totalCount+"endTime"+endTime);
-        int todayHR = (int) totalHR/totalCount;
-        long timestamp = Calendar.getInstance().getTimeInMillis();;
-        dao.insert(timestamp,todayHR,Constants.HR_TABLE_NAME_WEEK);
-        dao.insert(timestamp,todayHR,Constants.HR_TABLE_NAME_MONTH);
+
+        if(totalCount>0){
+            int todayHR = (int) totalHR/totalCount;
+            long timestamp = Calendar.getInstance().getTimeInMillis();
+            dao.insert(timestamp,todayHR,Constants.HR_TABLE_NAME_WEEK);
+            dao.insert(timestamp,todayHR,Constants.HR_TABLE_NAME_MONTH);
+            Log.d(TAG,"totalCount"+totalCount+",endTime"+endTime);
+        }
     }
 
     public void clearTodayData() {
         SQLiteDatabase db = dao.getDatabase();
         long startTime = getDailyStartTime(new Date().getTime());
         long endTime = getDailyEndTime(new Date().getTime());
+        dao.delete(startTime,endTime,Constants.HR_TABLE_NAME_DAY);
+        Log.d(TAG,"Clear data of today");
     }
 
     public static Long getDailyStartTime(Long timeStamp) {
@@ -86,9 +91,8 @@ public class DatabaseSimulator {
     }
 
     /**
-     * 获取指定某一天的结束时间戳
      *
-     * @param timeStamp 毫秒级时间戳
+     * @param timeStamp
      * @return
      */
     public static Long getDailyEndTime(Long timeStamp) {

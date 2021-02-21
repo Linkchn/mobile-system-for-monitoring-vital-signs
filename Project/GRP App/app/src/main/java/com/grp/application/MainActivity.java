@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
         DatabaseHelper helper = new DatabaseHelper(this);
         helper.getWritableDatabase();
 
+        // Database simulator
         DatabaseSimulator databaseSimulator = new DatabaseSimulator(getApplicationContext());
         databaseSimulator.insertTestData();
         databaseSimulator.computeInsertTodayData();

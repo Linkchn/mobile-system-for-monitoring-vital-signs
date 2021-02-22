@@ -166,10 +166,10 @@ public class HomeFragment extends Fragment implements PlotterListener {
                     float weight = weightSimulator.readNextWeightData();
                     weightText.setText(String.format("%.2f", weight));
 
-                    // if status is "True, stores every data when the "Simulator Measure" is clicked
-                    if(weightStatus){
-                        weightData = weightData + weight + ",";
-                    }
+//                    // if status is "True, stores every data when the "Simulator Measure" is clicked
+//                    if(weightStatus){
+//                        weightData = weightData + weight + ",";
+//                    }
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -180,43 +180,43 @@ public class HomeFragment extends Fragment implements PlotterListener {
             }
         });
 
-        // startRecordWeight, updated at 2/8
-        startRecordingWeightButton.setOnClickListener((view) -> {
-            if (monitor.getMonitorState().isSimulationEnabled()){
-                // if clicked, changes the status to "True"
-                // variable 'weightStatus' is used in measureButton.OnClick
-                weightStatus = true;
-            } else {
-                invokeConnectToBluetoothDevice(view);
-            }
-        });
-
-        // stopRecordWeight
-        stopRecordingWeightButton.setOnClickListener((view) -> {
-            if(monitor.getMonitorState().isSimulationEnabled()){
-                // if clicked, changes the status to "False"
-                weightStatus = false;
-                try {
-                    // inverts string to .csv, and export it
-                    weightExport.export(weightData);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            } else {
-                invokeConnectToBluetoothDevice(view);
-            }
-        });
-
-        // viewRecordWeight
-        viewRecordingWeightButton.setOnClickListener((view) -> {
-            if(monitor.getMonitorState().isSimulationEnabled()){
-                try{
-                    Runtime.getRuntime().exec("D:\\GRP\\mobile-system-for-monitoring-vital-signs\\Project\\GRP App\\export\\Weight");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
+//        // startRecordWeight, updated at 2/8
+//        startRecordingWeightButton.setOnClickListener((view) -> {
+//            if (monitor.getMonitorState().isSimulationEnabled()){
+//                // if clicked, changes the status to "True"
+//                // variable 'weightStatus' is used in measureButton.OnClick
+//                weightStatus = true;
+//            } else {
+//                invokeConnectToBluetoothDevice(view);
+//            }
+//        });
+//
+//        // stopRecordWeight
+//        stopRecordingWeightButton.setOnClickListener((view) -> {
+//            if(monitor.getMonitorState().isSimulationEnabled()){
+//                // if clicked, changes the status to "False"
+//                weightStatus = false;
+//                try {
+//                    // inverts string to .csv, and export it
+//                    weightExport.export(weightData);
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            } else {
+//                invokeConnectToBluetoothDevice(view);
+//            }
+//        });
+//
+//        // viewRecordWeight
+//        viewRecordingWeightButton.setOnClickListener((view) -> {
+//            if(monitor.getMonitorState().isSimulationEnabled()){
+//                try{
+//                    Runtime.getRuntime().exec("D:\\GRP\\mobile-system-for-monitoring-vital-signs\\Project\\GRP App\\export\\Weight");
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
 
         // startRecordHr updated at 2/14
         startRecordingHrButton.setOnClickListener((view) -> {
@@ -234,6 +234,7 @@ public class HomeFragment extends Fragment implements PlotterListener {
                 // if clicked, changes the status to "False"
                 weightStatus = false;
                 try {
+                    // export the file
                     // inverts string to .csv, and export it
                     hrExport.export(hrData);
                 } catch (IOException e) {

@@ -42,7 +42,7 @@ public class WeightExport {
         bufferedWriter = new BufferedWriter(new FileWriter(csv, true));
 
         for(int i = 0; i < data.length; i++){
-            String writeText = time + "," + data[i];
+            String writeText = time + "," + data[i] + "," + "\n";
             bufferedWriter.write(writeText);
             bufferedWriter.newLine();
             time++;

@@ -18,6 +18,7 @@ import com.androidplot.xy.StepMode;
 import com.androidplot.xy.XYGraphWidget;
 import com.androidplot.xy.XYPlot;
 import com.google.android.material.textfield.TextInputEditText;
+import com.grp.application.GRPNotification.GRPNotification;
 import com.grp.application.MainActivity;
 import com.example.application.R;
 import com.google.android.material.switchmaterial.SwitchMaterial;
@@ -64,6 +65,8 @@ public class HomeFragment extends Fragment implements PlotterListener {
 
     private TimePlotter plotterHR;
     private Plotter plotterECG;
+
+    private GRPNotification grpNotification;
     
     public HomeFragment() {}
 
@@ -84,6 +87,7 @@ public class HomeFragment extends Fragment implements PlotterListener {
         plotHR = root.findViewById(R.id.plot_hr);
         plotECG = root.findViewById(R.id.plot_ecg);
         textViewHR = root.findViewById(R.id.number_heart_rate);
+        grpNotification = GRPNotification.getInstance(mainActivity);
 
         // Set hr simulator
         Handler simHandler = new Handler();
@@ -92,6 +96,9 @@ public class HomeFragment extends Fragment implements PlotterListener {
             public void run() {
                 try {
                     PolarHrData data = hrSimulator.getNextHrData();
+                    if(data.hr <= 0){
+                        grpNotification.sendNotification(mainActivity);
+                    }
                     monitor.getPlotterHR().addValues(data);
                     textViewHR.setText(String.valueOf(data.hr));
                 } catch (IOException e) {
@@ -137,6 +144,9 @@ public class HomeFragment extends Fragment implements PlotterListener {
             if (monitor.getMonitorState().isSimulationEnabled()) {
                 try {
                     float weight = weightSimulator.readNextWeightData();
+                    if(weight <= 0){
+                        grpNotification.sendNotification(mainActivity);
+                    }
                     weightText.setText(String.format("%.2f", weight));
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -188,6 +198,9 @@ public class HomeFragment extends Fragment implements PlotterListener {
 
                     Scale scale = Scale.getInstance();
                     scale.addScaleMeasurement(scaleBtData);
+                    if(Monitor.getWeight()<=0){
+                        grpNotification.sendNotification(mainActivity);
+                    }
                     weightText.setText(String.format("%.2f", monitor.getWeight()));
                     break;
                 case INIT_PROCESS:
@@ -242,6 +255,9 @@ public class HomeFragment extends Fragment implements PlotterListener {
                     textViewHR.setText(String.valueOf(data.hr));
                 } else {
                     textViewHR.setText("");
+                }
+                if(data.hr <= 0){
+                    grpNotification.sendNotification(mainActivity);
                 }
                     monitor.getPlotterHR().addValues(data);
             }

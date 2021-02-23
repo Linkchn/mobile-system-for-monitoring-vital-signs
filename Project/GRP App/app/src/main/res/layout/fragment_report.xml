@@ -53,38 +53,23 @@
             android:layout_marginTop="20dp"
             android:layout_marginBottom="40dp" />
 
-        <ImageView
-            android:id="@+id/imageView1"
-            android:scaleType="fitXY"
-            android:layout_width="220dp"
-            android:layout_height="0dp"
-            android:layout_weight="0.3"
-            android:src="@drawable/test_01"
-            android:layout_gravity="center"
-            android:contentDescription="TODO"
-            android:layout_marginBottom="40dp"/>
+        <com.jjoe64.graphview.GraphView
+            android:id="@+id/dailyGraphView"
+            android:layout_width="match_parent"
+            android:layout_height="150dp" />
 
-        <ImageView
-            android:id="@+id/imageView2"
-            android:scaleType="fitXY"
-            android:layout_width="220dp"
-            android:layout_height="0dp"
-            android:layout_weight="0.3"
-            android:src="@drawable/test_01"
-            android:layout_gravity="center"
-            android:contentDescription="TODO"
-            android:layout_marginBottom="40dp"/>
+        <com.jjoe64.graphview.GraphView
+            android:id="@+id/weeklyGraphView"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            />
 
-        <ImageView
-            android:id="@+id/imageView3"
-            android:scaleType="fitXY"
-            android:layout_width="220dp"
-            android:layout_height="0dp"
-            android:layout_weight="0.3"
-            android:src="@drawable/test_01"
-            android:layout_gravity="center"
-            android:contentDescription="TODO"
-            android:layout_marginBottom="40dp"/>
+
+        <com.jjoe64.graphview.GraphView
+            android:id="@+id/monthlyGraphView"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            />
 
     </LinearLayout>
 
@@ -92,18 +77,18 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:paddingStart="40dp"
+        android:paddingStart="60dp"
         android:paddingEnd="40dp">
 
 
         <Button
             android:id="@+id/button_save"
+            style="?attr/materialButtonOutlinedStyle"
             android:layout_width="140dp"
             android:layout_height="wrap_content"
-            android:text="@string/save"
             android:layout_gravity="start"
-            style="?attr/materialButtonOutlinedStyle"
-            app:strokeColor="@color/main_color"/>
+            android:text="@string/save"
+            app:strokeColor="@color/main_color" />
 
         <Button
             android:id="@+id/button_export"

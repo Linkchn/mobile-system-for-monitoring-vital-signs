@@ -32,8 +32,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // call back when create, only for first time
         Log.d(TAG,"Create database");
         String sql1 = "create table "+Constants.HR_TABLE_NAME_DAY+"(timestamp long, hr integer)";
-        String sql2 = "create table "+Constants.HR_TABLE_NAME_WEEK+"(timestamp long, hr integer)";
-        String sql3 = "create table "+Constants.HR_TABLE_NAME_MONTH+"(timestamp long, hr integer)";
+        String sql2 = "create table "+Constants.HR_TABLE_NAME_WEEK+"(timestamp long, hr long)";
+        String sql3 = "create table "+Constants.HR_TABLE_NAME_MONTH+"(timestamp long, hr long)";
 
         String sql4 = "create table "+Constants.WEIGHT_TABLE_NAME+"(timestamp long, weight long)";
         db.execSQL(sql1);

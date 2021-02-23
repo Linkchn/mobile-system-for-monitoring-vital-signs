@@ -11,6 +11,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.grp.application.database.Dao;
 import com.grp.application.database.DatabaseHelper;
 import com.grp.application.database.DatabaseSimulator;
+import com.jjoe64.graphview.GraphView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
@@ -28,6 +29,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         checkBT();
@@ -46,10 +48,10 @@ public class MainActivity extends AppCompatActivity {
         helper.getWritableDatabase();
 
         // Database simulator
-        DatabaseSimulator databaseSimulator = new DatabaseSimulator(getApplicationContext());
-        databaseSimulator.insertTestData();
-        databaseSimulator.computeInsertTodayData();
-        databaseSimulator.clearTodayData();
+//        DatabaseSimulator databaseSimulator = new DatabaseSimulator(getApplicationContext());
+//        databaseSimulator.insertTestData();
+//        databaseSimulator.computeInsertTodayData();
+//        databaseSimulator.clearTodayData();
 
 
     }

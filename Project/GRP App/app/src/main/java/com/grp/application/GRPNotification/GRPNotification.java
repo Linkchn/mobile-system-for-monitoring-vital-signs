@@ -13,14 +13,13 @@ import androidx.core.app.NotificationManagerCompat;
 public class GRPNotification {
 
     private static GRPNotification grpNotification;
-    private static NotificationManager notificationManager;
     private String CHANNEL_ID = "CHANNEL_ID";
     private int notificationId = 1;
 
     public static GRPNotification getInstance(Context context){
         if(grpNotification == null) {
             grpNotification = new GRPNotification();
-            notificationManager = (NotificationManager) context.getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
+            NotificationManager notificationManager = (NotificationManager) context.getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
         }
         return grpNotification;
     }

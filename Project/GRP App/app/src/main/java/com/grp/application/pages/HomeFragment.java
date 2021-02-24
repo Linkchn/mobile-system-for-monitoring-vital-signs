@@ -38,6 +38,7 @@ import java.text.DecimalFormat;
 
 import polar.com.sdk.api.PolarBleApiCallback;
 import polar.com.sdk.api.model.PolarHrData;
+import polar.com.sdk.api.PolarBleApi;
 import timber.log.Timber;
 
 import com.grp.application.export.WeightExport;
@@ -223,6 +224,7 @@ public class HomeFragment extends Fragment implements PlotterListener {
             if (monitor.getMonitorState().isSimulationEnabled()){
                 // if clicked, changes the status to "True"
                 hrStatus = true;
+                PolarDevice.getInstance().api().startRecording(polarDevice.getDeviceId(),1,1, PolarBleApi.SampleType.HR);
             } else {
                 invokeConnectToBluetoothDevice(view);
             }

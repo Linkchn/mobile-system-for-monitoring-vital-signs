@@ -31,8 +31,6 @@ public class ReportFragment extends Fragment {
     private final int weekDays = 7;
     private final int monthDays = 31;
     private GraphView graphView;
-    private GraphView graphView2;
-    private GraphView graphView3;
     private Dao dao;
 
     private TabLayout durationTab;
@@ -77,9 +75,9 @@ public class ReportFragment extends Fragment {
         mainActivity = (MainActivity) getActivity();
         durationTab = root.findViewById(R.id.tab_duration);
         graphView = (GraphView)root.findViewById(R.id.dailyGraphView);
-        graphView2 = (GraphView)root.findViewById(R.id.weeklyGraphView);
-        graphView3 = (GraphView)root.findViewById(R.id.monthlyGraphView);
         dao = new Dao(mainActivity.getApplicationContext());
+
+        startPlot1();
 
         durationTab.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
 
@@ -87,10 +85,14 @@ public class ReportFragment extends Fragment {
             public void onTabSelected(TabLayout.Tab tab) {
                 if (durationTab.getTabAt(0).isSelected()) {
                     monitor.showToast("Daily Tab");
+                    startPlot1();
                 } else if (durationTab.getTabAt(1).isSelected()) {
                     monitor.showToast("Weekly Tab");
+                    startPlot2();
+
                 } else if (durationTab.getTabAt(2).isSelected()) {
                     monitor.showToast("Monthly Tab");
+                    startPlot3();
                 }
             }
             @Override
@@ -99,13 +101,11 @@ public class ReportFragment extends Fragment {
             public void onTabReselected(TabLayout.Tab tab) {}
         });
 
-        startPlot1();
-        startPlot2();
-        startPlot3();
         return root;
     }
 
     private void startPlot1(){
+        graphView.removeAllSeries();
         LineGraphSeries<DataPoint> series= new LineGraphSeries<>(dailyData());
         series.setDrawDataPoints(true);
         graphView.addSeries(series);
@@ -115,21 +115,23 @@ public class ReportFragment extends Fragment {
     }
 
     private void startPlot2(){
+        graphView.removeAllSeries();
         LineGraphSeries<DataPoint> series= new LineGraphSeries<>(weeklyData());
         series.setDrawDataPoints(true);
-        graphView2.addSeries(series);
+        graphView.addSeries(series);
         double max_x = 7.0;
-        graphView2.getViewport().setXAxisBoundsManual(true);
-        graphView2.getViewport().setMaxX(max_x);
+        graphView.getViewport().setXAxisBoundsManual(true);
+        graphView.getViewport().setMaxX(max_x);
     }
 
     private void startPlot3(){
+        graphView.removeAllSeries();
         LineGraphSeries<DataPoint> series= new LineGraphSeries<>(monthlyData());
         series.setDrawDataPoints(true);
-        graphView3.addSeries(series);
+        graphView.addSeries(series);
         double max_x = 31.0;
-        graphView3.getViewport().setXAxisBoundsManual(true);
-        graphView3.getViewport().setMaxX(max_x);
+        graphView.getViewport().setXAxisBoundsManual(true);
+        graphView.getViewport().setMaxX(max_x);
     }
 
 }

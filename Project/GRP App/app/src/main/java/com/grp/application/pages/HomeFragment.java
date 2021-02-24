@@ -198,7 +198,7 @@ public class HomeFragment extends Fragment implements PlotterListener {
 
                     Scale scale = Scale.getInstance();
                     scale.addScaleMeasurement(scaleBtData);
-                    if(Monitor.getWeight()<=0){
+                    if(monitor.getWeight()<=0){
                         grpNotification.sendNotification(mainActivity);
                     }
                     weightText.setText(String.format("%.2f", monitor.getWeight()));

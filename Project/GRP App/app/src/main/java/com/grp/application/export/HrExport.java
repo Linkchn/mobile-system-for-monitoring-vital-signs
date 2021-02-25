@@ -23,11 +23,11 @@ public class HrExport {
     }
 
     // convert the String "weightData" to .csv type (split by ",")
-    public String[] invert(String weightData){
+    public String[] invert(String hrData){
         String inverted[] = new String[0];
         String temp[] = new String[0];
-        while(weightData != null){
-            temp = weightData.split(",");
+        while(hrData != null){
+            temp = hrData.split(",");
             inverted = (String[]) concat(inverted, temp);
         }
 

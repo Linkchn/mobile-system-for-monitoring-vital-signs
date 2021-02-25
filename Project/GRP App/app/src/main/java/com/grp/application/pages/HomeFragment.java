@@ -59,7 +59,6 @@ public class HomeFragment extends Fragment implements PlotterListener {
     TextInputEditText weightText;
     Button measureButton;
 
-    private WeightExport weightExport;
     private HrExport hrExport;
 
     Button startRecordingWeightButton;
@@ -93,10 +92,6 @@ public class HomeFragment extends Fragment implements PlotterListener {
         measureButton = root.findViewById(R.id.button_measure_weight);
         hrSimulator = HrSimulator.getInstance();
         weightSimulator = WeightSimulator.getInstance();
-
-        weightExport = WeightExport.getInstance();
-
-        // 2/3
 
         startRecordingWeightButton = root.findViewById(R.id.button_start_recording_weight);
         stopRecordingWeightButton = root.findViewById(R.id.button_stop_recording_weight);
@@ -181,50 +176,12 @@ public class HomeFragment extends Fragment implements PlotterListener {
             }
         });
 
-//        // startRecordWeight, updated at 2/8
-//        startRecordingWeightButton.setOnClickListener((view) -> {
-//            if (monitor.getMonitorState().isSimulationEnabled()){
-//                // if clicked, changes the status to "True"
-//                // variable 'weightStatus' is used in measureButton.OnClick
-//                weightStatus = true;
-//            } else {
-//                invokeConnectToBluetoothDevice(view);
-//            }
-//        });
-//
-//        // stopRecordWeight
-//        stopRecordingWeightButton.setOnClickListener((view) -> {
-//            if(monitor.getMonitorState().isSimulationEnabled()){
-//                // if clicked, changes the status to "False"
-//                weightStatus = false;
-//                try {
-//                    // inverts string to .csv, and export it
-//                    weightExport.export(weightData);
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            } else {
-//                invokeConnectToBluetoothDevice(view);
-//            }
-//        });
-//
-//        // viewRecordWeight
-//        viewRecordingWeightButton.setOnClickListener((view) -> {
-//            if(monitor.getMonitorState().isSimulationEnabled()){
-//                try{
-//                    Runtime.getRuntime().exec("D:\\GRP\\mobile-system-for-monitoring-vital-signs\\Project\\GRP App\\export\\Weight");
-//                } catch (IOException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        });
 
         // startRecordHr updated at 2/14
         startRecordingHrButton.setOnClickListener((view) -> {
             if (monitor.getMonitorState().isSimulationEnabled()){
                 // if clicked, changes the status to "True"
                 hrStatus = true;
-                PolarDevice.getInstance().api().startRecording(polarDevice.getDeviceId(),1,1, PolarBleApi.SampleType.HR);
             } else {
                 invokeConnectToBluetoothDevice(view);
             }
@@ -262,8 +219,8 @@ public class HomeFragment extends Fragment implements PlotterListener {
             }
         });
 
-        // updated at 2/17. Problems occur in android simulator.
 
+        // updated at 2/17. Problems occur in android simulator.
         return root;
     }
 

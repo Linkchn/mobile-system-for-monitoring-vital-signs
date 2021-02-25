@@ -2,6 +2,7 @@ package com.grp.application.pages;
 
 import android.bluetooth.BluetoothAdapter;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.view.LayoutInflater;
@@ -35,6 +36,7 @@ import com.grp.application.simulation.WeightSimulator;
 
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.util.Date;
 
 import polar.com.sdk.api.PolarBleApiCallback;
 import polar.com.sdk.api.model.PolarHrData;
@@ -59,20 +61,13 @@ public class HomeFragment extends Fragment implements PlotterListener {
     TextInputEditText weightText;
     Button measureButton;
 
-    private HrExport hrExport;
-
-    Button startRecordingWeightButton;
-    Button stopRecordingWeightButton;
-    Button viewRecordingWeightButton;
     Button startRecordingHrButton;
     Button stopRecordingHrButton;
     Button viewRecordingHrButton;
 
-    private Boolean weightStatus = false;
     private Boolean hrStatus = false;
-
-    private String weightData;
     private String hrData;
+    private Date recordTime;
     private String Path = System.getProperty("user.dir");
 
     private TimePlotter plotterHR;
@@ -93,9 +88,6 @@ public class HomeFragment extends Fragment implements PlotterListener {
         hrSimulator = HrSimulator.getInstance();
         weightSimulator = WeightSimulator.getInstance();
 
-        startRecordingWeightButton = root.findViewById(R.id.button_start_recording_weight);
-        stopRecordingWeightButton = root.findViewById(R.id.button_stop_recording_weight);
-        viewRecordingWeightButton = root.findViewById(R.id.button_view_recording_weight);
         startRecordingHrButton = root.findViewById(R.id.button_view_recording_hr);
         stopRecordingHrButton = root.findViewById(R.id.button_stop_recording_hr);
         viewRecordingHrButton = root.findViewById(R.id.button_button_start_recording_hr);
@@ -182,6 +174,7 @@ public class HomeFragment extends Fragment implements PlotterListener {
             if (monitor.getMonitorState().isSimulationEnabled()){
                 // if clicked, changes the status to "True"
                 hrStatus = true;
+                recordTime = new Date();
             } else {
                 invokeConnectToBluetoothDevice(view);
             }
@@ -191,11 +184,13 @@ public class HomeFragment extends Fragment implements PlotterListener {
         stopRecordingHrButton.setOnClickListener((view) -> {
             if(monitor.getMonitorState().isSimulationEnabled()){
                 // if clicked, changes the status to "False"
-                weightStatus = false;
+                hrStatus = false;
                 try {
                     // export the file
                     // inverts string to .csv, and export it
-                    hrExport.export(hrData);
+
+                    HrExport.getInstance().export(hrData, recordTime);******************************************************************
+                    hrData = null;
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -307,6 +302,12 @@ public class HomeFragment extends Fragment implements PlotterListener {
                 } else {
                     textViewHR.setText("");
                 }
+
+                //record data
+                if(hrStatus){
+                    hrData = hrData + data + ",";
+                }
+
                 monitor.getPlotterHR().addValues(data);
             }
 

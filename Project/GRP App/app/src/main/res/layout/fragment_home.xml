@@ -162,38 +162,6 @@
             android:text="Measure"
             app:strokeColor="@color/main_color" />
 
-        <Button
-            android:id="@+id/button_start_recording_weight"
-            style="?attr/materialButtonOutlinedStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="30dp"
-            android:text="Start Recording Weight"
-            app:strokeColor="@color/main_color" />
-
-        <Button
-            android:id="@+id/button_stop_recording_weight"
-            style="?attr/materialButtonOutlinedStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="30dp"
-            android:text="Stop Recording Weight"
-            app:strokeColor="@color/main_color" />
-
-        <Button
-            android:id="@+id/button_view_recording_weight"
-            style="?attr/materialButtonOutlinedStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="30dp"
-            android:text="View Recording Weight"
-            app:strokeColor="@color/main_color" />
 
         <View
             android:layout_width="match_parent"

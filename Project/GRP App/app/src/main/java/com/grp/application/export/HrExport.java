@@ -1,11 +1,13 @@
 package com.grp.application.export;
 
 import android.app.backup.FileBackupHelper;
+import android.os.Environment;
 
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Date;
 
 public class HrExport {
 
@@ -34,11 +36,13 @@ public class HrExport {
         return inverted;
     }
 
-    public void export(String weightData) throws IOException {
+    public void export(String weightData, Date recordTime) throws IOException {
         int time = 0;
         String[] data = invert(weightData);
 
-        File csv = new File(Path + "\\export\\WeightSimulation.csv");
+        String filePath = Environment.getExternalStorageDirectory().getPath();
+        String file = filePath + "/" + recordTime.toString() + ".csv";
+        File csv = new File(file);
         bufferedWriter = new BufferedWriter(new FileWriter(csv, true));
 
         for(int i = 0; i < data.length; i++){
@@ -47,6 +51,7 @@ public class HrExport {
             bufferedWriter.newLine();
             time++;
         }
+        bufferedWriter.close();
     }
 
     // combine 2 string[] together

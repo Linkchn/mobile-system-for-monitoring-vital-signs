@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -16,7 +17,10 @@ import com.grp.application.database.Dao;
 import com.grp.application.monitor.Monitor;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
+import com.jjoe64.graphview.series.DataPointInterface;
 import com.jjoe64.graphview.series.LineGraphSeries;
+import com.jjoe64.graphview.series.OnDataPointTapListener;
+import com.jjoe64.graphview.series.Series;
 
 /**
  * {@code ReportFragment} is class to maintain UI elements and functions of report page.
@@ -112,6 +116,12 @@ public class ReportFragment extends Fragment {
         double max_x = 24.0;
         graphView.getViewport().setXAxisBoundsManual(true);
         graphView.getViewport().setMaxX(max_x);
+        series.setOnDataPointTapListener(new OnDataPointTapListener() {
+            @Override
+            public void onTap(Series series, DataPointInterface dataPoint) {
+                Toast.makeText(graphView.getContext(), "Your heart rate is: "+dataPoint.getY(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void startPlot2(){
@@ -122,6 +132,12 @@ public class ReportFragment extends Fragment {
         double max_x = 7.0;
         graphView.getViewport().setXAxisBoundsManual(true);
         graphView.getViewport().setMaxX(max_x);
+        series.setOnDataPointTapListener(new OnDataPointTapListener() {
+            @Override
+            public void onTap(Series series, DataPointInterface dataPoint) {
+                Toast.makeText(graphView.getContext(), "Your heart rate is: "+dataPoint.getY(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void startPlot3(){
@@ -132,6 +148,12 @@ public class ReportFragment extends Fragment {
         double max_x = 31.0;
         graphView.getViewport().setXAxisBoundsManual(true);
         graphView.getViewport().setMaxX(max_x);
+        series.setOnDataPointTapListener(new OnDataPointTapListener() {
+            @Override
+            public void onTap(Series series, DataPointInterface dataPoint) {
+                Toast.makeText(graphView.getContext(), "Your heart rate is: "+dataPoint.getY(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 }

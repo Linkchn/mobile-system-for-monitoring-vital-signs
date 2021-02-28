@@ -151,7 +151,8 @@ public class SettingsFragment extends Fragment {
                 monitor.getMonitorState().isHRDeviceConnected() || monitor.getMonitorState().isSimulationEnabled());
         monitor.getViewSetter().setDeviceView(symbolBrainWaveDevice, scaleConnectButton,
                 monitor.getMonitorState().isScaleDeviceConnected() || monitor.getMonitorState().isSimulationEnabled());
-        monitor.getViewSetter().setSwitchView(simulationSwitch, monitor.getMonitorState().isSimulationEnabled());
+        monitor.getViewSetter().setSwitchView(simulationSwitch, monitor.getMonitorState().isSimulationEnabled(), !monitor.getMonitorState().isHRDeviceConnected()
+        && !monitor.getMonitorState().isScaleDeviceConnected());
         monitor.getViewSetter().setSwitchView(msgOnNotWearDeviceSwitch, monitor.getMonitorState().isMsgOnNotWearDeviceEnabled());
         monitor.getViewSetter().setSwitchView(msgOnNotCaptureDataSwitch, monitor.getMonitorState().isMsgOnNotCaptureDataEnabled());
         monitor.getViewSetter().setSwitchView(msgOnReportGenerated, monitor.getMonitorState().isMsgOnReportGeneratedEnabled());

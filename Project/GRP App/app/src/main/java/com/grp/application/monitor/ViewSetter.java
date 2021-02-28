@@ -41,10 +41,21 @@ public class ViewSetter {
     /**
      * Set switch view to on/off based on relative state of monitor.
      * @param switchButton target switch
-     * @param isEnabled boolean parameter whether the switch is on
+     * @param isChecked boolean parameter whether the switch is on
      */
-    public void setSwitchView(SwitchMaterial switchButton, boolean isEnabled) {
-        switchButton.setChecked(isEnabled);
+    public void setSwitchView(SwitchMaterial switchButton, boolean isChecked) {
+        switchButton.setChecked(isChecked);
+    }
+
+    /**
+     * Set switch view to on/off and enabled/disabled based on relative state of monitor.
+     * @param switchButton target switch
+     * @param isChecked boolean parameter whether the switch is on
+     * @param isEnabled boolean parameter whether the switch is enabled
+     */
+    public void setSwitchView(SwitchMaterial switchButton, boolean isChecked, boolean isEnabled) {
+        switchButton.setEnabled(isEnabled);
+        switchButton.setChecked(isChecked);
     }
 
     /**

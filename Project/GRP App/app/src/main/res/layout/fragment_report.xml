@@ -53,23 +53,37 @@
             android:layout_marginTop="20dp"
             android:layout_marginBottom="40dp" />
 
-        <com.jjoe64.graphview.GraphView
-            android:id="@+id/dailyGraphView"
-            android:layout_width="match_parent"
-            android:layout_height="150dp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Heart Rate"
+            android:textSize="16sp"
+            android:layout_marginBottom="5dp" />
 
         <com.jjoe64.graphview.GraphView
-            android:id="@+id/weeklyGraphView"
-            android:layout_width="match_parent"
-            android:layout_height="150dp"
-            />
-
-
-        <com.jjoe64.graphview.GraphView
-            android:id="@+id/monthlyGraphView"
+            android:id="@+id/graph_view_hr"
             android:layout_width="match_parent"
             android:layout_height="150dp"
-            />
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp"
+            android:layout_marginBottom="30dp"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Weight"
+            android:textSize="16sp"
+            android:layout_marginBottom="5dp" />
+
+        <com.jjoe64.graphview.GraphView
+            android:id="@+id/graph_view_weight"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginEnd="20dp" />
+
 
     </LinearLayout>
 

@@ -162,7 +162,7 @@ public class Monitor {
      * Get {@code weight}.
      * @return weight
      */
-    public static double getWeight() {
+    public double getWeight() {
         return weight;
     }
 

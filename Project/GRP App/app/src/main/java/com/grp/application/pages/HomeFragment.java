@@ -100,7 +100,7 @@ public class HomeFragment extends Fragment implements PlotterListener {
                         grpNotification.sendNotification(mainActivity);
                     }
                     monitor.getPlotterHR().addValues(data);
-                    textViewHR.setText(String.valueOf(data.hr));
+                    textViewHR.setText("Current Heart Rate: " + String.valueOf(data.hr));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -198,7 +198,7 @@ public class HomeFragment extends Fragment implements PlotterListener {
 
                     Scale scale = Scale.getInstance();
                     scale.addScaleMeasurement(scaleBtData);
-                    if(Monitor.getWeight()<=0){
+                    if(monitor.getWeight()<=0){
                         grpNotification.sendNotification(mainActivity);
                     }
                     weightText.setText(String.format("%.2f", monitor.getWeight()));
@@ -252,9 +252,9 @@ public class HomeFragment extends Fragment implements PlotterListener {
             @Override
             public void hrNotificationReceived(@NonNull String identifier, @NonNull PolarHrData data) {
                 if (monitor.getMonitorState().isStartCaptureDataEnabled()) {
-                    textViewHR.setText(String.valueOf(data.hr));
+                    textViewHR.setText("Current Heart Rate: " + String.valueOf(data.hr));
                 } else {
-                    textViewHR.setText("");
+                    textViewHR.setText("No HR Signal");
                 }
                 if(data.hr <= 0){
                     grpNotification.sendNotification(mainActivity);

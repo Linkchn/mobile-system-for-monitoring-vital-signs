@@ -78,7 +78,7 @@ public class ReportFragment extends Fragment {
         monitor = Monitor.getInstance();
         mainActivity = (MainActivity) getActivity();
         durationTab = root.findViewById(R.id.tab_duration);
-        graphView = (GraphView)root.findViewById(R.id.dailyGraphView);
+        graphView = (GraphView)root.findViewById(R.id.graph_view_hr);
         dao = new Dao(mainActivity.getApplicationContext());
 
         startPlot1();

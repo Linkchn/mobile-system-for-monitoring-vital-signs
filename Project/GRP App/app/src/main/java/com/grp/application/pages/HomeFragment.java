@@ -1,6 +1,8 @@
 package com.grp.application.pages;
 
+import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -10,8 +12,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.androidplot.xy.BoundaryMode;
@@ -19,9 +24,11 @@ import com.androidplot.xy.StepMode;
 import com.androidplot.xy.XYGraphWidget;
 import com.androidplot.xy.XYPlot;
 import com.google.android.material.textfield.TextInputEditText;
+import com.grp.application.Application;
 import com.grp.application.MainActivity;
 import com.example.application.R;
 import com.google.android.material.switchmaterial.SwitchMaterial;
+import com.grp.application.export.FileLog;
 import com.grp.application.export.HrExport;
 import com.grp.application.monitor.Monitor;
 import com.grp.application.polar.Plotter;
@@ -34,7 +41,12 @@ import com.grp.application.scale.datatypes.ScaleMeasurement;
 import com.grp.application.simulation.HrSimulator;
 import com.grp.application.simulation.WeightSimulator;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.text.DecimalFormat;
 import java.util.Date;
 
@@ -66,9 +78,7 @@ public class HomeFragment extends Fragment implements PlotterListener {
     Button viewRecordingHrButton;
 
     private Boolean hrStatus = false;
-    private String hrData;
-    private Date recordTime;
-    private String Path = System.getProperty("user.dir");
+    private String hrData = "";
 
     private TimePlotter plotterHR;
     private Plotter plotterECG;
@@ -109,7 +119,8 @@ public class HomeFragment extends Fragment implements PlotterListener {
                     textViewHR.setText(String.valueOf(data.hr));
 
                     if(hrStatus){
-                        hrData = hrData + data + ",";
+                        System.out.println("&&&&&&&&&&&&&&&&&&&&&&");
+                        hrData = hrData + System.currentTimeMillis() + "," + data + ",\n";
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -171,10 +182,12 @@ public class HomeFragment extends Fragment implements PlotterListener {
 
         // startRecordHr updated at 2/14
         startRecordingHrButton.setOnClickListener((view) -> {
+            Toast.makeText(Application.context, "!!!!!!", Toast.LENGTH_LONG).show();
             if (monitor.getMonitorState().isSimulationEnabled()){
                 // if clicked, changes the status to "True"
+
                 hrStatus = true;
-                recordTime = new Date();
+
             } else {
                 invokeConnectToBluetoothDevice(view);
             }
@@ -183,17 +196,30 @@ public class HomeFragment extends Fragment implements PlotterListener {
         // stopRecordHr
         stopRecordingHrButton.setOnClickListener((view) -> {
             if(monitor.getMonitorState().isSimulationEnabled()){
-                // if clicked, changes the status to "False"
-                hrStatus = false;
-                try {
-                    // export the file
-                    // inverts string to .csv, and export it
-
-                    HrExport.getInstance().export(hrData, recordTime);******************************************************************
-                    hrData = null;
-                } catch (IOException e) {
-                    e.printStackTrace();
+                if (hrStatus == true){
+                    final int REQUEST_EXTERNAL_STORAGE = 1;
+                    String[] PERMISSIONS_STORAGE = {
+                            Manifest.permission.READ_EXTERNAL_STORAGE,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                            Manifest.permission.MOUNT_UNMOUNT_FILESYSTEMS};
+                    if (ContextCompat.checkSelfPermission(mainActivity,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(mainActivity, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 101);
+                    } else {
+                        // if clicked, changes the status to "False"
+                        hrStatus = false;
+                        String fileName = "HR_Recording_" + new Date().getTime();
+                        try {
+                            FileLog.saveLog("Heart Beat per Minute",hrData,fileName);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        Toast.makeText(Application.context, "Export successfully!", Toast.LENGTH_LONG).show();
+                        hrData = "";
+                        hrStatus = false;
+                    }
                 }
+
             } else {
                 invokeConnectToBluetoothDevice(view);
             }
@@ -202,15 +228,7 @@ public class HomeFragment extends Fragment implements PlotterListener {
         // viewRecordHr
         viewRecordingHrButton.setOnClickListener((view) -> {
             if(monitor.getMonitorState().isSimulationEnabled()){
-                //if(weightStatus){
-                // warns to stop recording first
-                //}
-                try {
-                    // Open the export document
-                    Runtime.getRuntime().exec("D:\\GRP\\mobile-system-for-monitoring-vital-signs\\Project\\GRP App\\export\\Hr");
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+
             }
         });
 
@@ -305,7 +323,7 @@ public class HomeFragment extends Fragment implements PlotterListener {
 
                 //record data
                 if(hrStatus){
-                    hrData = hrData + data + ",";
+                    hrData = hrData + System.currentTimeMillis() + "," + data + ",\n";
                 }
 
                 monitor.getPlotterHR().addValues(data);
@@ -358,4 +376,6 @@ public class HomeFragment extends Fragment implements PlotterListener {
             plotECG.redraw();
         });
     }
+
+
 }

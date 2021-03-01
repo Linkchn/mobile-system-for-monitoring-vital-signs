@@ -4,7 +4,6 @@ import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.view.LayoutInflater;
@@ -29,7 +28,6 @@ import com.grp.application.MainActivity;
 import com.example.application.R;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.grp.application.export.FileLog;
-import com.grp.application.export.HrExport;
 import com.grp.application.monitor.Monitor;
 import com.grp.application.polar.Plotter;
 import com.grp.application.polar.PlotterListener;
@@ -41,21 +39,13 @@ import com.grp.application.scale.datatypes.ScaleMeasurement;
 import com.grp.application.simulation.HrSimulator;
 import com.grp.application.simulation.WeightSimulator;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.text.DecimalFormat;
 import java.util.Date;
 
 import polar.com.sdk.api.PolarBleApiCallback;
 import polar.com.sdk.api.model.PolarHrData;
-import polar.com.sdk.api.PolarBleApi;
 import timber.log.Timber;
-
-import com.grp.application.export.WeightExport;
 
 public class HomeFragment extends Fragment implements PlotterListener {
 
@@ -98,9 +88,9 @@ public class HomeFragment extends Fragment implements PlotterListener {
         hrSimulator = HrSimulator.getInstance();
         weightSimulator = WeightSimulator.getInstance();
 
-        startRecordingHrButton = root.findViewById(R.id.button_view_recording_hr);
+        startRecordingHrButton = root.findViewById(R.id.button_start_recording_hr);
         stopRecordingHrButton = root.findViewById(R.id.button_stop_recording_hr);
-        viewRecordingHrButton = root.findViewById(R.id.button_button_start_recording_hr);
+        viewRecordingHrButton = root.findViewById(R.id.button_view_recording_hr);
 
 
 
@@ -120,7 +110,7 @@ public class HomeFragment extends Fragment implements PlotterListener {
 
                     if(hrStatus){
                         System.out.println("&&&&&&&&&&&&&&&&&&&&&&");
-                        hrData = hrData + System.currentTimeMillis() + "," + data + ",\n";
+                        hrData = hrData + System.currentTimeMillis() + "," + data.hr + ",\n";
                     }
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -214,7 +204,7 @@ public class HomeFragment extends Fragment implements PlotterListener {
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
-                        Toast.makeText(Application.context, "Export successfully!", Toast.LENGTH_LONG).show();
+                        Toast.makeText(Application.context, "Export successfully!", Toast.LENGTH_LONG).show(); // <--
                         hrData = "";
                         hrStatus = false;
                     }

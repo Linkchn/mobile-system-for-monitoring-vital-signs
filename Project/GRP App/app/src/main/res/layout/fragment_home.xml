@@ -92,7 +92,7 @@
             android:textSize="14sp" />
 
         <Button
-            android:id="@+id/button_button_start_recording_hr"
+            android:id="@+id/button_start_recording_hr"
             style="?attr/materialButtonOutlinedStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

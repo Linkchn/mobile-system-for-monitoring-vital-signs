@@ -6,6 +6,7 @@ import android.bluetooth.BluetoothAdapter;
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -185,6 +186,7 @@ public class HomeFragment extends Fragment implements PlotterListener {
                     .setIcon(R.mipmap.ic_launcher)
                     .create();
             alertDialog1.show();
+            startRecordingHrButton.setTextColor(Color.rgb(244,67,54));
             if (monitor.getMonitorState().isSimulationEnabled()){
                 // if clicked, changes the status to "True"
                 hrStatus = true;
@@ -202,6 +204,7 @@ public class HomeFragment extends Fragment implements PlotterListener {
                     .setIcon(R.mipmap.ic_launcher)
                     .create();
             alertDialog1.show();
+            startRecordingHrButton.setTextColor(Color.rgb(21,131,216));
             if(monitor.getMonitorState().isSimulationEnabled()){
                 if (hrStatus == true){
                     final int REQUEST_EXTERNAL_STORAGE = 1;

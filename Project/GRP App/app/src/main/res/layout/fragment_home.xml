@@ -99,7 +99,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="30dp"
-            android:text="Start Recording Hr           >"
+            android:text="Start Recording Hr          >"
             app:strokeColor="@color/main_color" />
 
         <Button
@@ -110,7 +110,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="30dp"
-            android:text=" Stop Recording Hr           >"
+            android:text=" Stop Recording Hr          >"
             app:strokeColor="@color/main_color" />
 
         <Button

@@ -1,7 +1,15 @@
 package com.grp.application.pages;
 
+import android.Manifest;
+import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.view.LayoutInflater;
@@ -9,8 +17,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.androidplot.xy.BoundaryMode;
@@ -19,9 +30,11 @@ import com.androidplot.xy.XYGraphWidget;
 import com.androidplot.xy.XYPlot;
 import com.google.android.material.textfield.TextInputEditText;
 import com.grp.application.GRPNotification.GRPNotification;
+import com.grp.application.Application;
 import com.grp.application.MainActivity;
 import com.example.application.R;
 import com.google.android.material.switchmaterial.SwitchMaterial;
+import com.grp.application.export.FileLog;
 import com.grp.application.monitor.Monitor;
 import com.grp.application.polar.Plotter;
 import com.grp.application.polar.PlotterListener;
@@ -33,9 +46,10 @@ import com.grp.application.scale.datatypes.ScaleMeasurement;
 import com.grp.application.simulation.HrSimulator;
 import com.grp.application.simulation.WeightSimulator;
 
-import java.io.FileNotFoundException;
+import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.util.Date;
 
 import polar.com.sdk.api.PolarBleApiCallback;
 import polar.com.sdk.api.model.PolarHrData;
@@ -63,15 +77,23 @@ public class HomeFragment extends Fragment implements PlotterListener {
     TextInputEditText weightText;
     Button measureButton;
 
+    Button startRecordingHrButton;
+    Button stopRecordingHrButton;
+    Button viewRecordingHrButton;
+
+    private Boolean hrStatus = false;
+    private String hrData = "";
+
     private TimePlotter plotterHR;
     private Plotter plotterECG;
 
     private GRPNotification grpNotification;
-    
+
+
     public HomeFragment() {}
 
     public View onCreateView(@NonNull LayoutInflater inflater,
-            ViewGroup container, Bundle savedInstanceState) {
+                             ViewGroup container, Bundle savedInstanceState) {
 
         View root = inflater.inflate(R.layout.fragment_home, container, false);
         monitor = Monitor.getInstance();
@@ -82,6 +104,12 @@ public class HomeFragment extends Fragment implements PlotterListener {
         measureButton = root.findViewById(R.id.button_measure_weight);
         hrSimulator = HrSimulator.getInstance();
         weightSimulator = WeightSimulator.getInstance();
+
+        startRecordingHrButton = root.findViewById(R.id.button_start_recording_hr);
+        stopRecordingHrButton = root.findViewById(R.id.button_stop_recording_hr);
+        viewRecordingHrButton = root.findViewById(R.id.button_view_recording_hr);
+
+
 
         polarDevice = PolarDevice.getInstance();
         plotHR = root.findViewById(R.id.plot_hr);
@@ -101,6 +129,10 @@ public class HomeFragment extends Fragment implements PlotterListener {
                     }
                     monitor.getPlotterHR().addValues(data);
                     textViewHR.setText("Current Heart Rate: " + String.valueOf(data.hr));
+
+                    if(hrStatus){
+                        hrData = hrData + System.currentTimeMillis() + "," + data.hr + ",\n";
+                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -157,6 +189,75 @@ public class HomeFragment extends Fragment implements PlotterListener {
             }
         });
 
+
+        // startRecordHr updated at 2/14
+        startRecordingHrButton.setOnClickListener((view) -> {
+//            Toast.makeText(Application.context, "!!!!!!", Toast.LENGTH_LONG).show();
+            AlertDialog alertDialog1 = new AlertDialog.Builder(getContext())
+                    .setTitle("Recording")
+                    .setMessage("Recording starts ")
+                    .setIcon(R.mipmap.ic_launcher)
+                    .create();
+            alertDialog1.show();
+            startRecordingHrButton.setTextColor(Color.rgb(244,67,54));
+            if (monitor.getMonitorState().isSimulationEnabled()){
+                // if clicked, changes the status to "True"
+                hrStatus = true;
+
+            } else {
+                invokeConnectToBluetoothDevice(view);
+            }
+        });
+
+        // stopRecordHr
+        stopRecordingHrButton.setOnClickListener((view) -> {
+            AlertDialog alertDialog1 = new AlertDialog.Builder(getContext())
+                    .setTitle("Recording")
+                    .setMessage("Recording ends")
+                    .setIcon(R.mipmap.ic_launcher)
+                    .create();
+            alertDialog1.show();
+            startRecordingHrButton.setTextColor(Color.rgb(21,131,216));
+            if(monitor.getMonitorState().isSimulationEnabled()){
+                if (hrStatus == true){
+                    final int REQUEST_EXTERNAL_STORAGE = 1;
+                    String[] PERMISSIONS_STORAGE = {
+                            Manifest.permission.READ_EXTERNAL_STORAGE,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                            Manifest.permission.MOUNT_UNMOUNT_FILESYSTEMS};
+                    if (ContextCompat.checkSelfPermission(mainActivity,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                        ActivityCompat.requestPermissions(mainActivity, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 101);
+                    } else {
+                        // if clicked, changes the status to "False"
+                        hrStatus = false;
+                        String fileName = "HR_Recording_" + new Date().getTime();
+                        try {
+                            FileLog.saveLog("Heart Beat per Minute",hrData,fileName);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        Toast.makeText(Application.context, "Export successfully!", Toast.LENGTH_LONG).show(); // <--
+                        hrData = "";
+                        hrStatus = false;
+                    }
+                }
+
+            } else {
+                invokeConnectToBluetoothDevice(view);
+            }
+        });
+
+        // viewRecordHr
+        viewRecordingHrButton.setOnClickListener((view) -> {
+//            Toast.makeText(Application.context, "view", Toast.LENGTH_LONG).show();
+            openAssignFolder(Environment.getExternalStorageDirectory() + "/HR");
+            if(monitor.getMonitorState().isSimulationEnabled()){
+            }
+        });
+
+
+        // updated at 2/17. Problems occur in android simulator.
         return root;
     }
 
@@ -259,12 +360,18 @@ public class HomeFragment extends Fragment implements PlotterListener {
                 if(data.hr <= 0){
                     grpNotification.sendNotification(mainActivity);
                 }
-                    monitor.getPlotterHR().addValues(data);
+
+                //record data
+                if(hrStatus){
+                    hrData = hrData + System.currentTimeMillis() + "," + data + ",\n";
+                }
+
+                monitor.getPlotterHR().addValues(data);
             }
 
             @Override
             public void ecgFeatureReady(@NonNull String identifier) {
-                    monitor.streamECG();
+                monitor.streamECG();
             }
         });
     }
@@ -321,4 +428,31 @@ public class HomeFragment extends Fragment implements PlotterListener {
             plotECG.redraw();
         });
     }
+
+    private void openAssignFolder(String path) {
+//        File file = new File(path);
+//        if (null == file || !file.exists()) {
+//            return;
+//        }
+//        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+////        intent.addCategory(Intent.CATEGORY_OPENABLE);
+////        intent.setType("csv/*");
+//
+//        intent.addCategory(Intent.CATEGORY_OPENABLE);
+//        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+////        intent.setDataAndType(Uri.fromFile(file), "csv/*");
+//        intent.setType("csv/*");
+//
+//        try {
+//            startActivity(intent);
+//        } catch (ActivityNotFoundException e) {
+//            e.printStackTrace();
+//        }
+
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        Uri uri = Uri.parse(path);
+        intent.setDataAndType(uri, "*/*");
+        startActivity(Intent.createChooser(intent, "Open folder"));
+    }
+
 }

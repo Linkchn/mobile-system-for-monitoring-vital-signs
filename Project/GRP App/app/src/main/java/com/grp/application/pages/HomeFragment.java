@@ -89,11 +89,10 @@ public class HomeFragment extends Fragment implements PlotterListener {
 
     private GRPNotification grpNotification;
 
-
     public HomeFragment() {}
 
     public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
+            ViewGroup container, Bundle savedInstanceState) {
 
         View root = inflater.inflate(R.layout.fragment_home, container, false);
         monitor = Monitor.getInstance();
@@ -430,25 +429,8 @@ public class HomeFragment extends Fragment implements PlotterListener {
     }
 
     private void openAssignFolder(String path) {
-//        File file = new File(path);
-//        if (null == file || !file.exists()) {
-//            return;
-//        }
-//        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-////        intent.addCategory(Intent.CATEGORY_OPENABLE);
-////        intent.setType("csv/*");
-//
-//        intent.addCategory(Intent.CATEGORY_OPENABLE);
-//        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-////        intent.setDataAndType(Uri.fromFile(file), "csv/*");
-//        intent.setType("csv/*");
-//
-//        try {
-//            startActivity(intent);
-//        } catch (ActivityNotFoundException e) {
-//            e.printStackTrace();
-//        }
 
+        //make directory!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         Uri uri = Uri.parse(path);
         intent.setDataAndType(uri, "*/*");
@@ -456,3 +438,4 @@ public class HomeFragment extends Fragment implements PlotterListener {
     }
 
 }
+

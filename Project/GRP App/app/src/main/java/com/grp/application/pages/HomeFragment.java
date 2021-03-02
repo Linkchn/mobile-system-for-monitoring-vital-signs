@@ -386,24 +386,29 @@ public class HomeFragment extends Fragment implements PlotterListener {
     }
 
     private void openAssignFolder(String path) {
-        File file = new File(path);
-        if (null == file || !file.exists()) {
-            return;
-        }
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+//        File file = new File(path);
+//        if (null == file || !file.exists()) {
+//            return;
+//        }
+//        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+////        intent.addCategory(Intent.CATEGORY_OPENABLE);
+////        intent.setType("csv/*");
+//
 //        intent.addCategory(Intent.CATEGORY_OPENABLE);
+//        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+////        intent.setDataAndType(Uri.fromFile(file), "csv/*");
 //        intent.setType("csv/*");
+//
+//        try {
+//            startActivity(intent);
+//        } catch (ActivityNotFoundException e) {
+//            e.printStackTrace();
+//        }
 
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//        intent.setDataAndType(Uri.fromFile(file), "csv/*");
-        intent.setType("csv/*");
-
-        try {
-            startActivity(intent);
-        } catch (ActivityNotFoundException e) {
-            e.printStackTrace();
-        }
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        Uri uri = Uri.parse(path);
+        intent.setDataAndType(uri, "*/*");
+        startActivity(Intent.createChooser(intent, "Open folder"));
     }
 
 }

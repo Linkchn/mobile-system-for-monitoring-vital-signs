@@ -391,9 +391,13 @@ public class HomeFragment extends Fragment implements PlotterListener {
             return;
         }
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        intent.addCategory(Intent.CATEGORY_DEFAULT);
+//        intent.addCategory(Intent.CATEGORY_OPENABLE);
+//        intent.setType("csv/*");
+
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.setDataAndType(Uri.fromFile(file), "file/*");
+//        intent.setDataAndType(Uri.fromFile(file), "csv/*");
+        intent.setType("csv/*");
 
         try {
             startActivity(intent);
@@ -403,3 +407,4 @@ public class HomeFragment extends Fragment implements PlotterListener {
     }
 
 }
+

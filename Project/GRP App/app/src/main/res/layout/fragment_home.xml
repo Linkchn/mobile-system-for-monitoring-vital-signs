@@ -94,8 +94,8 @@
         <Button
             android:id="@+id/button_start_recording_hr"
             style="?attr/materialButtonOutlinedStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="263dp"
+            android:layout_height="55dp"
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="30dp"
@@ -105,8 +105,8 @@
         <Button
             android:id="@+id/button_stop_recording_hr"
             style="?attr/materialButtonOutlinedStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="258dp"
+            android:layout_height="55dp"
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="30dp"
@@ -116,8 +116,8 @@
         <Button
             android:id="@+id/button_view_recording_hr"
             style="?attr/materialButtonOutlinedStyle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="259dp"
+            android:layout_height="51dp"
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="30dp"

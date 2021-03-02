@@ -1,9 +1,14 @@
 package com.grp.application.pages;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
+import android.content.ActivityNotFoundException;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.view.LayoutInflater;
@@ -39,6 +44,7 @@ import com.grp.application.scale.datatypes.ScaleMeasurement;
 import com.grp.application.simulation.HrSimulator;
 import com.grp.application.simulation.WeightSimulator;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.Date;
@@ -172,10 +178,15 @@ public class HomeFragment extends Fragment implements PlotterListener {
 
         // startRecordHr updated at 2/14
         startRecordingHrButton.setOnClickListener((view) -> {
-            Toast.makeText(Application.context, "!!!!!!", Toast.LENGTH_LONG).show();
+//            Toast.makeText(Application.context, "!!!!!!", Toast.LENGTH_LONG).show();
+            AlertDialog alertDialog1 = new AlertDialog.Builder(getContext())
+                    .setTitle("Recording")
+                    .setMessage("Recording starts ")
+                    .setIcon(R.mipmap.ic_launcher)
+                    .create();
+            alertDialog1.show();
             if (monitor.getMonitorState().isSimulationEnabled()){
                 // if clicked, changes the status to "True"
-
                 hrStatus = true;
 
             } else {
@@ -185,6 +196,12 @@ public class HomeFragment extends Fragment implements PlotterListener {
 
         // stopRecordHr
         stopRecordingHrButton.setOnClickListener((view) -> {
+            AlertDialog alertDialog1 = new AlertDialog.Builder(getContext())
+                    .setTitle("Recording")
+                    .setMessage("Recording ends")
+                    .setIcon(R.mipmap.ic_launcher)
+                    .create();
+            alertDialog1.show();
             if(monitor.getMonitorState().isSimulationEnabled()){
                 if (hrStatus == true){
                     final int REQUEST_EXTERNAL_STORAGE = 1;
@@ -217,8 +234,9 @@ public class HomeFragment extends Fragment implements PlotterListener {
 
         // viewRecordHr
         viewRecordingHrButton.setOnClickListener((view) -> {
+//            Toast.makeText(Application.context, "view", Toast.LENGTH_LONG).show();
+            openAssignFolder(Environment.getExternalStorageDirectory() + "/HR");
             if(monitor.getMonitorState().isSimulationEnabled()){
-
             }
         });
 
@@ -367,5 +385,21 @@ public class HomeFragment extends Fragment implements PlotterListener {
         });
     }
 
+    private void openAssignFolder(String path) {
+        File file = new File(path);
+        if (null == file || !file.exists()) {
+            return;
+        }
+        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+        intent.addCategory(Intent.CATEGORY_DEFAULT);
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        intent.setDataAndType(Uri.fromFile(file), "file/*");
+
+        try {
+            startActivity(intent);
+        } catch (ActivityNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
 
 }

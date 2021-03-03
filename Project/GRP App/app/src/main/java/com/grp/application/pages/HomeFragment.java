@@ -193,33 +193,62 @@ public class HomeFragment extends Fragment implements PlotterListener {
         // startRecordHr updated at 2/14
         startRecordingHrButton.setOnClickListener((view) -> {
 //            Toast.makeText(Application.context, "!!!!!!", Toast.LENGTH_LONG).show();
-            AlertDialog alertDialog1 = new AlertDialog.Builder(getContext())
-                    .setTitle("Recording")
-                    .setMessage("Recording starts ")
-                    .setIcon(R.mipmap.ic_launcher)
-                    .create();
-            alertDialog1.show();
-            startRecordingHrButton.setTextColor(Color.rgb(244,67,54));
-            if (monitor.getMonitorState().isSimulationEnabled()){
-                // if clicked, changes the status to "True"
-                hrStatus = true;
 
-            } else {
-                invokeConnectToBluetoothDevice(view);
+            if(hrStatus == true){
+                AlertDialog alertDialog1 = new AlertDialog.Builder(getContext())
+                        .setTitle("Problem")
+                        .setMessage("Already recording ")
+                        .setIcon(R.mipmap.ic_launcher)
+                        .create();
+                alertDialog1.show();
+                startRecordingHrButton.setTextColor(Color.rgb(244,67,54));
+            }else{
+                if (monitor.getMonitorState().isSimulationEnabled()){
+                    AlertDialog alertDialog1 = new AlertDialog.Builder(getContext())
+                            .setTitle("Problem")
+                            .setMessage("Recording")
+                            .setIcon(R.mipmap.ic_launcher)
+                            .create();
+                    alertDialog1.show();
+                    startRecordingHrButton.setTextColor(Color.rgb(244,67,54));
+                    hrStatus = true;
+                } else {
+                    if(detectDeviceConnect(view) == false){
+                        AlertDialog alertDialog1 = new AlertDialog.Builder(getContext())
+                                .setTitle("Problem")
+                                .setMessage("No Device Connected ")
+                                .setIcon(R.mipmap.ic_launcher)
+                                .create();
+                        alertDialog1.show();
+                    }
+                    else if(detectDeviceSupport(view) == false){
+                        AlertDialog alertDialog1 = new AlertDialog.Builder(getContext())
+                                .setTitle("Problem")
+                                .setMessage("Device Not Supported")
+                                .setIcon(R.mipmap.ic_launcher)
+                                .create();
+                        alertDialog1.show();
+                    }
+                }
+
             }
+
         });
 
         // stopRecordHr
         stopRecordingHrButton.setOnClickListener((view) -> {
-            AlertDialog alertDialog1 = new AlertDialog.Builder(getContext())
-                    .setTitle("Recording")
-                    .setMessage("Recording ends")
-                    .setIcon(R.mipmap.ic_launcher)
-                    .create();
-            alertDialog1.show();
-            startRecordingHrButton.setTextColor(Color.rgb(21,131,216));
+
             if(monitor.getMonitorState().isSimulationEnabled()){
                 if (hrStatus == true){
+
+                    AlertDialog alertDialog1 = new AlertDialog.Builder(getContext())
+                            .setTitle("Recording")
+                            .setMessage("Recording ends")
+                            .setIcon(R.mipmap.ic_launcher)
+                            .create();
+                    alertDialog1.show();
+                    startRecordingHrButton.setTextColor(Color.rgb(21,131,216));
+
                     final int REQUEST_EXTERNAL_STORAGE = 1;
                     String[] PERMISSIONS_STORAGE = {
                             Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -244,7 +273,12 @@ public class HomeFragment extends Fragment implements PlotterListener {
                 }
 
             } else {
-                invokeConnectToBluetoothDevice(view);
+                AlertDialog alertDialog1 = new AlertDialog.Builder(getContext())
+                        .setTitle("Problem")
+                        .setMessage("No Recording")
+                        .setIcon(R.mipmap.ic_launcher)
+                        .create();
+                alertDialog1.show();
             }
         });
 
@@ -259,6 +293,33 @@ public class HomeFragment extends Fragment implements PlotterListener {
 
         // updated at 2/17. Problems occur in android simulator.
         return root;
+    }
+
+    private boolean detectDeviceSupport(View view){
+        final Scale scale = Scale.getInstance();
+
+        String hwAddress = scale.getHwAddress();
+
+        if(!BluetoothAdapter.checkBluetoothAddress(hwAddress)){
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
+
+    private boolean detectDeviceConnect(View view){
+        final Scale scale = Scale.getInstance();
+
+        String deviceName = scale.getDeviceName();
+        String hwAddress = scale.getHwAddress();
+
+        if(!BluetoothAdapter.checkBluetoothAddress(hwAddress)){
+            return false;
+        }
+        else{
+            return true;
+        }
     }
 
     /**

@@ -127,12 +127,9 @@ public class HomeFragment extends Fragment implements PlotterListener {
                     if(data.hr <= 0){
                         grpNotification.sendNotification(mainActivity);
                     }
-                    monitor.getPlotterHR().addValues(data);
                     textViewHR.setText("Current Heart Rate: " + String.valueOf(data.hr));
+                    loadHrValue(data);
 
-                    if(hrStatus){
-                        hrData = hrData + System.currentTimeMillis() + "," + data.hr + ",\n";
-                    }
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -421,13 +418,7 @@ public class HomeFragment extends Fragment implements PlotterListener {
                 if(data.hr <= 0){
                     grpNotification.sendNotification(mainActivity);
                 }
-
-                //record data
-                if(hrStatus){
-                    hrData = hrData + System.currentTimeMillis() + "," + data + ",\n";
-                }
-
-                monitor.getPlotterHR().addValues(data);
+                loadHrValue(data);
             }
 
             @Override
@@ -514,6 +505,13 @@ public class HomeFragment extends Fragment implements PlotterListener {
         Uri uri = Uri.parse(path);
         intent.setDataAndType(uri, "*/*");
         startActivity(Intent.createChooser(intent, "Open folder"));
+    }
+
+    private void loadHrValue(PolarHrData data) {
+        if(hrStatus){
+            hrData = hrData + System.currentTimeMillis() + "," + data + ",\n";
+        }
+        monitor.getPlotterHR().addValues(data);
     }
 
 }

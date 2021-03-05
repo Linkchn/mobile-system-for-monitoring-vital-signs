@@ -16,7 +16,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.grp.application.database.Dao;
 import com.grp.application.database.DatabaseHelper;
 import com.grp.application.database.DatabaseSimulator;
-import com.jjoe64.graphview.GraphView;
+//import com.jjoe64.graphview.GraphView;
 import com.grp.application.export.FileLog;
 
 import androidx.annotation.NonNull;

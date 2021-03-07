@@ -3,7 +3,6 @@ package com.grp.application.pages;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
-import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -29,7 +28,7 @@ import com.androidplot.xy.StepMode;
 import com.androidplot.xy.XYGraphWidget;
 import com.androidplot.xy.XYPlot;
 import com.google.android.material.textfield.TextInputEditText;
-import com.grp.application.GRPNotification.GRPNotification;
+import com.grp.application.notification.GRPNotification;
 import com.grp.application.Application;
 import com.grp.application.MainActivity;
 import com.example.application.R;
@@ -46,7 +45,6 @@ import com.grp.application.scale.datatypes.ScaleMeasurement;
 import com.grp.application.simulation.HrSimulator;
 import com.grp.application.simulation.WeightSimulator;
 
-import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.Date;
@@ -259,7 +257,7 @@ public class HomeFragment extends Fragment implements PlotterListener {
                         hrStatus = false;
                         String fileName = "HR_Recording_" + new Date().getTime();
                         try {
-                            FileLog.saveLog("Heart Beat per Minute",hrData,fileName);
+                            FileLog.saveLog(hrData,fileName);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }

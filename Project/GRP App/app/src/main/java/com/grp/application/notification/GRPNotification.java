@@ -1,4 +1,4 @@
-package com.grp.application.GRPNotification;
+package com.grp.application.notification;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;

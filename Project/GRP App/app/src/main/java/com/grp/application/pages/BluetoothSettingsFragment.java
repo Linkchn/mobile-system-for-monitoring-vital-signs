@@ -102,7 +102,7 @@ public class BluetoothSettingsFragment extends Fragment {
     public void onResume() {
         if (PermissionHelper.requestBluetoothPermission(this)) {
             if (PermissionHelper.requestLocationServicePermission(this)) {
-                startBluetoothDiscovery();
+                 startBluetoothDiscovery();
             }
         }
         super.onResume();
@@ -225,38 +225,6 @@ public class BluetoothSettingsFragment extends Fragment {
 
         foundDevices.put(device.getAddress(), btDevice != null ? device : null);
         deviceListView.addView(deviceView);
-    }
-
-    private void getDebugInfo(final BluetoothDevice device) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
-        builder.setTitle("Fetching info")
-                .setMessage("Please wait while we fetch extended info from your scale...")
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Scale.getInstance().disconnectFromBluetoothDevice();
-                        dialog.dismiss();
-                    }
-                });
-
-        final AlertDialog dialog = builder.create();
-
-        Handler btHandler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                switch (BluetoothCommunication.BT_STATUS.values()[msg.what]) {
-                    case CONNECTION_LOST:
-                        Scale.getInstance().disconnectFromBluetoothDevice();
-                        dialog.dismiss();
-                        break;
-                }
-            }
-        };
-
-        dialog.show();
-
-        String macAddress = device.getAddress();
-        stopBluetoothDiscovery();
     }
 
     private class BluetoothDeviceView extends LinearLayout implements View.OnClickListener {

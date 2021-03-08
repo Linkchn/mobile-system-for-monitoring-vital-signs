@@ -16,14 +16,14 @@
 
 package com.grp.application.scale.bluetooth.lib;
 
-import com.grp.application.scale.utils.Converters;
+import com.grp.application.scale.utils.Converters.ActivityLevel;
 
 public class YunmaiLib {
     private int sex; // male = 1; female = 0
     private float height;
     private boolean fitnessBodyType;
 
-    static public int toYunmaiActivityLevel(Converters.ActivityLevel activityLevel) {
+    static public int toYunmaiActivityLevel(ActivityLevel activityLevel) {
         switch (activityLevel) {
             case HEAVY:
             case EXTREME:
@@ -33,7 +33,7 @@ public class YunmaiLib {
         }
     }
 
-    public YunmaiLib(int sex, float height, Converters.ActivityLevel activityLevel) {
+    public YunmaiLib(int sex, float height, ActivityLevel activityLevel) {
         this.sex = sex;
         this.height = height;
         this.fitnessBodyType = YunmaiLib.toYunmaiActivityLevel(activityLevel) == 1;
@@ -51,7 +51,7 @@ public class YunmaiLib {
         float h = height / 100.0f;
 
         if (r >= 1) {
-            r = (float)Math.sqrt(r);
+            r = (float) Math.sqrt(r);
         }
 
         fat = (weight * 1.5f / h / h) + (age * 0.08f);

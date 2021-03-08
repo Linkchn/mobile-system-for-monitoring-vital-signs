@@ -27,6 +27,7 @@ import android.os.Looper;
 
 import androidx.core.content.ContextCompat;
 
+
 import com.example.application.R;
 import com.grp.application.scale.datatypes.ScaleMeasurement;
 import com.welie.blessed.BluetoothCentral;

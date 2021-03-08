@@ -19,7 +19,7 @@ package com.grp.application.scale.bluetooth.lib;
 /**
  * Class with static helper methods. This is a separate class for testing purposes.
  *
- * @see com.health.openscale.core.bluetooth.BluetoothTrisaBodyAnalyze
+ *
  */
 public class TrisaBodyAnalyzeLib {
 

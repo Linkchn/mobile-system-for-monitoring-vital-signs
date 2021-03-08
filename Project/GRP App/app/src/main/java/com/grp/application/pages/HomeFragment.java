@@ -207,25 +207,7 @@ public class HomeFragment extends Fragment implements PlotterListener {
                     alertDialog1.show();
                     startRecordingHrButton.setTextColor(Color.rgb(244,67,54));
                     hrStatus = true;
-                } else {
-                    if(detectDeviceConnect(view) == false){
-                        AlertDialog alertDialog1 = new AlertDialog.Builder(getContext())
-                                .setTitle("Problem")
-                                .setMessage("No Device Connected ")
-                                .setIcon(R.mipmap.ic_launcher)
-                                .create();
-                        alertDialog1.show();
-                    }
-                    else if(detectDeviceSupport(view) == false){
-                        AlertDialog alertDialog1 = new AlertDialog.Builder(getContext())
-                                .setTitle("Problem")
-                                .setMessage("Device Not Supported")
-                                .setIcon(R.mipmap.ic_launcher)
-                                .create();
-                        alertDialog1.show();
-                    }
                 }
-
             }
 
         });

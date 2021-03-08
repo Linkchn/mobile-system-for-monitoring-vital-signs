@@ -21,9 +21,7 @@ package com.grp.application.scale.bluetooth;
 
 import android.content.Context;
 
-import com.health.openscale.core.OpenScale;
-import com.health.openscale.core.datatypes.ScaleMeasurement;
-import com.health.openscale.core.datatypes.ScaleUser;
+import com.grp.application.scale.datatypes.ScaleMeasurement;
 import com.welie.blessed.BluetoothBytesParser;
 
 import java.util.Calendar;
@@ -93,11 +91,6 @@ public class BluetoothStandardWeightProfile extends BluetoothCommunication {
             case 5:
                 // Turn on notifications for Battery Service
                 setNotificationOn(BluetoothGattUuid.SERVICE_BATTERY_LEVEL, BluetoothGattUuid.CHARACTERISTIC_BATTERY_LEVEL);
-                break;
-            case 6:
-                final ScaleUser selectedUser = OpenScale.getInstance().getSelectedScaleUser();
-                registerUser(CURRENT_USER_CONSENT);
-                setUser(selectedUser.getId(), CURRENT_USER_CONSENT);
                 break;
             default:
                 return false;

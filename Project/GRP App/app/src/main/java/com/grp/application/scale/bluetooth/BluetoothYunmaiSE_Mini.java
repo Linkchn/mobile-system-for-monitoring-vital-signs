@@ -20,12 +20,11 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
-import com.health.openscale.R;
-import com.health.openscale.core.OpenScale;
-import com.health.openscale.core.bluetooth.lib.YunmaiLib;
-import com.health.openscale.core.datatypes.ScaleMeasurement;
-import com.health.openscale.core.datatypes.ScaleUser;
-import com.health.openscale.core.utils.Converters;
+
+import com.example.application.R;
+import com.grp.application.scale.bluetooth.lib.YunmaiLib;
+import com.grp.application.scale.datatypes.ScaleMeasurement;
+import com.grp.application.scale.utils.Converters;
 
 import java.util.Date;
 import java.util.Random;
@@ -57,15 +56,15 @@ public class BluetoothYunmaiSE_Mini extends BluetoothCommunication {
             case 0:
                 byte[] userId = Converters.toInt16Be(getUniqueNumber());
 
-                final ScaleUser selectedUser = OpenScale.getInstance().getSelectedScaleUser();
-                byte sex = selectedUser.getGender().isMale() ? (byte)0x01 : (byte)0x02;
-                byte display_unit = selectedUser.getScaleUnit() == Converters.WeightUnit.KG ? (byte) 0x01 : (byte) 0x02;
-                byte body_type = (byte) YunmaiLib.toYunmaiActivityLevel(selectedUser.getActivityLevel());
+                //final ScaleUser selectedUser = OpenScale.getInstance().getSelectedScaleUser();
+                byte sex = (byte)0x01;
+                byte display_unit = (byte) 0x01;
+                byte body_type = (byte) YunmaiLib.toYunmaiActivityLevel(Converters.ActivityLevel.MODERATE);
 
                 byte[] user_add_or_query = new byte[]{
                         (byte) 0x0d, (byte) 0x12, (byte) 0x10, (byte) 0x01, (byte) 0x00, (byte) 0x00,
-                        userId[0], userId[1], (byte) selectedUser.getBodyHeight(), sex,
-                        (byte) selectedUser.getAge(), (byte) 0x55, (byte) 0x5a, (byte) 0x00,
+                        userId[0], userId[1], (byte) 180, sex,
+                        (byte) 20, (byte) 0x55, (byte) 0x5a, (byte) 0x00,
                         (byte)0x00, display_unit, body_type, (byte) 0x00};
                 user_add_or_query[user_add_or_query.length - 1] =
                         xorChecksum(user_add_or_query, 1, user_add_or_query.length - 1);
@@ -111,7 +110,7 @@ public class BluetoothYunmaiSE_Mini extends BluetoothCommunication {
     }
 
     private void parseBytes(byte[] weightBytes) {
-        final ScaleUser scaleUser = OpenScale.getInstance().getSelectedScaleUser();
+        //final ScaleUser scaleUser = OpenScale.getInstance().getSelectedScaleUser();
 
         ScaleMeasurement scaleBtData = new ScaleMeasurement();
 
@@ -122,15 +121,9 @@ public class BluetoothYunmaiSE_Mini extends BluetoothCommunication {
         scaleBtData.setWeight(weight);
 
         if (isMini) {
-            int sex;
+            int sex = 1;
 
-            if (scaleUser.getGender() == Converters.Gender.MALE) {
-                sex = 1;
-            } else {
-                sex = 0;
-            }
-
-            YunmaiLib yunmaiLib = new YunmaiLib(sex, scaleUser.getBodyHeight(), scaleUser.getActivityLevel());
+            YunmaiLib yunmaiLib = new YunmaiLib(sex, 180, Converters.ActivityLevel.MODERATE);
             float bodyFat;
             int resistance = Converters.fromUnsignedInt16Be(weightBytes, 15);
             if (weightBytes[1] >= (byte)0x1E) {
@@ -138,7 +131,7 @@ public class BluetoothYunmaiSE_Mini extends BluetoothCommunication {
                 bodyFat = Converters.fromUnsignedInt16Be(weightBytes, 17) / 100.0f;
             } else {
                 Timber.d("Calculate the fat value using the Yunmai lib");
-                bodyFat = yunmaiLib.getFat(scaleUser.getAge(), weight, resistance);
+                bodyFat = yunmaiLib.getFat(20, weight, resistance);
             }
 
             if (bodyFat != 0) {
@@ -147,14 +140,14 @@ public class BluetoothYunmaiSE_Mini extends BluetoothCommunication {
                 scaleBtData.setWater(yunmaiLib.getWater(bodyFat));
                 scaleBtData.setBone(yunmaiLib.getBoneMass(scaleBtData.getMuscle(), weight));
                 scaleBtData.setLbm(yunmaiLib.getLeanBodyMass(weight, bodyFat));
-                scaleBtData.setVisceralFat(yunmaiLib.getVisceralFat(bodyFat, scaleUser.getAge()));
+                scaleBtData.setVisceralFat(yunmaiLib.getVisceralFat(bodyFat, 20));
             } else {
                 Timber.e("body fat is zero");
             }
 
             Timber.d("received bytes [%s]", byteInHex(weightBytes));
             Timber.d("received decrypted bytes [weight: %.2f, fat: %.2f, resistance: %d]", weight, bodyFat, resistance);
-            Timber.d("user [%s]", scaleUser);
+            Timber.d("user [User]");
             Timber.d("scale measurement [%s]", scaleBtData);
         }
 
@@ -175,7 +168,7 @@ public class BluetoothYunmaiSE_Mini extends BluetoothCommunication {
             prefs.edit().putInt("uniqueNumber", uniqueNumber).apply();
         }
 
-        int userId = OpenScale.getInstance().getSelectedScaleUserId();
+        int userId = 0;
 
         return uniqueNumber + userId;
     }

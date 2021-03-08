@@ -18,10 +18,12 @@ package com.grp.application.scale.bluetooth;
 
 import android.content.Context;
 
-import com.example.application.R;
-import com.grp.application.scale.bluetooth.lib.TrisaBodyAnalyzeLib;
-import com.grp.application.scale.datatypes.ScaleMeasurement;
-import com.grp.application.scale.utils.Converters;
+import com.health.openscale.R;
+import com.health.openscale.core.OpenScale;
+import com.health.openscale.core.bluetooth.lib.TrisaBodyAnalyzeLib;
+import com.health.openscale.core.datatypes.ScaleMeasurement;
+import com.health.openscale.core.datatypes.ScaleUser;
+import com.health.openscale.core.utils.Converters;
 
 import java.util.Date;
 import java.util.UUID;
@@ -93,8 +95,8 @@ public class BluetoothQNScale extends BluetoothCommunication {
                 setIndicationOn(WEIGHT_MEASUREMENT_SERVICE, CUSTOM2_MEASUREMENT_CHARACTERISTIC);
                 break;
             case 2:
-                //final ScaleUser scaleUser = OpenScale.getInstance().getSelectedScaleUser();
-                final Converters.WeightUnit scaleUserWeightUnit = Converters.WeightUnit.KG;
+                final ScaleUser scaleUser = OpenScale.getInstance().getSelectedScaleUser();
+                final Converters.WeightUnit scaleUserWeightUnit = scaleUser.getScaleUnit();
                 // Value of 0x01 = KG. 0x02 = LB. Requests with stones unit are sent as LB, with post-processing in vendor app.
                 byte weightUnitByte = (byte) 0x01;
                 // Default weight unit KG. If user config set to LB or ST, scale will show LB units, consistent with vendor app
@@ -177,11 +179,11 @@ public class BluetoothQNScale extends BluetoothCommunication {
                             Timber.d("resistance1: %d", resistance1);
                             Timber.d("resistance2: %d", resistance2);
 
-                            //final ScaleUser scaleUser = OpenScale.getInstance().getSelectedScaleUser();
-                            //Timber.d("scale user " + scaleUser);
+                            final ScaleUser scaleUser = OpenScale.getInstance().getSelectedScaleUser();
+                            Timber.d("scale user " + scaleUser);
                             ScaleMeasurement btScaleMeasurement = new ScaleMeasurement();
                             //TrisaBodyAnalyzeLib gives almost simillar values for QNScale body fat calcualtion
-                            TrisaBodyAnalyzeLib qnscalelib = new TrisaBodyAnalyzeLib(true ? 1 : 0, 20, 180);
+                            TrisaBodyAnalyzeLib qnscalelib = new TrisaBodyAnalyzeLib(scaleUser.getGender().isMale() ? 1 : 0, scaleUser.getAge(), (int)scaleUser.getBodyHeight());
 
                             //Now much difference between resistance1 and resistance2.
                             //Will use resistance 1 for now

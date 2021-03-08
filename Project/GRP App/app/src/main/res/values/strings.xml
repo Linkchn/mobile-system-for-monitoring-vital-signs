@@ -18,6 +18,12 @@
     <string name="weight_record">Weight Record</string>
     <string name="report">Report</string>
     <string name="me">Me</string>
+    <string name="label_scale_not_supported">Is your scale not supported?</string>
+    <string name="label_click_to_help_add_support">Click here to add support for it</string>
+    <string name="label_bt_device_no_support">device not supported</string>
+    <string name="info_is_not_enable">isabled</string>
+    <string name="info_is_not_available">not available</string>
+    <string name="info_measuring">Measuring weight: %.f</string>
 
     <!-- Preference Titles -->
     <string name="messages_header">Messages</string>

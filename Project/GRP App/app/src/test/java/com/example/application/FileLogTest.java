@@ -25,7 +25,6 @@ public class FileLogTest {
 
     private String message = "This is a message";
     private String fileName = "export";
-    private SimpleDateFormat dateFormat = fileLog.dataFormat;
 
 
     @Test

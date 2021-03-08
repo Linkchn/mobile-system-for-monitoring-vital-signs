@@ -187,9 +187,34 @@ public class HomeFragment extends Fragment implements PlotterListener {
         });
 
 
-        // startRecordHr updated at 2/14
+        /**
+         * A button listener that monitors the RecordingHrButton reacting differently in
+         * different situations.
+         *
+         * <ul>
+         *     <li>
+         *         When the first time this button is clicked and there has a connected device,
+         *         the recording is starting and a dialog will show "Recording". The text of the
+         *         button will turn to red.
+         *     </li>
+         *     <li>
+         *         If user constantly clicks the button while the recording, an alert will appear to
+         *         warn "Already recording".
+         *     </li>
+         *     <li>
+         *          If there is no an available device but the user clicks the button, an alert will
+         *          show "No Device Connected".
+         *     </li>
+         *     <li>
+         *         If the connected device is not suitable but the user clicks the button, an alert
+         *         will show "Device Not Supported".
+         *     </li>
+         * </ul>
+         *
+         * @param hrStatus represents whether the recording is on or not
+         *
+         */
         startRecordingHrButton.setOnClickListener((view) -> {
-//            Toast.makeText(Application.context, "!!!!!!", Toast.LENGTH_LONG).show();
 
             if(hrStatus == true){
                 AlertDialog alertDialog1 = new AlertDialog.Builder(getContext())
@@ -232,8 +257,25 @@ public class HomeFragment extends Fragment implements PlotterListener {
 
         });
 
-        // stopRecordHr
-        stopRecordingHrButton.setOnClickListener((view) -> {
+        /**
+         * A button listener that monitors the StopRecordingHrButton, reacting differently in
+         * different situations.
+         *
+         * <ul>
+         *     <li>
+         *         If the button is clicked when the RecordingHrButton is blue, which means the
+         *         recording is not doing, an alert will show "No Recording".
+         *     </li>
+         *     <li>
+         *         If the button is clicked when the RecordingHrButton is red, then the recording
+         *         will be stopped. An alert will show "Recording ends" and the red text will
+         *         be set in blue again.
+         *     </li>
+         * </ul>
+         *
+         * @param hrStatus represents whether the recording is on or not
+         *
+         */        stopRecordingHrButton.setOnClickListener((view) -> {
 
             if(monitor.getMonitorState().isSimulationEnabled()){
                 if (hrStatus == true){
@@ -279,7 +321,10 @@ public class HomeFragment extends Fragment implements PlotterListener {
             }
         });
 
-        // viewRecordHr
+        /**
+         * A button listener that every time it is clicked, the directory that contains recording
+         * data will be opened.
+         */
         viewRecordingHrButton.setOnClickListener((view) -> {
 //            Toast.makeText(Application.context, "view", Toast.LENGTH_LONG).show();
             openAssignFolder(Environment.getExternalStorageDirectory() + "/HR");
@@ -292,6 +337,12 @@ public class HomeFragment extends Fragment implements PlotterListener {
         return root;
     }
 
+    /**
+     * A method that used to detect whether the device is suitable or not.
+     * True will be returned if the device is suitable otherwise false.
+     * @param view view
+     * @return
+     */
     private boolean detectDeviceSupport(View view){
         final Scale scale = Scale.getInstance();
 
@@ -305,6 +356,12 @@ public class HomeFragment extends Fragment implements PlotterListener {
         }
     }
 
+    /**
+     * A method that used to detect whether the device is connected or not.
+     * True will be returned if the device is connected otherwise false.
+     * @param view view
+     * @return
+     */
     private boolean detectDeviceConnect(View view){
         final Scale scale = Scale.getInstance();
 

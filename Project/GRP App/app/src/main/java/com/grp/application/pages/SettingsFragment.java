@@ -39,6 +39,8 @@ public class SettingsFragment extends Fragment {
     private ImageView symbolBrainWaveDevice;
     private Button hrConnectButton;
     private Button scaleConnectButton;
+    private Button hrDeviceDisconenctButton;
+    private Button scaleDeviceDisconnectButton;
     private SwitchMaterial simulationSwitch;
     private SwitchMaterial msgOnNotWearDeviceSwitch;
     private SwitchMaterial msgOnNotCaptureDataSwitch;
@@ -57,6 +59,8 @@ public class SettingsFragment extends Fragment {
         symbolBrainWaveDevice = root.findViewById(R.id.symbol_scale_device);
         hrConnectButton = root.findViewById(R.id.button_connect_hr_device);
         scaleConnectButton = root.findViewById(R.id.button_connect_scale_device);
+        hrDeviceDisconenctButton = root.findViewById(R.id.button_disconnect_hr_device);
+        scaleDeviceDisconnectButton = root.findViewById(R.id.button_disconnect_scale_device);
         simulationSwitch = root.findViewById(R.id.switch_simulation);
         msgOnNotWearDeviceSwitch = root.findViewById(R.id.switch_msg_not_wear_device);
         msgOnNotCaptureDataSwitch = root.findViewById(R.id.switch_msg_not_capture_data);
@@ -70,6 +74,22 @@ public class SettingsFragment extends Fragment {
 
         // Set action for connect button of scale device
         scaleConnectButton.setOnClickListener(this::showScaleDialog);
+
+        // Set action for disconnect button of heart rate device
+        hrDeviceDisconenctButton.setOnClickListener((buttonView) -> {
+            try {
+                polarDevice.api().disconnectFromDevice(polarDevice.getDeviceId());
+            } catch (PolarInvalidArgument polarInvalidArgument) {
+                polarInvalidArgument.printStackTrace();
+            }
+        });
+
+        // Set action for disconnect button of scale device
+        scaleDeviceDisconnectButton.setOnClickListener((buttonView) ->  {
+            monitor.getMonitorState().disconnectScaleDevice();
+            monitor.showToast("Disconnect from Scale Device");
+            resetUI();
+        });
 
         // Set action for "simulation" switch
         simulationSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -132,6 +152,16 @@ public class SettingsFragment extends Fragment {
             }
 
             @Override
+            public void deviceDisconnected(@NonNull PolarDeviceInfo polarDeviceInfo) {
+                monitor.showToast(polarDeviceInfo.deviceId + "is Disconnected");
+                monitor.getMonitorState().disconnectHRDevice();
+                monitor.getMonitorState().disableStartCaptureData();
+                monitor.getPlotterHR().clearVal();
+                monitor.getPlotterECG().clearVal();
+                resetUI();
+            }
+
+            @Override
             public void hrNotificationReceived(@NonNull String identifier, @NonNull PolarHrData data) {
                     monitor.getPlotterHR().addValues(data);
             }
@@ -147,10 +177,10 @@ public class SettingsFragment extends Fragment {
      * Reset UI.
      */
     private void resetUI() {
-        monitor.getViewSetter().setDeviceView(symbolHrDevice, hrConnectButton,
-                monitor.getMonitorState().isHRDeviceConnected() || monitor.getMonitorState().isSimulationEnabled());
-        monitor.getViewSetter().setDeviceView(symbolBrainWaveDevice, scaleConnectButton,
-                monitor.getMonitorState().isScaleDeviceConnected() || monitor.getMonitorState().isSimulationEnabled());
+        monitor.getViewSetter().setDeviceView(symbolHrDevice, hrConnectButton, hrDeviceDisconenctButton,
+                monitor.getMonitorState().isHRDeviceConnected(), monitor.getMonitorState().isSimulationEnabled());
+        monitor.getViewSetter().setDeviceView(symbolBrainWaveDevice, scaleConnectButton, scaleDeviceDisconnectButton,
+                monitor.getMonitorState().isScaleDeviceConnected(), monitor.getMonitorState().isSimulationEnabled());
         monitor.getViewSetter().setSwitchView(simulationSwitch, monitor.getMonitorState().isSimulationEnabled(), !monitor.getMonitorState().isHRDeviceConnected()
         && !monitor.getMonitorState().isScaleDeviceConnected());
         monitor.getViewSetter().setSwitchView(msgOnNotWearDeviceSwitch, monitor.getMonitorState().isMsgOnNotWearDeviceEnabled());

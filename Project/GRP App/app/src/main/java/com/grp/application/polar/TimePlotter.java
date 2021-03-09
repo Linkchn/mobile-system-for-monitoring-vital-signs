@@ -30,17 +30,7 @@ public class TimePlotter {
     private Double[] yHrVals = new Double[NVALS];
 
     public TimePlotter() {
-        Date now = new Date();
-        double endTime = now.getTime();
-        double startTime = endTime - NVALS * 1000;
-        double delta = (endTime - startTime) / (NVALS - 1);
-
-        // Specify initial values to keep it from auto sizing
-        for (int i = 0; i < NVALS; i++) {
-            xHrVals[i] = startTime + i * delta;
-            yHrVals[i] = 60d;
-        }
-
+        initSize();
         hrFormatter = new LineAndPointFormatter(Color.BLUE, null, null, null);
         hrFormatter.setLegendIconEnabled(false);
         hrSeries = new SimpleXYSeries(Arrays.asList(xHrVals), Arrays.asList(yHrVals), "HR");
@@ -80,5 +70,24 @@ public class TimePlotter {
 
     public void setListener(PlotterListener listener) {
         this.listener = listener;
+    }
+
+    public void clearVal() {
+        xHrVals = new Double[NVALS];
+        yHrVals = new Double[NVALS];
+        initSize();
+    }
+
+    private void initSize() {
+        Date now = new Date();
+        double endTime = now.getTime();
+        double startTime = endTime - NVALS * 1000;
+        double delta = (endTime - startTime) / (NVALS - 1);
+
+        // Specify initial values to keep it from auto sizing
+        for (int i = 0; i < NVALS; i++) {
+            xHrVals[i] = startTime + i * delta;
+            yHrVals[i] = 60d;
+        }
     }
 }

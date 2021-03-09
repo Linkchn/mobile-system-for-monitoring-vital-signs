@@ -13,6 +13,8 @@ public class MonitorState {
     private static boolean startCaptureDataEnabled = false;
     /** {@code True} if the switch of "simulation" is on, {@code false} otherwise. */
     private static boolean simulationEnabled = false;
+    /** {@code True} if the simulator is on, {@code false} otherwise. */
+    private static boolean simulationOn = false;
     /** {@code True} if the switch of "receive message when not wear device" is on, {@code false} otherwise. */
     private static boolean msgOnNotWearDeviceEnabled = false;
     /** {@code True} if the switch of "receive warning when not capture data" is on, {@code false} otherwise. */
@@ -64,6 +66,18 @@ public class MonitorState {
 
     public boolean isSimulationEnabled() {
         return simulationEnabled;
+    }
+
+    public void simulationOn() {
+        simulationOn = true;
+    }
+
+    public void simulationOff() {
+        simulationOn = false;
+    }
+
+    public boolean isSimulationOn() {
+        return simulationOn;
     }
 
     public void enableMsgOnNotWearDevice() {

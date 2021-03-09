@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -29,13 +30,13 @@ import com.androidplot.xy.StepMode;
 import com.androidplot.xy.XYGraphWidget;
 import com.androidplot.xy.XYPlot;
 import com.google.android.material.textfield.TextInputEditText;
-import com.grp.application.notification.GRPNotification;
 import com.grp.application.Application;
 import com.grp.application.MainActivity;
 import com.example.application.R;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.grp.application.export.FileLog;
 import com.grp.application.monitor.Monitor;
+import com.grp.application.notification.GRPNotification;
 import com.grp.application.polar.Plotter;
 import com.grp.application.polar.PlotterListener;
 import com.grp.application.polar.PolarDevice;
@@ -52,6 +53,7 @@ import java.text.DecimalFormat;
 import java.util.Date;
 
 import polar.com.sdk.api.PolarBleApiCallback;
+import polar.com.sdk.api.model.PolarDeviceInfo;
 import polar.com.sdk.api.model.PolarHrData;
 import timber.log.Timber;
 
@@ -146,7 +148,8 @@ public class HomeFragment extends Fragment implements PlotterListener {
         initUI();
         if (monitor.getMonitorState().isStartCaptureDataEnabled()) {
             startPlot();
-            if (monitor.getMonitorState().isSimulationEnabled()) {
+            if (monitor.getMonitorState().isSimulationEnabled() &&
+            !monitor.getMonitorState().isSimulationOn()) {
                 simHandler.postDelayed(simulate, 1000);
             }
         }
@@ -159,11 +162,13 @@ public class HomeFragment extends Fragment implements PlotterListener {
                 startPlot();
                 if (monitor.getMonitorState().isSimulationEnabled()) {
                     simHandler.postDelayed(simulate, 1000);
+                    monitor.getMonitorState().simulationOn();
                 }
             } else {
                 monitor.showToast("Stop Capture Data");
                 monitor.getMonitorState().disableStartCaptureData();
                 simHandler.removeCallbacks(simulate);
+                monitor.getMonitorState().simulationOff();
                 stopPlot();
             }
         });
@@ -215,7 +220,6 @@ public class HomeFragment extends Fragment implements PlotterListener {
          *
          */
         startRecordingHrButton.setOnClickListener((view) -> {
-//            Toast.makeText(Application.context, "!!!!!!", Toast.LENGTH_LONG).show();
 
             if(hrStatus == true){
                 AlertDialog alertDialog1 = new AlertDialog.Builder(getContext())
@@ -289,6 +293,11 @@ public class HomeFragment extends Fragment implements PlotterListener {
                     alertDialog1.show();
                     startRecordingHrButton.setTextColor(Color.rgb(21,131,216));
 
+                    final int REQUEST_EXTERNAL_STORAGE = 1;
+                    String[] PERMISSIONS_STORAGE = {
+                            Manifest.permission.READ_EXTERNAL_STORAGE,
+                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                            Manifest.permission.MOUNT_UNMOUNT_FILESYSTEMS};
                     if (ContextCompat.checkSelfPermission(mainActivity,
                             Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                         ActivityCompat.requestPermissions(mainActivity, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 101);
@@ -475,6 +484,15 @@ public class HomeFragment extends Fragment implements PlotterListener {
             }
 
             @Override
+            public void deviceDisconnected(@NonNull PolarDeviceInfo polarDeviceInfo) {
+                monitor.showToast(polarDeviceInfo.deviceId + "is lost");
+                monitor.getMonitorState().disconnectHRDevice();
+                stopPlot();
+                monitor.getMonitorState().disableStartCaptureData();
+                startCaptureDataSwitch.setEnabled(false);
+            }
+
+            @Override
             public void ecgFeatureReady(@NonNull String identifier) {
                 monitor.streamECG();
             }
@@ -521,6 +539,8 @@ public class HomeFragment extends Fragment implements PlotterListener {
     private void stopPlot() {
         plotHR.removeSeries(plotterHR.getHrSeries());
         plotECG.removeSeries(plotterECG.getSeries());
+        plotterHR.clearVal();
+        plotterECG.clearVal();
     }
 
     /**
@@ -535,6 +555,25 @@ public class HomeFragment extends Fragment implements PlotterListener {
     }
 
     private void openAssignFolder(String path) {
+//        File file = new File(path);
+//        if (null == file || !file.exists()) {
+//            return;
+//        }
+//        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+////        intent.addCategory(Intent.CATEGORY_OPENABLE);
+////        intent.setType("csv/*");
+//
+//        intent.addCategory(Intent.CATEGORY_OPENABLE);
+//        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+////        intent.setDataAndType(Uri.fromFile(file), "csv/*");
+//        intent.setType("csv/*");
+//
+//        try {
+//            startActivity(intent);
+//        } catch (ActivityNotFoundException e) {
+//            e.printStackTrace();
+//        }
+
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         Uri uri = Uri.parse(path);
         intent.setDataAndType(uri, "*/*");
@@ -543,7 +582,7 @@ public class HomeFragment extends Fragment implements PlotterListener {
 
     private void loadHrValue(PolarHrData data) {
         if(hrStatus){
-            hrData = hrData + System.currentTimeMillis() + "," + data + ",\n";
+            hrData = hrData + System.currentTimeMillis() + "," + data.hr + ",\n";
         }
         monitor.getPlotterHR().addValues(data);
     }

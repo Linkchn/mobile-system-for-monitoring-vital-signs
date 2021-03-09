@@ -215,6 +215,7 @@ public class HomeFragment extends Fragment implements PlotterListener {
          *
          */
         startRecordingHrButton.setOnClickListener((view) -> {
+//            Toast.makeText(Application.context, "!!!!!!", Toast.LENGTH_LONG).show();
 
             if(hrStatus == true){
                 AlertDialog alertDialog1 = new AlertDialog.Builder(getContext())
@@ -288,11 +289,6 @@ public class HomeFragment extends Fragment implements PlotterListener {
                     alertDialog1.show();
                     startRecordingHrButton.setTextColor(Color.rgb(21,131,216));
 
-                    final int REQUEST_EXTERNAL_STORAGE = 1;
-                    String[] PERMISSIONS_STORAGE = {
-                            Manifest.permission.READ_EXTERNAL_STORAGE,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                            Manifest.permission.MOUNT_UNMOUNT_FILESYSTEMS};
                     if (ContextCompat.checkSelfPermission(mainActivity,
                             Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                         ActivityCompat.requestPermissions(mainActivity, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 101);
@@ -539,25 +535,6 @@ public class HomeFragment extends Fragment implements PlotterListener {
     }
 
     private void openAssignFolder(String path) {
-//        File file = new File(path);
-//        if (null == file || !file.exists()) {
-//            return;
-//        }
-//        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-////        intent.addCategory(Intent.CATEGORY_OPENABLE);
-////        intent.setType("csv/*");
-//
-//        intent.addCategory(Intent.CATEGORY_OPENABLE);
-//        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-////        intent.setDataAndType(Uri.fromFile(file), "csv/*");
-//        intent.setType("csv/*");
-//
-//        try {
-//            startActivity(intent);
-//        } catch (ActivityNotFoundException e) {
-//            e.printStackTrace();
-//        }
-
         Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
         Uri uri = Uri.parse(path);
         intent.setDataAndType(uri, "*/*");

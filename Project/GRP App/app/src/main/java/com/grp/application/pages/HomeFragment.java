@@ -464,7 +464,7 @@ public class HomeFragment extends Fragment implements PlotterListener {
 
     private void loadHrValue(PolarHrData data) {
         if(hrStatus){
-            hrData = hrData + System.currentTimeMillis() + "," + data + ",\n";
+            hrData = hrData + System.currentTimeMillis() + "," + data.hr + ",\n";
         }
         monitor.getPlotterHR().addValues(data);
     }

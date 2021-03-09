@@ -46,7 +46,6 @@ import com.grp.application.scale.datatypes.ScaleMeasurement;
 import com.grp.application.simulation.HrSimulator;
 import com.grp.application.simulation.WeightSimulator;
 
-import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.Date;
@@ -80,9 +79,14 @@ public class HomeFragment extends Fragment implements PlotterListener {
     Button startRecordingHrButton;
     Button stopRecordingHrButton;
     Button viewRecordingHrButton;
+    Button startRecordingECGButton;
+    Button stopRecordingECGButton;
+    Button viewRecordingECGButton;
 
     private Boolean hrStatus = false;
+    private Boolean ecgStatus = false;
     private String hrData = "";
+    private  String ecgData = "";
 
     private TimePlotter plotterHR;
     private Plotter plotterECG;
@@ -109,6 +113,10 @@ public class HomeFragment extends Fragment implements PlotterListener {
         stopRecordingHrButton = root.findViewById(R.id.button_stop_recording_hr);
         viewRecordingHrButton = root.findViewById(R.id.button_view_recording_hr);
 
+        startRecordingECGButton = root.findViewById(R.id.button_start_recording_ecg);
+        stopRecordingECGButton = root.findViewById(R.id.button_stop_recording_ecg);
+        viewRecordingECGButton = root.findViewById(R.id.button_view_recording_ecg);
+
 
 
         polarDevice = PolarDevice.getInstance();
@@ -127,7 +135,7 @@ public class HomeFragment extends Fragment implements PlotterListener {
                     if(data.hr <= 0){
                         grpNotification.sendNotification(mainActivity);
                     }
-                    textViewHR.setText("Current Heart Rate: " + String.valueOf(data.hr));
+                    textViewHR.setText(getString(R.string.current_HR) + String.valueOf(data.hr));
                     loadHrValue(data);
 
                 } catch (IOException e) {
@@ -161,7 +169,7 @@ public class HomeFragment extends Fragment implements PlotterListener {
                     simHandler.postDelayed(simulate, 1000);
                 }
             } else {
-                monitor.showToast("Stop Capture Data");
+                monitor.showToast(getString(R.string.stop_capture_data));
                 monitor.getMonitorState().disableStartCaptureData();
                 simHandler.removeCallbacks(simulate);
                 stopPlot();
@@ -184,6 +192,65 @@ public class HomeFragment extends Fragment implements PlotterListener {
             } else {
                 invokeConnectToBluetoothDevice(view);
             }
+        });
+
+        /**
+         * A button listener that monitors the RecordingHrButton reacting differently in
+         * different situations.
+         *
+         * <ul>
+         *     <li>
+         *         When the first time this button is clicked and there has a connected device,
+         *         the recording is starting and a dialog will show "Recording". The text of the
+         *         button will turn to red.
+         *     </li>
+         *     <li>
+         *         If user constantly clicks the button while the recording, an alert will appear to
+         *         warn "Already recording".
+         *     </li>
+         *     <li>
+         *          If there is no an available device but the user clicks the button, an alert will
+         *          show "No Device Connected".
+         *     </li>
+         *     <li>
+         *         If the connected device is not suitable but the user clicks the button, an alert
+         *         will show "Device Not Supported".
+         *     </li>
+         * </ul>
+         *
+         * @param ECGStatus represents whether the recording is on or not
+         *
+         */
+        startRecordingHrButton.setOnClickListener((view) -> {
+            if(hrStatus == true){
+
+            }else{
+
+            }
+
+        });
+
+        /**
+         * A button listener that monitors the StopRecordingHrButton, reacting differently in
+         * different situations.
+         *
+         * <ul>
+         *     <li>
+         *         If the button is clicked when the RecordingHrButton is blue, which means the
+         *         recording is not doing, an alert will show "No Recording".
+         *     </li>
+         *     <li>
+         *         If the button is clicked when the RecordingHrButton is red, then the recording
+         *         will be stopped. An alert will show "Recording ends" and the red text will
+         *         be set in blue again.
+         *     </li>
+         * </ul>
+         *
+         * @param ECGStatus represents whether the recording is on or not
+         *
+         */
+        stopRecordingHrButton.setOnClickListener((view) -> {
+
         });
 
 
@@ -215,8 +282,6 @@ public class HomeFragment extends Fragment implements PlotterListener {
          *
          */
         startRecordingHrButton.setOnClickListener((view) -> {
-//            Toast.makeText(Application.context, "!!!!!!", Toast.LENGTH_LONG).show();
-
             if(hrStatus == true){
                 AlertDialog alertDialog1 = new AlertDialog.Builder(getContext())
                         .setTitle("Problem")
@@ -276,9 +341,10 @@ public class HomeFragment extends Fragment implements PlotterListener {
          *
          * @param hrStatus represents whether the recording is on or not
          *
-         */        stopRecordingHrButton.setOnClickListener((view) -> {
+         */
+        stopRecordingHrButton.setOnClickListener((view) -> {
 
-            if(monitor.getMonitorState().isSimulationEnabled()){
+            if(monitor.getMonitorState().isSimulationEnabled()){ //TODO: ???????????????????
                 if (hrStatus == true){
 
                     AlertDialog alertDialog1 = new AlertDialog.Builder(getContext())
@@ -462,16 +528,17 @@ public class HomeFragment extends Fragment implements PlotterListener {
     private void initDevice() {
         polarDevice.api().setApiCallback(new PolarBleApiCallback() {
             @Override
-            public void hrNotificationReceived(@NonNull String identifier, @NonNull PolarHrData data) {
+            public void hrNotificationReceived(@NonNull String identifier, @NonNull PolarHrData hrData) {
                 if (monitor.getMonitorState().isStartCaptureDataEnabled()) {
-                    textViewHR.setText("Current Heart Rate: " + String.valueOf(data.hr));
+                    textViewHR.setText("Current Heart Rate: " + String.valueOf(hrData.hr));
                 } else {
                     textViewHR.setText("No HR Signal");
                 }
-                if(data.hr <= 0){
+                if(hrData.hr <= 0){
                     grpNotification.sendNotification(mainActivity);
                 }
-                loadHrValue(data);
+                loadHrValue(hrData);
+                loadECGValue(ecgData);
             }
 
             @Override

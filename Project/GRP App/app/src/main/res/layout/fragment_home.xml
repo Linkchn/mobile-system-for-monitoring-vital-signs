@@ -51,6 +51,39 @@
             android:text="ECG"
             android:textSize="16sp" />
 
+        <Button
+            android:id="@+id/button_start_recording_ecg"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="255dp"
+            android:layout_height="45dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="30dp"
+            android:text="Start Recording ECG      >"
+            app:strokeColor="@color/main_color" />
+
+        <Button
+            android:id="@+id/button_stop_recording_ecg"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="255dp"
+            android:layout_height="45dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="30dp"
+            android:text="Stop Recording ECG      >"
+            app:strokeColor="@color/main_color" />
+
+        <Button
+            android:id="@+id/button_view_recording_ecg"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="255dp"
+            android:layout_height="45dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="30dp"
+            android:text="Stop Recording ECG      >"
+            app:strokeColor="@color/main_color" />
+
         <TextView
             android:id="@+id/number_heart_rate"
             android:layout_width="wrap_content"
@@ -94,8 +127,8 @@
         <Button
             android:id="@+id/button_start_recording_hr"
             style="?attr/materialButtonOutlinedStyle"
-            android:layout_width="263dp"
-            android:layout_height="55dp"
+            android:layout_width="255dp"
+            android:layout_height="45dp"
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="30dp"
@@ -105,8 +138,8 @@
         <Button
             android:id="@+id/button_stop_recording_hr"
             style="?attr/materialButtonOutlinedStyle"
-            android:layout_width="258dp"
-            android:layout_height="55dp"
+            android:layout_width="255dp"
+            android:layout_height="45dp"
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="30dp"
@@ -116,8 +149,8 @@
         <Button
             android:id="@+id/button_view_recording_hr"
             style="?attr/materialButtonOutlinedStyle"
-            android:layout_width="259dp"
-            android:layout_height="51dp"
+            android:layout_width="255dp"
+            android:layout_height="45dp"
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="30dp"

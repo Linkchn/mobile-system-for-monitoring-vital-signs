@@ -29,7 +29,7 @@ import com.androidplot.xy.StepMode;
 import com.androidplot.xy.XYGraphWidget;
 import com.androidplot.xy.XYPlot;
 import com.google.android.material.textfield.TextInputEditText;
-import com.grp.application.GRPNotification.GRPNotification;
+import com.grp.application.notification.GRPNotification;
 import com.grp.application.Application;
 import com.grp.application.MainActivity;
 import com.example.application.R;

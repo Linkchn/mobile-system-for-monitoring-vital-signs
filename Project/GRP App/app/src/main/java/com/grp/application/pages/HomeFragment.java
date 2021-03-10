@@ -15,7 +15,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -83,6 +82,9 @@ public class HomeFragment extends Fragment implements PlotterListener {
     Button startRecordingECGButton;
     Button stopRecordingECGButton;
     Button viewRecordingECGButton;
+    Button startRecordingAccButton;
+    Button stopRecordingAccButton;
+    Button viewRecordingAccButton;
 
     private Boolean hrStatus = false;
     private Boolean ecgStatus = false;
@@ -113,11 +115,12 @@ public class HomeFragment extends Fragment implements PlotterListener {
         startRecordingHrButton = root.findViewById(R.id.button_start_recording_hr);
         stopRecordingHrButton = root.findViewById(R.id.button_stop_recording_hr);
         viewRecordingHrButton = root.findViewById(R.id.button_view_recording_hr);
-
         startRecordingECGButton = root.findViewById(R.id.button_start_recording_ecg);
         stopRecordingECGButton = root.findViewById(R.id.button_stop_recording_ecg);
         viewRecordingECGButton = root.findViewById(R.id.button_view_recording_ecg);
-
+        startRecordingAccButton = root.findViewById(R.id.button_start_recording_acc);
+        stopRecordingAccButton = root.findViewById(R.id.button_stop_recording_acc);
+        viewRecordingAccButton = root.findViewById(R.id.button_view_recording_acc);
 
 
         polarDevice = PolarDevice.getInstance();
@@ -125,6 +128,10 @@ public class HomeFragment extends Fragment implements PlotterListener {
         plotECG = root.findViewById(R.id.plot_ecg);
         textViewHR = root.findViewById(R.id.number_heart_rate);
         grpNotification = Notification.getInstance(mainActivity);
+        plotterHR = monitor.getPlotterHR();
+        plotterECG = monitor.getPlotterECG();
+        plotterHR.setListener(this);
+        plotterECG.setListener(this);
 
         // Set hr simulator
         Handler simHandler = new Handler();
@@ -136,7 +143,7 @@ public class HomeFragment extends Fragment implements PlotterListener {
                     if(data.hr <= 0){
                         grpNotification.sendNotification(mainActivity);
                     }
-                    textViewHR.setText("Current Heart Rate: " + String.valueOf(data.hr));
+                    textViewHR.setText("Current Heart Rate: " + data.hr);
                     loadHrValue(data);
 
                 } catch (IOException e) {
@@ -146,10 +153,6 @@ public class HomeFragment extends Fragment implements PlotterListener {
             }
         };
 
-        plotterHR = monitor.getPlotterHR();
-        plotterECG = monitor.getPlotterECG();
-        plotterHR.setListener(this);
-        plotterECG.setListener(this);
 
         initDevice();
         initUI();
@@ -285,39 +288,19 @@ public class HomeFragment extends Fragment implements PlotterListener {
          */
         startRecordingHrButton.setOnClickListener((view) -> {
             if(hrStatus){
-                AlertDialog alertDialog1 = new AlertDialog.Builder(getContext())
-                        .setTitle("Problem")
-                        .setMessage("Already recording ")
-                        .setIcon(R.mipmap.ic_launcher)
-                        .create();
-                alertDialog1.show();
+                alertDialog("Problem", "Already recording ");
                 startRecordingHrButton.setTextColor(Color.rgb(244,67,54));
             }else{
                 if (monitor.getMonitorState().isSimulationEnabled()){
-                    AlertDialog alertDialog1 = new AlertDialog.Builder(getContext())
-                            .setTitle("Problem")
-                            .setMessage("Recording")
-                            .setIcon(R.mipmap.ic_launcher)
-                            .create();
-                    alertDialog1.show();
+                    alertDialog("Problem", "Recording");
                     startRecordingHrButton.setTextColor(Color.rgb(244,67,54));
                     hrStatus = true;
                 } else {
                     if(!detectDeviceConnect(view)){
-                        AlertDialog alertDialog1 = new AlertDialog.Builder(getContext())
-                                .setTitle("Problem")
-                                .setMessage("No Device Connected ")
-                                .setIcon(R.mipmap.ic_launcher)
-                                .create();
-                        alertDialog1.show();
+                        alertDialog("Problem", "No Device Connected ");
                     }
                     else if(!detectDeviceSupport(view)){
-                        AlertDialog alertDialog1 = new AlertDialog.Builder(getContext())
-                                .setTitle("Problem")
-                                .setMessage("Device Not Supported")
-                                .setIcon(R.mipmap.ic_launcher)
-                                .create();
-                        alertDialog1.show();
+                        alertDialog("Problem", "Device Not Supported");
                     }
                 }
 
@@ -346,12 +329,7 @@ public class HomeFragment extends Fragment implements PlotterListener {
          */
         stopRecordingHrButton.setOnClickListener((view) -> {
             if (hrStatus == true){
-                AlertDialog alertDialog = new AlertDialog.Builder(getContext())
-                        .setTitle("Recording")
-                        .setMessage("Recording ends")
-                        .setIcon(R.mipmap.ic_launcher)
-                        .create();
-                alertDialog.show();
+                alertDialog("Recording", "Recording ends");
                 startRecordingHrButton.setTextColor(Color.rgb(21,131,216));
 
                 if (ContextCompat.checkSelfPermission(mainActivity,
@@ -378,15 +356,27 @@ public class HomeFragment extends Fragment implements PlotterListener {
          * data will be opened.
          */
         viewRecordingHrButton.setOnClickListener((view) -> {
-//            Toast.makeText(Application.context, "view", Toast.LENGTH_LONG).show();
             openAssignFolder(Environment.getExternalStorageDirectory() + "/HR");
-            if(monitor.getMonitorState().isSimulationEnabled()){
-            }
         });
 
 
         // updated at 2/17. Problems occur in android simulator.
         return root;
+    }
+
+
+    /**
+     * generate the alert dialog
+     * @param problem the title of alert
+     * @param s the problem content
+     */
+    private void alertDialog(String problem, String s) {
+        AlertDialog alertDialog = new AlertDialog.Builder(getContext())
+                .setTitle(problem)
+                .setMessage(s)
+                .setIcon(R.mipmap.ic_launcher)
+                .create();
+        alertDialog.show();
     }
 
     /**

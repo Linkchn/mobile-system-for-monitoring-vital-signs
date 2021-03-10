@@ -45,4 +45,8 @@
     <string name="text_device_connected">Connected</string>
     <string name="info_bluetooth_connection_error_scale_offline">Could not connect to scale, please ensure it is on.</string>
     <string name="info_step_on_scale">Please step barefoot on the scale</string>
+    <string name="current_HR">\"Current Heart Rate: \"</string>
+    <string name="stop_capture_data">Stop Capture Data</string>
+    <string name="no_hr_signal">No HR Signal</string>
+    <string name="current_hr">\"Current Heart Rate: \"</string>
 </resources>

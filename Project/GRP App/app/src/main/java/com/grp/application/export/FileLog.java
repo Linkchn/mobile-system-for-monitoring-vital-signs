@@ -25,8 +25,8 @@ public class FileLog {
         String path = Environment.getExternalStorageDirectory() + "/HR";
         File files = new File(path);
         Date date = new Date();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-M-dd HH:mm:ss,EE", Locale.CHINA);
-        String formatDate = dateFormat.format(date);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-M-dd HH:mm:ss,EE", Locale.getDefault());
+        String formatDate = dateFormat.format(date) + "\n";
 
         if (!files.exists()) {
             files.mkdirs();

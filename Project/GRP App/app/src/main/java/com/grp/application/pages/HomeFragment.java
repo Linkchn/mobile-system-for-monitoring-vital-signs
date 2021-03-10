@@ -3,7 +3,6 @@ package com.grp.application.pages;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
-import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -30,13 +29,13 @@ import com.androidplot.xy.StepMode;
 import com.androidplot.xy.XYGraphWidget;
 import com.androidplot.xy.XYPlot;
 import com.google.android.material.textfield.TextInputEditText;
-import com.grp.application.notification.GRPNotification;
 import com.grp.application.Application;
 import com.grp.application.MainActivity;
 import com.example.application.R;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.grp.application.export.FileLog;
 import com.grp.application.monitor.Monitor;
+import com.grp.application.notification.Notification;
 import com.grp.application.polar.Plotter;
 import com.grp.application.polar.PlotterListener;
 import com.grp.application.polar.PolarDevice;
@@ -47,7 +46,6 @@ import com.grp.application.scale.datatypes.ScaleMeasurement;
 import com.grp.application.simulation.HrSimulator;
 import com.grp.application.simulation.WeightSimulator;
 
-import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.Date;
@@ -94,7 +92,7 @@ public class HomeFragment extends Fragment implements PlotterListener {
     private TimePlotter plotterHR;
     private Plotter plotterECG;
 
-    private GRPNotification grpNotification;
+    private Notification grpNotification;
 
 
     public HomeFragment() {}
@@ -126,7 +124,7 @@ public class HomeFragment extends Fragment implements PlotterListener {
         plotHR = root.findViewById(R.id.plot_hr);
         plotECG = root.findViewById(R.id.plot_ecg);
         textViewHR = root.findViewById(R.id.number_heart_rate);
-        grpNotification = GRPNotification.getInstance(mainActivity);
+        grpNotification = Notification.getInstance(mainActivity);
 
         // Set hr simulator
         Handler simHandler = new Handler();

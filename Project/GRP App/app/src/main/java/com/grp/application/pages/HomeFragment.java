@@ -3,7 +3,6 @@ package com.grp.application.pages;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
-import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -29,7 +28,7 @@ import com.androidplot.xy.StepMode;
 import com.androidplot.xy.XYGraphWidget;
 import com.androidplot.xy.XYPlot;
 import com.google.android.material.textfield.TextInputEditText;
-import com.grp.application.notification.GRPNotification;
+import com.grp.application.notification.Notification;
 import com.grp.application.Application;
 import com.grp.application.MainActivity;
 import com.example.application.R;
@@ -91,7 +90,7 @@ public class HomeFragment extends Fragment implements PlotterListener {
     private TimePlotter plotterHR;
     private Plotter plotterECG;
 
-    private GRPNotification grpNotification;
+    private Notification notification;
 
 
     public HomeFragment() {}
@@ -123,7 +122,7 @@ public class HomeFragment extends Fragment implements PlotterListener {
         plotHR = root.findViewById(R.id.plot_hr);
         plotECG = root.findViewById(R.id.plot_ecg);
         textViewHR = root.findViewById(R.id.number_heart_rate);
-        grpNotification = GRPNotification.getInstance(mainActivity);
+        notification = Notification.getInstance(mainActivity);
 
         // Set hr simulator
         Handler simHandler = new Handler();
@@ -133,9 +132,9 @@ public class HomeFragment extends Fragment implements PlotterListener {
                 try {
                     PolarHrData data = hrSimulator.getNextHrData();
                     if(data.hr <= 0){
-                        grpNotification.sendNotification(mainActivity);
+                        notification.sendNotification(mainActivity);
                     }
-                    textViewHR.setText(getString(R.string.current_HR) + String.valueOf(data.hr));
+                    textViewHR.setText(getString(R.string.current_HR) + data.hr);
                     loadHrValue(data);
 
                 } catch (IOException e) {
@@ -182,7 +181,7 @@ public class HomeFragment extends Fragment implements PlotterListener {
                 try {
                     float weight = weightSimulator.readNextWeightData();
                     if(weight <= 0){
-                        grpNotification.sendNotification(mainActivity);
+                        notification.sendNotification(mainActivity);
                     }
                     weightText.setText(String.format("%.2f", weight));
                 } catch (IOException e) {
@@ -282,7 +281,7 @@ public class HomeFragment extends Fragment implements PlotterListener {
          *
          */
         startRecordingHrButton.setOnClickListener((view) -> {
-            if(hrStatus == true){
+            if(hrStatus){
                 AlertDialog alertDialog1 = new AlertDialog.Builder(getContext())
                         .setTitle("Problem")
                         .setMessage("Already recording ")
@@ -301,7 +300,7 @@ public class HomeFragment extends Fragment implements PlotterListener {
                     startRecordingHrButton.setTextColor(Color.rgb(244,67,54));
                     hrStatus = true;
                 } else {
-                    if(detectDeviceConnect(view) == false){
+                    if(!detectDeviceConnect(view)){
                         AlertDialog alertDialog1 = new AlertDialog.Builder(getContext())
                                 .setTitle("Problem")
                                 .setMessage("No Device Connected ")
@@ -309,7 +308,7 @@ public class HomeFragment extends Fragment implements PlotterListener {
                                 .create();
                         alertDialog1.show();
                     }
-                    else if(detectDeviceSupport(view) == false){
+                    else if(!detectDeviceSupport(view)){
                         AlertDialog alertDialog1 = new AlertDialog.Builder(getContext())
                                 .setTitle("Problem")
                                 .setMessage("Device Not Supported")
@@ -343,43 +342,31 @@ public class HomeFragment extends Fragment implements PlotterListener {
          *
          */
         stopRecordingHrButton.setOnClickListener((view) -> {
-
-            if(monitor.getMonitorState().isSimulationEnabled()){ //TODO: ???????????????????
-                if (hrStatus == true){
-
-                    AlertDialog alertDialog1 = new AlertDialog.Builder(getContext())
-                            .setTitle("Recording")
-                            .setMessage("Recording ends")
-                            .setIcon(R.mipmap.ic_launcher)
-                            .create();
-                    alertDialog1.show();
-                    startRecordingHrButton.setTextColor(Color.rgb(21,131,216));
-
-                    if (ContextCompat.checkSelfPermission(mainActivity,
-                            Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                        ActivityCompat.requestPermissions(mainActivity, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 101);
-                    } else {
-                        // if clicked, changes the status to "False"
-                        hrStatus = false;
-                        String fileName = "HR_Recording_" + new Date().getTime();
-                        try {
-                            FileLog.saveLog("Heart Beat per Minute",hrData,fileName);
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                        Toast.makeText(Application.context, "Export successfully!", Toast.LENGTH_LONG).show(); // <--
-                        hrData = "";
-                        hrStatus = false;
-                    }
-                }
-
-            } else {
-                AlertDialog alertDialog1 = new AlertDialog.Builder(getContext())
-                        .setTitle("Problem")
-                        .setMessage("No Recording")
+            if (hrStatus == true){
+                AlertDialog alertDialog = new AlertDialog.Builder(getContext())
+                        .setTitle("Recording")
+                        .setMessage("Recording ends")
                         .setIcon(R.mipmap.ic_launcher)
                         .create();
-                alertDialog1.show();
+                alertDialog.show();
+                startRecordingHrButton.setTextColor(Color.rgb(21,131,216));
+
+                if (ContextCompat.checkSelfPermission(mainActivity,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(mainActivity, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 101);
+                } else {
+                    // if clicked, changes the status to "False"
+                    hrStatus = false;
+                    String fileName = "HR_Recording_" + new Date().getTime();
+                    try {
+                        FileLog.saveLog("Heart Beat per Minute",hrData,fileName);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    Toast.makeText(Application.context, "Export successfully!", Toast.LENGTH_LONG).show(); // <--
+                    hrData = "";
+                    hrStatus = false;
+                }
             }
         });
 
@@ -388,7 +375,6 @@ public class HomeFragment extends Fragment implements PlotterListener {
          * data will be opened.
          */
         viewRecordingHrButton.setOnClickListener((view) -> {
-//            Toast.makeText(Application.context, "view", Toast.LENGTH_LONG).show();
             openAssignFolder(Environment.getExternalStorageDirectory() + "/HR");
             if(monitor.getMonitorState().isSimulationEnabled()){
             }
@@ -477,7 +463,7 @@ public class HomeFragment extends Fragment implements PlotterListener {
                     Scale scale = Scale.getInstance();
                     scale.addScaleMeasurement(scaleBtData);
                     if(monitor.getWeight()<=0){
-                        grpNotification.sendNotification(mainActivity);
+                        notification.sendNotification(mainActivity);
                     }
                     weightText.setText(String.format("%.2f", monitor.getWeight()));
                     break;
@@ -530,15 +516,14 @@ public class HomeFragment extends Fragment implements PlotterListener {
             @Override
             public void hrNotificationReceived(@NonNull String identifier, @NonNull PolarHrData hrData) {
                 if (monitor.getMonitorState().isStartCaptureDataEnabled()) {
-                    textViewHR.setText("Current Heart Rate: " + String.valueOf(hrData.hr));
+                    textViewHR.setText(getString(R.string.current_hr) + hrData.hr);
                 } else {
-                    textViewHR.setText("No HR Signal");
+                    textViewHR.setText(R.string.no_hr_signal);
                 }
                 if(hrData.hr <= 0){
-                    grpNotification.sendNotification(mainActivity);
+                    notification.sendNotification(mainActivity);
                 }
                 loadHrValue(hrData);
-                loadECGValue(ecgData);
             }
 
             @Override
@@ -610,7 +595,7 @@ public class HomeFragment extends Fragment implements PlotterListener {
 
     private void loadHrValue(PolarHrData data) {
         if(hrStatus){
-            hrData = hrData + System.currentTimeMillis() + "," + data + ",\n";
+            hrData = hrData + System.currentTimeMillis() + "," + data.hr + ",\n";
         }
         monitor.getPlotterHR().addValues(data);
     }

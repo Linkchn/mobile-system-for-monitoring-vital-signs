@@ -280,10 +280,9 @@ public class HomeFragment extends Fragment implements PlotterListener {
          *
          * @param hrStatus represents whether the recording is on or not
          *
-         */        stopRecordingHrButton.setOnClickListener((view) -> {
-
-            if(monitor.getMonitorState().isSimulationEnabled()){
-                if (hrStatus == true){
+         */
+        stopRecordingHrButton.setOnClickListener((view) -> {
+             if (hrStatus == true){
 
                     AlertDialog alertDialog1 = new AlertDialog.Builder(getContext())
                             .setTitle("Recording")
@@ -315,8 +314,7 @@ public class HomeFragment extends Fragment implements PlotterListener {
                         hrStatus = false;
                     }
                 }
-
-            } else {
+            else {
                 AlertDialog alertDialog1 = new AlertDialog.Builder(getContext())
                         .setTitle("Problem")
                         .setMessage("No Recording")

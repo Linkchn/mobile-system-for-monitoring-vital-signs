@@ -51,6 +51,7 @@ import java.util.Date;
 
 import polar.com.sdk.api.PolarBleApiCallback;
 import polar.com.sdk.api.model.PolarDeviceInfo;
+import polar.com.sdk.api.model.PolarEcgData;
 import polar.com.sdk.api.model.PolarHrData;
 import timber.log.Timber;
 
@@ -115,13 +116,14 @@ public class HomeFragment extends Fragment implements PlotterListener {
         startRecordingHrButton = root.findViewById(R.id.button_start_recording_hr);
         stopRecordingHrButton = root.findViewById(R.id.button_stop_recording_hr);
         viewRecordingHrButton = root.findViewById(R.id.button_view_recording_hr);
+
         startRecordingECGButton = root.findViewById(R.id.button_start_recording_ecg);
         stopRecordingECGButton = root.findViewById(R.id.button_stop_recording_ecg);
         viewRecordingECGButton = root.findViewById(R.id.button_view_recording_ecg);
+
         startRecordingAccButton = root.findViewById(R.id.button_start_recording_acc);
         stopRecordingAccButton = root.findViewById(R.id.button_stop_recording_acc);
         viewRecordingAccButton = root.findViewById(R.id.button_view_recording_acc);
-
 
         polarDevice = PolarDevice.getInstance();
         plotHR = root.findViewById(R.id.plot_hr);
@@ -227,12 +229,22 @@ public class HomeFragment extends Fragment implements PlotterListener {
          *
          */
         startRecordingECGButton.setOnClickListener((view) -> {
-            if(hrStatus == true){
-
+            if(ecgStatus == true){
+                alertDialog("Problem", "Already recording!");
+                startRecordingECGButton.setTextColor(Color.rgb(244,67,54));
             }else{
-
+                if(!startCaptureDataSwitch.isChecked()){
+                    alertDialog("Problem", "No data capturing!");
+                }
+                else if(polarDevice.getDeviceId() == null){
+                    alertDialog("Problem", "No device connected!");
+                }
+                else{
+                    alertDialog("Recording","Recording");
+                    startRecordingECGButton.setTextColor(Color.rgb(244,67,54));
+                    ecgStatus = true;
+                }
             }
-
         });
 
         /**
@@ -255,7 +267,30 @@ public class HomeFragment extends Fragment implements PlotterListener {
          *
          */
         stopRecordingECGButton.setOnClickListener((view) -> {
+            if(ecgStatus == true){
+                alertDialog("Recording", "Recording ends");
+                startRecordingECGButton.setTextColor(Color.rgb(21,131,216));
 
+                if (ContextCompat.checkSelfPermission(mainActivity,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(mainActivity, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 101);
+                } else {
+                    ecgStatus = false;
+                    String fileName = "ECG_Recording_" + new Date().getTime();
+                    try{
+                        FileLog.saveLog("ECG information", ecgData, fileName, "ECG");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    Toast.makeText(Application.context, "Export successfully!", Toast.LENGTH_LONG).show();
+                    ecgData = "";
+                    ecgStatus = false;
+                }
+            }
+        });
+
+        viewRecordingECGButton.setOnClickListener((view) -> {
+            openAssignFolder((Environment.getExternalStorageDirectory() + "/ECG"));
         });
 
 
@@ -302,9 +337,7 @@ public class HomeFragment extends Fragment implements PlotterListener {
                     startRecordingHrButton.setTextColor(Color.rgb(244,67,54));
                     hrStatus = true;
                 }
-
             }
-
         });
 
         /**
@@ -339,7 +372,7 @@ public class HomeFragment extends Fragment implements PlotterListener {
                     hrStatus = false;
                     String fileName = "HR_Recording_" + new Date().getTime();
                     try {
-                        FileLog.saveLog("Heart Beat per Minute",hrData,fileName);
+                        FileLog.saveLog("Heart Beat per Minute",hrData,fileName, "HR");
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -599,9 +632,10 @@ public class HomeFragment extends Fragment implements PlotterListener {
 
     private void loadHrValue(PolarHrData data) {
         if(hrStatus){
-            hrData = hrData + System.currentTimeMillis() + "," + data + ",\n";
+            hrData = hrData + System.currentTimeMillis() + "," + data.hr + ",\n";
         }
         monitor.getPlotterHR().addValues(data);
     }
+
 
 }

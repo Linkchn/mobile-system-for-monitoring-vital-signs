@@ -21,8 +21,8 @@ public class FileLog {
      * @param message  The content of message
      * @param fileName name of the file to export
      */
-    public static void saveLog(String heart_beat_per_minute, String message, String fileName) throws IOException {
-        String path = Environment.getExternalStorageDirectory() + "/HR";
+    public static void saveLog(String heart_beat_per_minute, String message, String fileName, String dataType) throws IOException {
+        String path = Environment.getExternalStorageDirectory() + dataType;
         File files = new File(path);
         Date date = new Date();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-M-dd HH:mm:ss,EE", Locale.getDefault());

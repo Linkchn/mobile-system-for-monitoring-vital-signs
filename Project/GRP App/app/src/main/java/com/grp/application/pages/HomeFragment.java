@@ -291,17 +291,16 @@ public class HomeFragment extends Fragment implements PlotterListener {
                 alertDialog("Problem", "Already recording ");
                 startRecordingHrButton.setTextColor(Color.rgb(244,67,54));
             }else{
-                if (monitor.getMonitorState().isSimulationEnabled()){
-                    alertDialog("Problem", "Recording");
+                if(!startCaptureDataSwitch.isChecked()){
+                    alertDialog("Problem", "No data capturing!");
+                }
+                else if (polarDevice.getDeviceId() == null){
+                    alertDialog("Problem", "No device connected!");
+                }
+                else{
+                    alertDialog("Recording", "Recording");
                     startRecordingHrButton.setTextColor(Color.rgb(244,67,54));
                     hrStatus = true;
-                } else {
-                    if(!detectDeviceConnect(view)){
-                        alertDialog("Problem", "No Device Connected ");
-                    }
-                    else if(!detectDeviceSupport(view)){
-                        alertDialog("Problem", "Device Not Supported");
-                    }
                 }
 
             }

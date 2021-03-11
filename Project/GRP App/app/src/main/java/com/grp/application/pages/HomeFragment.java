@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,13 +46,33 @@ import com.grp.application.scale.datatypes.ScaleMeasurement;
 import com.grp.application.simulation.HrSimulator;
 import com.grp.application.simulation.WeightSimulator;
 
+import org.reactivestreams.Publisher;
+
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.Date;
 
+
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.functions.Function;
+import polar.com.sdk.api.PolarBleApi;
 import polar.com.sdk.api.PolarBleApiCallback;
+import polar.com.sdk.api.model.PolarAccelerometerData;
+import polar.com.sdk.api.PolarBleApi;
+import polar.com.sdk.api.PolarBleApiCallback;
+import polar.com.sdk.api.PolarBleApiDefaultImpl;
+import polar.com.sdk.api.errors.PolarInvalidArgument;
+import polar.com.sdk.api.model.PolarAccelerometerData;
+import polar.com.sdk.api.model.PolarDeviceInfo;
+import polar.com.sdk.api.model.PolarEcgData;
+import polar.com.sdk.api.model.PolarExerciseEntry;
+import polar.com.sdk.api.model.PolarHrData;
+import polar.com.sdk.api.model.PolarOhrPPIData;
+import polar.com.sdk.api.model.PolarSensorSetting;
 import polar.com.sdk.api.model.PolarDeviceInfo;
 import polar.com.sdk.api.model.PolarHrData;
+import polar.com.sdk.api.model.PolarSensorSetting;
 import timber.log.Timber;
 
 /**
@@ -90,7 +111,6 @@ public class HomeFragment extends Fragment implements PlotterListener {
     private Boolean ecgStatus = false;
     private String hrData = "";
     private  String ecgData = "";
-
     private TimePlotter plotterHR;
     private Plotter plotterECG;
 
@@ -111,6 +131,7 @@ public class HomeFragment extends Fragment implements PlotterListener {
         measureButton = root.findViewById(R.id.button_measure_weight);
         hrSimulator = HrSimulator.getInstance();
         weightSimulator = WeightSimulator.getInstance();
+
 
         startRecordingHrButton = root.findViewById(R.id.button_start_recording_hr);
         stopRecordingHrButton = root.findViewById(R.id.button_stop_recording_hr);
@@ -258,6 +279,9 @@ public class HomeFragment extends Fragment implements PlotterListener {
 
         });
 
+        startRecordingAccButton.setOnClickListener((view) -> {
+
+        });
 
         /**
          * A button listener that monitors the RecordingHrButton reacting differently in
@@ -531,6 +555,11 @@ public class HomeFragment extends Fragment implements PlotterListener {
             @Override
             public void ecgFeatureReady(@NonNull String identifier) {
                 monitor.streamECG();
+            }
+
+            @Override
+            public void accelerometerFeatureReady(@NonNull String identifier) {
+                monitor.streamACC();
             }
         });
     }

@@ -5,6 +5,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.androidplot.util.PixelUtils;
+import com.grp.application.polar.AccPlotter;
 import com.grp.application.polar.Plotter;
 import com.grp.application.polar.PolarDevice;
 import com.grp.application.polar.TimePlotter;
@@ -14,8 +15,11 @@ import org.reactivestreams.Publisher;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.functions.Function;
+import polar.com.sdk.api.PolarBleApi;
+import polar.com.sdk.api.model.PolarAccelerometerData;
 import polar.com.sdk.api.model.PolarEcgData;
 import polar.com.sdk.api.model.PolarSensorSetting;
+import timber.log.Timber;
 
 /**
  * Class {@code Monitor} is the class collect monitor data,
@@ -37,8 +41,10 @@ public class Monitor {
 
     private TimePlotter plotterHR;
     private Plotter plotterECG;
+    private AccPlotter plotterAcc;
     private float weight;
     private Disposable ecgDisposable = null;
+    Disposable accDisposable = null;
 
     /**
      * Private constructor.
@@ -52,6 +58,7 @@ public class Monitor {
         PixelUtils.init(context);
         plotterHR = new TimePlotter();
         plotterECG = new Plotter("ECG");
+        plotterAcc = new AccPlotter();
     }
 
     /**
@@ -103,6 +110,32 @@ public class Monitor {
             // NOTE stops streaming if it is "running"
             ecgDisposable.dispose();
             ecgDisposable = null;
+        }
+    }
+
+    public void streamACC(){
+        PolarBleApi api = polarDevice.api();
+        if (accDisposable == null) {
+            accDisposable = api.requestAccSettings(polarDevice.getDeviceId())
+                    .toFlowable()
+                    .flatMap((Function<PolarSensorSetting, Publisher<PolarAccelerometerData>>) settings -> {
+                        PolarSensorSetting sensorSetting = settings.maxSettings();
+                        return api.startAccStreaming(polarDevice.getDeviceId(), sensorSetting);
+                    }).observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(
+                            polarAccelerometerData -> {
+                                for (PolarAccelerometerData.PolarAccelerometerSample data : polarAccelerometerData.samples) {
+                                    plotterAcc.sendSingleSample(data.x,data.y,data.z);
+                                }
+                            },
+                            throwable -> {
+                                accDisposable = null;
+                            }
+                    );
+        } else {
+            // NOTE dispose will stop streaming if it is "running"
+            accDisposable.dispose();
+            accDisposable = null;
         }
     }
 

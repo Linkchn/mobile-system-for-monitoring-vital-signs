@@ -170,6 +170,11 @@ public class SettingsFragment extends Fragment {
             public void ecgFeatureReady(@NonNull String identifier) {
                 monitor.streamECG();
             }
+
+            @Override
+            public void accelerometerFeatureReady(@NonNull String identifier) {
+                monitor.streamACC();
+            }
         });
     }
 

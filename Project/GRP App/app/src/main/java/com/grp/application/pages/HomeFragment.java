@@ -3,7 +3,6 @@ package com.grp.application.pages;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
-import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -29,11 +28,15 @@ import com.androidplot.xy.StepMode;
 import com.androidplot.xy.XYGraphWidget;
 import com.androidplot.xy.XYPlot;
 import com.google.android.material.textfield.TextInputEditText;
+import com.grp.application.Constants;
 import com.grp.application.GRPNotification.GRPNotification;
 import com.grp.application.Application;
+import com.grp.application.GlobalData;
+import com.grp.application.HeartRateData;
 import com.grp.application.MainActivity;
 import com.example.application.R;
 import com.google.android.material.switchmaterial.SwitchMaterial;
+import com.grp.application.database.Dao;
 import com.grp.application.export.FileLog;
 import com.grp.application.monitor.Monitor;
 import com.grp.application.polar.Plotter;
@@ -46,9 +49,9 @@ import com.grp.application.scale.datatypes.ScaleMeasurement;
 import com.grp.application.simulation.HrSimulator;
 import com.grp.application.simulation.WeightSimulator;
 
-import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import polar.com.sdk.api.PolarBleApiCallback;
@@ -62,7 +65,6 @@ import timber.log.Timber;
  * @version 1.0
  */
 public class HomeFragment extends Fragment implements PlotterListener {
-
     private Monitor monitor;
     private MainActivity mainActivity;
     private PolarDevice polarDevice;
@@ -88,6 +90,10 @@ public class HomeFragment extends Fragment implements PlotterListener {
     private Plotter plotterECG;
 
     private GRPNotification grpNotification;
+
+    private ArrayList<HeartRateData> heartRateDataList; // Store recorded hr data for temp
+    private long lastTimestamp;    // record last time
+    private final long ONE_MIN = 60*1000;
 
 
     public HomeFragment() {}
@@ -116,6 +122,8 @@ public class HomeFragment extends Fragment implements PlotterListener {
         plotECG = root.findViewById(R.id.plot_ecg);
         textViewHR = root.findViewById(R.id.number_heart_rate);
         grpNotification = GRPNotification.getInstance(mainActivity);
+
+        heartRateDataList = new ArrayList<>();
 
         // Set hr simulator
         Handler simHandler = new Handler();
@@ -160,11 +168,17 @@ public class HomeFragment extends Fragment implements PlotterListener {
                 if (monitor.getMonitorState().isSimulationEnabled()) {
                     simHandler.postDelayed(simulate, 1000);
                 }
+                GlobalData.isStartRecord = true;
+                lastTimestamp = System.currentTimeMillis();
             } else {
                 monitor.showToast("Stop Capture Data");
                 monitor.getMonitorState().disableStartCaptureData();
                 simHandler.removeCallbacks(simulate);
                 stopPlot();
+                Dao dao = new Dao(getContext());    // Dao
+                dao.insertHRdata(heartRateDataList);
+                GlobalData.isStartRecord = false;
+                heartRateDataList.clear();
             }
         });
 
@@ -508,9 +522,21 @@ public class HomeFragment extends Fragment implements PlotterListener {
     }
 
     private void loadHrValue(PolarHrData data) {
+        long currentTime = System.currentTimeMillis();
+        int hr = data.hr;
+        heartRateDataList.add(new HeartRateData((long)hr, currentTime));
         if(hrStatus){
-            hrData = hrData + System.currentTimeMillis() + "," + data + ",\n";
+            hrData = hrData + currentTime + "," + hr + ",\n";
         }
+
+        // store data into database every 5 mins
+        if(currentTime - lastTimestamp >= ONE_MIN*5) {
+            Dao dao = new Dao(getContext());
+            lastTimestamp = currentTime;
+            dao.insertHRdata(heartRateDataList);
+            heartRateDataList.clear();
+        }
+
         monitor.getPlotterHR().addValues(data);
     }
 

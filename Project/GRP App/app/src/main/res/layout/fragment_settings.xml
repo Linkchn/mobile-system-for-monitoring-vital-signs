@@ -45,7 +45,7 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center|start"
-            android:text="Heart Rate Device:"
+            android:text="HR Device:"
             android:textSize="16sp"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"/>
@@ -66,6 +66,17 @@
             android:layout_marginStart="10dp"
             style="?attr/materialButtonOutlinedStyle"
             app:strokeColor="@color/main_color" />
+
+            <Button
+                android:id="@+id/button_disconnect_hr_device"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                android:textSize="12sp"
+                android:layout_marginStart="10dp"
+                android:foreground="@drawable/ic_baseline_link_off_24"
+                android:background="@drawable/ripple"
+                android:visibility="invisible"/>
 
         </LinearLayout>
         <LinearLayout
@@ -99,6 +110,18 @@
                 android:layout_marginStart="10dp"
                 style="?attr/materialButtonOutlinedStyle"
                 app:strokeColor="@color/main_color" />
+
+            <Button
+                android:id="@+id/button_disconnect_scale_device"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="center"
+                android:textSize="12sp"
+                android:layout_marginStart="10dp"
+                android:foreground="@drawable/ic_baseline_link_off_24"
+                android:background="@drawable/ripple"
+                android:visibility="invisible"/>
+
 
         </LinearLayout>
 

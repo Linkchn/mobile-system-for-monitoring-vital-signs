@@ -1,6 +1,8 @@
 package com.grp.application.pages;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,11 +11,11 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import com.grp.application.GRPNotification.GRPNotification;
 import com.grp.application.MainActivity;
 import com.example.application.R;
 import com.google.android.material.tabs.TabLayout;
 import com.grp.application.database.Dao;
+import com.grp.application.export.ShareView;
 import com.grp.application.monitor.Monitor;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
@@ -21,6 +23,11 @@ import com.jjoe64.graphview.series.DataPointInterface;
 import com.jjoe64.graphview.series.LineGraphSeries;
 import com.jjoe64.graphview.series.OnDataPointTapListener;
 import com.jjoe64.graphview.series.Series;
+
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * {@code ReportFragment} is class to maintain UI elements and functions of report page.
@@ -156,4 +163,50 @@ public class ReportFragment extends Fragment {
         });
     }
 
+
+    public void createShareImage(View view) {
+        ShareView shareView = new ShareView(mainActivity);
+        shareView.setInfo("其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息");
+        final Bitmap image = shareView.createImage();
+        final String path = saveImage(image);
+        Log.e("xxx", path);
+
+        if (image != null && !image.isRecycled()) {
+            image.recycle();
+        }
+    }
+
+    /**
+     * 保存bitmap到本地
+     *
+     * @param bitmap
+     * @return
+     */
+    private String saveImage(Bitmap bitmap) {
+
+        File path = null;
+
+        String fileName = "shareImage.png";
+
+        File file = new File(path, fileName);
+
+        if (file.exists()) {
+            file.delete();
+        }
+
+        FileOutputStream fos = null;
+
+        try {
+            fos = new FileOutputStream(file);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
+            fos.flush();
+            fos.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return file.getAbsolutePath();
+    }
 }

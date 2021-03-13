@@ -1,6 +1,7 @@
 package com.grp.application.monitor;
 
 import android.content.Context;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 
@@ -61,18 +62,24 @@ public class ViewSetter {
     /**
      * Set device connection button view to enabled/disabled based on the connection of the device.
      * @param symbol target symbol to show the connection state
-     * @param button target button
+     * @param connectButton button to connect device
+     * @param disconnectButton button to disconnect device
      * @param isConnected boolean parameter whether the device is connected
+     * @param isSimulationEnabled boolean parameter whether the simulation is enabled
      */
-    public void setDeviceView(ImageView symbol, Button button, boolean isConnected) {
-        if (isConnected) {
+    public void setDeviceView(ImageView symbol, Button connectButton, Button disconnectButton, boolean isConnected, boolean isSimulationEnabled) {
+        if (isConnected || isSimulationEnabled) {
             symbol.setImageDrawable(context.getDrawable(R.drawable.ic_baseline_check_circle_outline_24));
-            button.setText(R.string.text_device_connected);
+            connectButton.setText(R.string.text_device_connected);
+            if (!isSimulationEnabled) {
+                disconnectButton.setVisibility(View.VISIBLE);
+            }
         } else {
             symbol.setImageDrawable(context.getDrawable(R.drawable.ic_outline_cancel_24));
-            button.setText(R.string.text_device_not_connected);
+            connectButton.setText(R.string.text_device_not_connected);
+            disconnectButton.setVisibility(View.INVISIBLE);
         }
-        button.setEnabled(!isConnected);
+        connectButton.setEnabled(!isConnected && !isSimulationEnabled);
     }
 
     /**

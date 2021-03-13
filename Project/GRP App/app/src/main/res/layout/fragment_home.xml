@@ -14,19 +14,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="106dp">
-
-        <TextView
-            android:id="@+id/textView1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginBottom="30dp"
-
-            android:text="@string/real_time_data"
-
-            android:textSize="22sp" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:layout_editor_absoluteX="0dp">
 
         <com.androidplot.xy.XYPlot
             android:id="@+id/plot_ecg"
@@ -43,6 +32,17 @@
             app:title="" />
 
         <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="30dp"
+
+            android:text="@string/real_time_data"
+
+            android:textSize="22sp" />
+
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
@@ -50,6 +50,39 @@
             android:layout_marginBottom="20dp"
             android:text="ECG"
             android:textSize="16sp" />
+
+        <Button
+            android:id="@+id/button_start_recording_ecg"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="255dp"
+            android:layout_height="45dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="30dp"
+            android:text="Start Recording ECG      >"
+            app:strokeColor="@color/main_color" />
+
+        <Button
+            android:id="@+id/button_stop_recording_ecg"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="255dp"
+            android:layout_height="45dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="30dp"
+            android:text="Stop Recording ECG      >"
+            app:strokeColor="@color/main_color" />
+
+        <Button
+            android:id="@+id/button_view_recording_ecg"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="255dp"
+            android:layout_height="45dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="30dp"
+            android:text="Stop Recording ECG      >"
+            app:strokeColor="@color/main_color" />
 
         <TextView
             android:id="@+id/number_heart_rate"
@@ -94,8 +127,8 @@
         <Button
             android:id="@+id/button_start_recording_hr"
             style="?attr/materialButtonOutlinedStyle"
-            android:layout_width="263dp"
-            android:layout_height="55dp"
+            android:layout_width="255dp"
+            android:layout_height="45dp"
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="30dp"
@@ -105,8 +138,8 @@
         <Button
             android:id="@+id/button_stop_recording_hr"
             style="?attr/materialButtonOutlinedStyle"
-            android:layout_width="258dp"
-            android:layout_height="55dp"
+            android:layout_width="255dp"
+            android:layout_height="45dp"
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="30dp"
@@ -116,8 +149,8 @@
         <Button
             android:id="@+id/button_view_recording_hr"
             style="?attr/materialButtonOutlinedStyle"
-            android:layout_width="259dp"
-            android:layout_height="51dp"
+            android:layout_width="255dp"
+            android:layout_height="45dp"
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="30dp"
@@ -151,6 +184,7 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
+
         <Button
             android:id="@+id/button_measure_weight"
             style="?attr/materialButtonOutlinedStyle"
@@ -162,11 +196,49 @@
             android:text="Measure"
             app:strokeColor="@color/main_color" />
 
-
         <View
             android:layout_width="match_parent"
             android:layout_height="2dp"
             android:background="?android:attr/listDivider" />
+
+        <TableLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <Button
+                    android:id="@+id/button_start_recording_acc"
+                    android:layout_width="200dp"
+                    android:layout_height="45dp"
+                    android:text="Start Accelerator" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
+
+                <Button
+                    android:id="@+id/button_stop_recording_acc"
+                    android:layout_width="200dp"
+                    android:layout_height="45dp"
+                    android:text="Stop Accelerator" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" >
+
+                <Button
+                    android:id="@+id/button_view_recording_acc"
+                    android:layout_width="200dp"
+                    android:layout_height="45dp"
+                    android:text="View Accelerator" />
+            </TableRow>
+
+        </TableLayout>
 
     </LinearLayout>
 

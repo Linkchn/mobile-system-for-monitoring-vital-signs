@@ -30,7 +30,7 @@ public class Dao {
         SQLiteDatabase db = mHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put("timestamp", timestamp);
-        if(tableName == Constants.WEIGHT_TABLE_NAME){
+        if(tableName == Constants.WEIGHT_TABLE){
             values.put("weight",data);
         }else{
             values.put("hr", data);
@@ -146,18 +146,126 @@ public class Dao {
         db.close();
     }
 
-    private long getMaxHr(long timestamp) {
+    private HeartRateData getMaxHrDay() {
+        long timestamp = System.currentTimeMillis();
         SQLiteDatabase db = mHelper.getWritableDatabase();
         long maxHr = 0;
+        long time = 0;
         long startTime = TimeHelper.getDailyStartTime(timestamp);
         long endTime = TimeHelper.getDailyEndTime(timestamp);
         String[] args = {Long.toString(startTime),Long.toString(endTime)};
         Cursor cursor = db.query(Constants.HR_TABLE_MAX, new String[]{"timestamp","hr"},"timestamp>=? AND timestamp<=?", args,null,null,null );
         if(cursor.moveToFirst()){
             maxHr = cursor.getLong(cursor.getColumnIndex("hr"));
+            time = cursor.getLong(cursor.getColumnIndex("timestamp"));
         }
         db.close();
-        return maxHr;
+        return new HeartRateData(maxHr,time);
+    }
+
+    private HeartRateData getMinHrDay() {
+        long timestamp = System.currentTimeMillis();
+        SQLiteDatabase db = mHelper.getWritableDatabase();
+        long minHr = 0;
+        long time = 0;
+        long startTime = TimeHelper.getDailyStartTime(timestamp);
+        long endTime = TimeHelper.getDailyEndTime(timestamp);
+        String[] args = {Long.toString(startTime),Long.toString(endTime)};
+        Cursor cursor = db.query(Constants.HR_TABLE_MAX, new String[]{"timestamp","hr"},"timestamp>=? AND timestamp<=?", args,null,null,null );
+        if(cursor.moveToFirst()){
+            minHr = cursor.getLong(cursor.getColumnIndex("hr"));
+            time = cursor.getLong(cursor.getColumnIndex("timestamp"));
+        }
+        db.close();
+        return new HeartRateData(minHr,time);
+    }
+
+    private HeartRateData getMaxHrWeek() {
+        long timestamp = System.currentTimeMillis();
+        SQLiteDatabase db = mHelper.getWritableDatabase();
+        long maxHr = 0;
+        long time = 0;
+        long startTime = TimeHelper.getDailyStartTime(timestamp)-6*ONE_DAY;
+        long endTime = TimeHelper.getDailyEndTime(timestamp);
+        String[] args = {Long.toString(startTime),Long.toString(endTime)};
+        Cursor cursor = db.query(Constants.HR_TABLE_MAX, new String[]{"timestamp","hr"},"timestamp>=? AND timestamp<=?", args,null,null,null );
+        if(cursor.moveToFirst()){
+            do{
+                long temHr = cursor.getLong(cursor.getColumnIndex("hr"));
+                if(temHr>maxHr){
+                    maxHr = temHr;
+                    time = cursor.getLong(cursor.getColumnIndex("timestamp"));
+                }
+            }while (cursor.moveToNext());
+        }
+        db.close();
+        return new HeartRateData(maxHr,time);
+    }
+
+    private HeartRateData getMinHrWeek() {
+        long timestamp = System.currentTimeMillis();
+        SQLiteDatabase db = mHelper.getWritableDatabase();
+        long minHr = 1000;
+        long time = 0;
+        long startTime = TimeHelper.getDailyStartTime(timestamp)-6*ONE_DAY;
+        long endTime = TimeHelper.getDailyEndTime(timestamp);
+        String[] args = {Long.toString(startTime),Long.toString(endTime)};
+        Cursor cursor = db.query(Constants.HR_TABLE_MIN, new String[]{"timestamp","hr"},"timestamp>=? AND timestamp<=?", args,null,null,null );
+        if(cursor.moveToFirst()){
+            do{
+                long temHr = cursor.getLong(cursor.getColumnIndex("hr"));
+                if(temHr<minHr){
+                    minHr = temHr;
+                    time = cursor.getLong(cursor.getColumnIndex("timestamp"));
+                }
+            }while (cursor.moveToNext());
+        }
+        db.close();
+        return new HeartRateData(minHr,time);
+    }
+
+    private HeartRateData getMaxHrMonth() {
+        long timestamp = System.currentTimeMillis();
+        SQLiteDatabase db = mHelper.getWritableDatabase();
+        long maxHr = 0;
+        long time = 0;
+        long startTime = TimeHelper.getDailyStartTime(timestamp)-30*ONE_DAY;
+        long endTime = TimeHelper.getDailyEndTime(timestamp);
+        String[] args = {Long.toString(startTime),Long.toString(endTime)};
+        Cursor cursor = db.query(Constants.HR_TABLE_MAX, new String[]{"timestamp","hr"},"timestamp>=? AND timestamp<=?", args,null,null,null );
+        if(cursor.moveToFirst()){
+            do{
+                long temHr = cursor.getLong(cursor.getColumnIndex("hr"));
+                if(temHr>maxHr){
+                    maxHr = temHr;
+                    time = cursor.getLong(cursor.getColumnIndex("timestamp"));
+                }
+            }while (cursor.moveToNext());
+        }
+        db.close();
+        return new HeartRateData(maxHr,time);
+    }
+
+    private HeartRateData getMinHrMonth() {
+        long timestamp = System.currentTimeMillis();
+        SQLiteDatabase db = mHelper.getWritableDatabase();
+        long minHr = 1000;
+        long time = 0;
+        long startTime = TimeHelper.getDailyStartTime(timestamp)-30*ONE_DAY;
+        long endTime = TimeHelper.getDailyEndTime(timestamp);
+        String[] args = {Long.toString(startTime),Long.toString(endTime)};
+        Cursor cursor = db.query(Constants.HR_TABLE_MIN, new String[]{"timestamp","hr"},"timestamp>=? AND timestamp<=?", args,null,null,null );
+        if(cursor.moveToFirst()){
+            do{
+                long temHr = cursor.getLong(cursor.getColumnIndex("hr"));
+                if(temHr<minHr){
+                    minHr = temHr;
+                    time = cursor.getLong(cursor.getColumnIndex("timestamp"));
+                }
+            }while (cursor.moveToNext());
+        }
+        db.close();
+        return new HeartRateData(minHr,time);
     }
 
     public void clearTodayDataInWeeklyTable(){
@@ -316,6 +424,18 @@ public class Dao {
         }
 
         return hrList;
+    }
+
+    public void clearDatabase() {
+        SQLiteDatabase db = mHelper.getWritableDatabase();
+        db.delete(Constants.HR_TABLE_MAX,"1=1",null);
+        db.delete(Constants.HR_TABLE_MIN,"1=1",null);
+        db.delete(Constants.HR_TABLE_DAILY,"1=1",null);
+        db.delete(Constants.HR_TABLE_DETAIL,"1=1",null);
+        db.delete(Constants.WEIGHT_TABLE,"1=1",null);
+
+        db.close();
+
     }
 
 

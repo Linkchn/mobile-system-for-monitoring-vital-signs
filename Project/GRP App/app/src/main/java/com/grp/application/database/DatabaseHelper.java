@@ -28,7 +28,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String sql5 = "create table "+Constants.HR_TABLE_MIN +"(timestamp long, hr long)";
 //        String sql3 = "create table "+Constants.HR_TABLE_NAME_MONTH+"(timestamp long, hr long)";
 
-        String sql3 = "create table "+Constants.WEIGHT_TABLE_NAME+"(timestamp long, weight long)";
+        String sql3 = "create table "+Constants.WEIGHT_TABLE +"(timestamp long, weight long)";
         db.execSQL(sql1);
         db.execSQL(sql2);
         db.execSQL(sql3);

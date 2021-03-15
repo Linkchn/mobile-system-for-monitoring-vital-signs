@@ -34,7 +34,7 @@ import com.example.application.R;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.grp.application.export.FileLog;
 import com.grp.application.monitor.Monitor;
-import com.grp.application.notification.Notification;
+import com.grp.application.GRPNotification.GRPNotification;
 import com.grp.application.polar.Plotter;
 import com.grp.application.polar.PlotterListener;
 import com.grp.application.polar.PolarDevice;
@@ -94,7 +94,7 @@ public class HomeFragment extends Fragment implements PlotterListener {
     private TimePlotter plotterHR;
     private Plotter plotterECG;
 
-    private Notification grpNotification;
+    private GRPNotification grpNotification;
 
 
     public HomeFragment() {}
@@ -127,7 +127,7 @@ public class HomeFragment extends Fragment implements PlotterListener {
         plotHR = root.findViewById(R.id.plot_hr);
         plotECG = root.findViewById(R.id.plot_ecg);
         textViewHR = root.findViewById(R.id.number_heart_rate);
-        grpNotification = Notification.getInstance(mainActivity);
+        grpNotification = GRPNotification.getInstance(mainActivity);
         plotterHR = monitor.getPlotterHR();
         plotterECG = monitor.getPlotterECG();
         plotterHR.setListener(this);

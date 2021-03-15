@@ -12,6 +12,9 @@ import com.grp.application.polar.TimePlotter;
 
 import org.reactivestreams.Publisher;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.functions.Function;
@@ -32,6 +35,44 @@ public class Monitor {
 
     private MonitorState monitorState;
     private ViewSetter viewSetter;
+
+    public String getEcgValue() {
+        return ecgValue;
+    }
+
+    public String getAccValue() {
+        return accValue;
+    }
+
+    private String ecgValue;
+    private String accValue;
+    private boolean ecgStatus;
+    private boolean accStatus;
+
+    private void resetECG(){
+        ecgValue = "";
+    }
+
+    private void resetACC(){
+        accValue = "";
+
+    }
+
+    public boolean isEcgStatus() {
+        return ecgStatus;
+    }
+
+    public void setEcgStatus(boolean ecgStatus) {
+        this.ecgStatus = ecgStatus;
+    }
+
+    public boolean isAccStatus() {
+        return accStatus;
+    }
+
+    public void setAccStatus(boolean accStatus) {
+        this.accStatus = accStatus;
+    }
 
     private PolarDevice polarDevice;
     private Toast toast;
@@ -59,6 +100,12 @@ public class Monitor {
         plotterHR = new TimePlotter();
         plotterECG = new Plotter("ECG");
         plotterAcc = new AccPlotter();
+
+        /*initialize the ecg and acc recording variable*/
+        ecgValue = "";
+        accValue = "";
+        ecgStatus = false;
+        accStatus = false;
     }
 
     /**
@@ -100,6 +147,9 @@ public class Monitor {
                                     polarEcgData -> {
                                         for (Integer data : polarEcgData.samples) {
                                             plotterECG.sendSingleSample((float) ((float) data / 1000.0));
+                                            if (ecgStatus){
+                                                ecgValue = ecgValue + polarEcgData.timeStamp/1000000 + "," + data + "\n";
+                                            }
                                         }
                                     },
                                     throwable -> {
@@ -114,23 +164,25 @@ public class Monitor {
     }
 
     public void streamACC(){
-        PolarBleApi api = polarDevice.api();
         if (accDisposable == null) {
-            accDisposable = api.requestAccSettings(polarDevice.getDeviceId())
-                    .toFlowable()
-                    .flatMap((Function<PolarSensorSetting, Publisher<PolarAccelerometerData>>) settings -> {
-                        PolarSensorSetting sensorSetting = settings.maxSettings();
-                        return api.startAccStreaming(polarDevice.getDeviceId(), sensorSetting);
-                    }).observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(
-                            polarAccelerometerData -> {
-                                for (PolarAccelerometerData.PolarAccelerometerSample data : polarAccelerometerData.samples) {
-                                    plotterAcc.sendSingleSample(data.x,data.y,data.z);
-                                }
-                            },
-                            throwable -> {
-                                accDisposable = null;
-                            }
+            accDisposable =
+                    polarDevice.api().requestAccSettings(polarDevice.getDeviceId())
+                            .toFlowable()
+                            .flatMap((Function<PolarSensorSetting, Publisher<PolarAccelerometerData>>) sensorSetting ->
+                                    polarDevice.api().startAccStreaming(polarDevice.getDeviceId(), sensorSetting.maxSettings()))
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribe(
+                                    polarAccelerometerData -> {
+                                        for (PolarAccelerometerData.PolarAccelerometerSample data : polarAccelerometerData.samples) {
+                                            if (accStatus){
+                                                System.out.println("ACC: "+ data.x + "," + data.y + "," + data.z + "\n");
+                                                accValue = accValue + polarAccelerometerData.timeStamp/1000000 + "," + data.x + "," + data.y + "," + data.z + "\n";
+                                            }
+                                        }
+                                    },
+                                    throwable -> {
+                                        accDisposable = null;
+                                    }
                     );
         } else {
             // NOTE dispose will stop streaming if it is "running"
@@ -205,5 +257,24 @@ public class Monitor {
      */
     public void setWeight(float weight) {
         this.weight = weight;
+    }
+
+    public static String stampToDate(long  s){
+        String res;
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        long lt = s;
+        Date date = new Date(lt);
+        res = simpleDateFormat.format(date);
+        return res;
+    }
+
+    public void stopECG(){
+        this.ecgStatus = false;
+        resetECG();
+    }
+
+    public void stopACC(){
+        this.accStatus = false;
+        resetACC();
     }
 }

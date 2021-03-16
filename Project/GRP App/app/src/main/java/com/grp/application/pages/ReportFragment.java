@@ -207,7 +207,7 @@ public class ReportFragment extends Fragment {
         Date today = new Date();
         Calendar cal = new GregorianCalendar();
         cal.setTime(today);
-        DateFormat formatterWeek = new SimpleDateFormat("EEEE");
+        DateFormat formatterWeek = new SimpleDateFormat("EE");
         Object[] storeWeek = new Object[7];
         for(int i=0;i<7;i++){
             Date date = cal.getTime();
@@ -218,7 +218,7 @@ public class ReportFragment extends Fragment {
     }
 
     private static Object[] getDate(){
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
+        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd");
         Date today = new Date();
         Calendar cal = new GregorianCalendar();
         cal.setTime(today);

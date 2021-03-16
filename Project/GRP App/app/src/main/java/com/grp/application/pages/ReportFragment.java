@@ -169,7 +169,7 @@ public class ReportFragment extends Fragment {
         Object[] y = dailyData();
         weightChart.refreshEchartsWithOption(EchartOptionUtil.getLineChartOptions(x, y, "Weight"));
     }
-    
+
     private double getAverageRate(Number[] number){
         numberToDouble(number);
         double total = 0;
@@ -210,9 +210,9 @@ public class ReportFragment extends Fragment {
         DateFormat formatterWeek = new SimpleDateFormat("EEEE");
         Object[] storeWeek = new Object[7];
         for(int i=0;i<7;i++){
-            cal.add(Calendar.DAY_OF_MONTH, -1);
             Date date = cal.getTime();
-            storeWeek[i] = formatterWeek.format(date);
+            storeWeek[6-i] = formatterWeek.format(date);
+            cal.add(Calendar.DAY_OF_MONTH, -1);
         }
         return storeWeek;
     }
@@ -224,9 +224,9 @@ public class ReportFragment extends Fragment {
         cal.setTime(today);
         Object[] storeDate = new Object[30];
         for(int i=0;i<30;i++){
-            cal.add(Calendar.DAY_OF_MONTH, -1);
             Date date = cal.getTime();
-            storeDate[i]=formatter.format(date);
+            storeDate[29-i]=formatter.format(date);
+            cal.add(Calendar.DAY_OF_MONTH, -1);
         }
         return storeDate;
     }

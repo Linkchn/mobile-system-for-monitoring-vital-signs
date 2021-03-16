@@ -1,4 +1,4 @@
-package com.grp.application.notification;
+package com.grp.application.GRPNotification;
 
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -10,18 +10,18 @@ import com.example.application.R;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
-public class Notification {
+public class GRPNotification {
 
-    private static Notification notification;
+    private static GRPNotification GRPNotification;
     private String CHANNEL_ID = "CHANNEL_ID";
     private int notificationId = 1;
 
-    public static Notification getInstance(Context context){
-        if(notification == null) {
-            notification = new Notification();
+    public static GRPNotification getInstance(Context context){
+        if(GRPNotification == null) {
+            GRPNotification = new GRPNotification();
             NotificationManager notificationManager = (NotificationManager) context.getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
         }
-        return notification;
+        return GRPNotification;
     }
 
     private void createNotificationChannel(Context context) {

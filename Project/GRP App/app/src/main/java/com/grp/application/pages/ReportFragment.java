@@ -1,33 +1,26 @@
 package com.grp.application.pages;
 
-import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import com.grp.application.MainActivity;
 import com.example.application.R;
 import com.google.android.material.tabs.TabLayout;
+import com.grp.application.GRPchart.EchartOptionUtil;
+import com.grp.application.GRPchart.EchartView;
+import com.grp.application.MainActivity;
 import com.grp.application.database.Dao;
-import com.grp.application.export.ShareView;
 import com.grp.application.monitor.Monitor;
-import com.jjoe64.graphview.GraphView;
-import com.jjoe64.graphview.series.DataPoint;
-import com.jjoe64.graphview.series.DataPointInterface;
-import com.jjoe64.graphview.series.LineGraphSeries;
-import com.jjoe64.graphview.series.OnDataPointTapListener;
-import com.jjoe64.graphview.series.Series;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 
 /**
  * {@code ReportFragment} is class to maintain UI elements and functions of report page.
@@ -38,44 +31,41 @@ import java.io.IOException;
 public class ReportFragment extends Fragment {
     private Monitor monitor;
     private MainActivity mainActivity;
-    private final int hours = 24;
-    private final int weekDays = 7;
-    private final int monthDays = 31;
-    private GraphView graphView;
     private Dao dao;
+    private EchartView lineChart;
+    private EchartView weightChart;
+    private TextView low;
+    private TextView high;
+    private TextView average;
 
     private TabLayout durationTab;
 
     public ReportFragment() {}
 
-    private DataPoint[] data(Number[] number, int num){
-        DataPoint[] values = new DataPoint[num];     //creating an object of type DataPoint[] of size 'n'
-        for(int i=0;i<num;i++){
-            DataPoint v = new DataPoint(i, number[i].doubleValue());
-            values[i] = v;
-        }
-        return values;
-    }
-
-    private DataPoint[] dailyData(){
+    private Object[] dailyData(){
         Number[] number = dao.getDailyData();
-        DataPoint[] values;
-        values = data(number, hours);
-        return values;
+        numberToDouble(number);
+        return number;
     }
 
-    private DataPoint[] weeklyData(){
+    private Object[] weeklyData(){
         Number[] number = dao.getWeeklyData();
-        DataPoint[] values;
-        values = data(number, weekDays);
-        return values;
+        numberToDouble(number);
+        return number;
     }
 
-    private DataPoint[] monthlyData(){
+    private Object[] monthlyData(){
         Number[] number = dao.getMonthlyData();
-        DataPoint[] values;
-        values = data(number, monthDays);
-        return values;
+        numberToDouble(number);
+        return number;
+    }
+
+    private static void numberToDouble(Number[] number){
+        for(int i=0;i<number.length;i++){
+            number[i] = number[i].doubleValue();
+            BigDecimal bd = BigDecimal.valueOf((Double) number[i]).setScale(2, RoundingMode.HALF_UP);
+            number[i] = bd.doubleValue();
+        }
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -85,10 +75,23 @@ public class ReportFragment extends Fragment {
         monitor = Monitor.getInstance();
         mainActivity = (MainActivity) getActivity();
         durationTab = root.findViewById(R.id.tab_duration);
-        graphView = (GraphView)root.findViewById(R.id.graph_view_hr);
         dao = new Dao(mainActivity.getApplicationContext());
+        lineChart = root.findViewById(R.id.lineChart);
+        weightChart = root.findViewById(R.id.weightChart);
+        low = root.findViewById(R.id.low);
+        high = root.findViewById(R.id.high);
+        average = root.findViewById(R.id.average);
 
-        startPlot1();
+        lineChart.setWebViewClient(new WebViewClient(){
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                //最好在h5页面加载完毕后再加载数据，防止html的标签还未加载完成，不能正常显示
+                refreshDailyChart();
+                refreshRate(dao.getDailyData());
+                weightChart.setVisibility(View.GONE);
+            }
+        });
 
         durationTab.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
 
@@ -96,14 +99,21 @@ public class ReportFragment extends Fragment {
             public void onTabSelected(TabLayout.Tab tab) {
                 if (durationTab.getTabAt(0).isSelected()) {
                     monitor.showToast("Daily Tab");
-                    startPlot1();
+                    refreshDailyChart();
+                    refreshRate(dao.getDailyData());
+                    weightChart.setVisibility(View.GONE);
                 } else if (durationTab.getTabAt(1).isSelected()) {
                     monitor.showToast("Weekly Tab");
-                    startPlot2();
-
+                    weightChart.setVisibility(View.VISIBLE);
+                    refreshWeeklyChart();
+                    refreshWeeklyWeight();
+                    refreshRate(dao.getWeeklyData());
                 } else if (durationTab.getTabAt(2).isSelected()) {
                     monitor.showToast("Monthly Tab");
-                    startPlot3();
+                    refreshMonthlyChart();
+                    weightChart.setVisibility(View.VISIBLE);
+                    refreshMonthlyWeight();
+                    refreshRate(dao.getMonthlyData());
                 }
             }
             @Override
@@ -115,98 +125,97 @@ public class ReportFragment extends Fragment {
         return root;
     }
 
-    private void startPlot1(){
-        graphView.removeAllSeries();
-        LineGraphSeries<DataPoint> series= new LineGraphSeries<>(dailyData());
-        series.setDrawDataPoints(true);
-        graphView.addSeries(series);
-        double max_x = 24.0;
-        graphView.getViewport().setXAxisBoundsManual(true);
-        graphView.getViewport().setMaxX(max_x);
-        series.setOnDataPointTapListener(new OnDataPointTapListener() {
-            @Override
-            public void onTap(Series series, DataPointInterface dataPoint) {
-                Toast.makeText(graphView.getContext(), "Your heart rate is: "+dataPoint.getY(), Toast.LENGTH_SHORT).show();
+    private void refreshDailyChart(){
+        Object[] x = new Object[]{
+                "00:00", "1:00", "2:00", "3:00", "4:00", "5:00", "6:00","7:00","8:00",
+                "9:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00",
+                "18:00","19:00","20:00","21:00","22:00","23:00"
+        };
+        Object[] y = dailyData();
+        lineChart.refreshEchartsWithOption(EchartOptionUtil.getLineChartOptions(x, y, "Heart rate"));
+    }
+
+    private void refreshWeeklyChart(){
+        Object[] x = new Object[]{
+                "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"
+        };
+        Object[] y = weeklyData();
+        lineChart.refreshEchartsWithOption(EchartOptionUtil.getLineChartOptions(x, y, "Heart rate"));
+    }
+
+    private void refreshMonthlyChart(){
+        Object[] x = new Object[]{
+                "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"
+        };
+        Object[] y = new Object[]{
+                820, 932, 901, 934, 1290, 1330, 1320
+        };
+        lineChart.refreshEchartsWithOption(EchartOptionUtil.getLineChartOptions(x, y, "Heart rate"));
+    }
+
+    private void refreshWeeklyWeight(){
+        Object[] x = new Object[]{
+                "00:00", "1:00", "2:00", "3:00", "4:00", "5:00", "6:00","7:00","8:00",
+                "9:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00",
+                "18:00","19:00","20:00","21:00","22:00","23:00"
+        };
+        Object[] y = dailyData();
+        weightChart.refreshEchartsWithOption(EchartOptionUtil.getLineChartOptions(x, y, "Weight"));
+    }
+
+    private void refreshMonthlyWeight(){
+        Object[] x = new Object[]{
+                "00:00", "1:00", "2:00", "3:00", "4:00", "5:00", "6:00","7:00","8:00",
+                "9:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00",
+                "18:00","19:00","20:00","21:00","22:00","23:00"
+        };
+        Object[] y = dailyData();
+        weightChart.refreshEchartsWithOption(EchartOptionUtil.getLineChartOptions(x, y, "Weight"));
+    }
+
+    private double getLowestRate(Number[] number){
+        numberToDouble(number);
+        double minValue = (double)number[0];
+        for(int i=1;i<number.length;i++){
+            if((double)number[i] < minValue){
+                minValue = (double)number[i];
             }
-        });
+        }
+        return minValue;
     }
 
-    private void startPlot2(){
-        graphView.removeAllSeries();
-        LineGraphSeries<DataPoint> series= new LineGraphSeries<>(weeklyData());
-        series.setDrawDataPoints(true);
-        graphView.addSeries(series);
-        double max_x = 7.0;
-        graphView.getViewport().setXAxisBoundsManual(true);
-        graphView.getViewport().setMaxX(max_x);
-        series.setOnDataPointTapListener(new OnDataPointTapListener() {
-            @Override
-            public void onTap(Series series, DataPointInterface dataPoint) {
-                Toast.makeText(graphView.getContext(), "Your heart rate is: "+dataPoint.getY(), Toast.LENGTH_SHORT).show();
+    private double getHighestRate(Number[] number){
+        numberToDouble(number);
+        double maxValue = (double)number[0];
+        for(int i=1;i<number.length;i++){
+            if((double)number[i] > maxValue){
+                maxValue = (double)number[i];
             }
-        });
+        }
+        return maxValue;
     }
 
-    private void startPlot3(){
-        graphView.removeAllSeries();
-        LineGraphSeries<DataPoint> series= new LineGraphSeries<>(monthlyData());
-        series.setDrawDataPoints(true);
-        graphView.addSeries(series);
-        double max_x = 31.0;
-        graphView.getViewport().setXAxisBoundsManual(true);
-        graphView.getViewport().setMaxX(max_x);
-        series.setOnDataPointTapListener(new OnDataPointTapListener() {
-            @Override
-            public void onTap(Series series, DataPointInterface dataPoint) {
-                Toast.makeText(graphView.getContext(), "Your heart rate is: "+dataPoint.getY(), Toast.LENGTH_SHORT).show();
-            }
-        });
+    private double getAverageRate(Number[] number){
+        numberToDouble(number);
+        double total = 0;
+        for(int i=1;i<number.length;i++){
+            total += (double)number[i];
+        }
+        double result = total/(number.length);
+        BigDecimal bd = new BigDecimal(result).setScale(2, RoundingMode.HALF_UP);
+        result = bd.doubleValue();
+        return result;
     }
 
-
-    public void createShareImage(View view) {
-        ShareView shareView = new ShareView(mainActivity);
-        shareView.setInfo("其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息其他信息");
-        final Bitmap image = shareView.createImage();
-        final String path = saveImage(image);
-        Log.e("xxx", path);
-
-        if (image != null && !image.isRecycled()) {
-            image.recycle();
-        }
-    }
-
-    /**
-     * 保存bitmap到本地
-     *
-     * @param bitmap
-     * @return
-     */
-    private String saveImage(Bitmap bitmap) {
-
-        File path = null;
-
-        String fileName = "shareImage.png";
-
-        File file = new File(path, fileName);
-
-        if (file.exists()) {
-            file.delete();
-        }
-
-        FileOutputStream fos = null;
-
-        try {
-            fos = new FileOutputStream(file);
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, fos);
-            fos.flush();
-            fos.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return file.getAbsolutePath();
+    private void refreshRate(Number[] number){
+        number = new Number[]{820, 932, 901, 934, 1290, 1330, 1320};
+        numberToDouble(number);
+        double lowRate = getLowestRate(number);
+        low.setText("The lowest heart rate: "+ lowRate);
+        double highRate = getHighestRate(number);
+        high.setText("The highest heart rate: " + highRate);
+        double averageRate = getAverageRate(number);
+        average.setText("The Average heart rate: " + averageRate);
     }
 }
+

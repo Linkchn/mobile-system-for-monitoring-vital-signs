@@ -37,7 +37,7 @@ import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.grp.application.database.Dao;
 import com.grp.application.export.FileLog;
 import com.grp.application.monitor.Monitor;
-import com.grp.application.notification.Notification;
+import com.grp.application.GRPNotification.GRPNotification;
 import com.grp.application.polar.Plotter;
 import com.grp.application.polar.PlotterListener;
 import com.grp.application.polar.PolarDevice;
@@ -76,6 +76,7 @@ public class HomeFragment extends Fragment implements PlotterListener {
     private TextView textViewHR;
     SwitchMaterial startCaptureDataSwitch;
     SwitchMaterial simulationSwitch;
+    SwitchMaterial receiveWarningSwitch;
     TextInputEditText weightText;
     Button measureButton;
 
@@ -97,7 +98,7 @@ public class HomeFragment extends Fragment implements PlotterListener {
     private TimePlotter plotterHR;
     private Plotter plotterECG;
 
-    private Notification grpNotification;
+    private GRPNotification grpNotification;
 
     private ArrayList<HeartRateData> heartRateDataList; // Store recorded hr data for temp
     private long lastTimestamp;    // record last time
@@ -128,13 +129,14 @@ public class HomeFragment extends Fragment implements PlotterListener {
         startRecordingAccButton = root.findViewById(R.id.button_start_recording_acc);
         stopRecordingAccButton = root.findViewById(R.id.button_stop_recording_acc);
         viewRecordingAccButton = root.findViewById(R.id.button_view_recording_acc);
+        receiveWarningSwitch = root.findViewById(R.id.switch_msg_report_generated);
 
 
         polarDevice = PolarDevice.getInstance();
         plotHR = root.findViewById(R.id.plot_hr);
         plotECG = root.findViewById(R.id.plot_ecg);
         textViewHR = root.findViewById(R.id.number_heart_rate);
-        grpNotification = Notification.getInstance(mainActivity);
+        grpNotification = GRPNotification.getInstance(mainActivity);
         plotterHR = monitor.getPlotterHR();
         plotterECG = monitor.getPlotterECG();
         plotterHR.setListener(this);
@@ -150,7 +152,9 @@ public class HomeFragment extends Fragment implements PlotterListener {
                 try {
                     PolarHrData data = hrSimulator.getNextHrData();
                     if(data.hr <= 0){
-                        grpNotification.sendNotification(mainActivity);
+                            if(receiveWarningSwitch.isChecked()){
+                                grpNotification.sendNotification(mainActivity);
+                            }
                     }
                     textViewHR.setText("Current Heart Rate: " + data.hr);
                     loadHrValue(data);
@@ -171,6 +175,8 @@ public class HomeFragment extends Fragment implements PlotterListener {
                 simHandler.postDelayed(simulate, 1000);
             }
         }
+
+
 
         // Set action for "start capture data" switch
         startCaptureDataSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -201,7 +207,9 @@ public class HomeFragment extends Fragment implements PlotterListener {
                 try {
                     float weight = weightSimulator.readNextWeightData();
                     if(weight <= 0){
+                        if(receiveWarningSwitch.isChecked()){
                         grpNotification.sendNotification(mainActivity);
+                        }
                     }
                     weightText.setText(String.format("%.2f", weight));
                 } catch (IOException e) {
@@ -472,7 +480,9 @@ public class HomeFragment extends Fragment implements PlotterListener {
                     Scale scale = Scale.getInstance();
                     scale.addScaleMeasurement(scaleBtData);
                     if(monitor.getWeight()<=0){
+                        if(receiveWarningSwitch.isChecked()){
                         grpNotification.sendNotification(mainActivity);
+                        }
                     }
                     weightText.setText(String.format("%.2f", monitor.getWeight()));
                     break;
@@ -530,7 +540,9 @@ public class HomeFragment extends Fragment implements PlotterListener {
                     textViewHR.setText("No HR Signal");
                 }
                 if(data.hr <= 0){
+                    if(receiveWarningSwitch.isChecked()){
                     grpNotification.sendNotification(mainActivity);
+                    }
                 }
                 loadHrValue(data);
             }

@@ -21,6 +21,11 @@ import com.grp.application.monitor.Monitor;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 
 /**
  * {@code ReportFragment} is class to maintain UI elements and functions of report page.
@@ -142,44 +147,29 @@ public class ReportFragment extends Fragment {
     }
 
     private void refreshWeeklyChart(){
-        Object[] x = new Object[]{
-                "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"
-        };
+        Object[] x = getWeek();
         Object[] y = weeklyData();
         lineChart.refreshEchartsWithOption(EchartOptionUtil.getLineChartOptions(x, y, "Heart rate"));
     }
 
     private void refreshMonthlyChart(){
-        Object[] x = new Object[]{
-                "Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"
-        };
-        Object[] y = new Object[]{
-                820, 932, 901, 934, 1290, 1330, 1320
-        };
+        Object[] x = getDate();
+        Object[] y = monthlyData();
         lineChart.refreshEchartsWithOption(EchartOptionUtil.getLineChartOptions(x, y, "Heart rate"));
     }
 
     private void refreshWeeklyWeight(){
-        Object[] x = new Object[]{
-                "00:00", "1:00", "2:00", "3:00", "4:00", "5:00", "6:00","7:00","8:00",
-                "9:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00",
-                "18:00","19:00","20:00","21:00","22:00","23:00"
-        };
+        Object[] x = getWeek();
         Object[] y = dailyData();
         weightChart.refreshEchartsWithOption(EchartOptionUtil.getLineChartOptions(x, y, "Weight"));
     }
 
     private void refreshMonthlyWeight(){
-        Object[] x = new Object[]{
-                "00:00", "1:00", "2:00", "3:00", "4:00", "5:00", "6:00","7:00","8:00",
-                "9:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00",
-                "18:00","19:00","20:00","21:00","22:00","23:00"
-        };
+        Object[] x = getDate();
         Object[] y = dailyData();
         weightChart.refreshEchartsWithOption(EchartOptionUtil.getLineChartOptions(x, y, "Weight"));
     }
-
-
+    
     private double getAverageRate(Number[] number){
         numberToDouble(number);
         double total = 0;
@@ -211,6 +201,34 @@ public class ReportFragment extends Fragment {
         high.setText("The lowest heart rate: " + castToDouble(dao.getMinHrWeek().getHeartRate()) +"  The time is: "+dao.getMinHrWeek().getTimestamp());
         double averageRate = getAverageRate(number);
         average.setText("The Average heart rate: " + averageRate);
+    }
+
+    private static Object[] getWeek(){
+        Date today = new Date();
+        Calendar cal = new GregorianCalendar();
+        cal.setTime(today);
+        DateFormat formatterWeek = new SimpleDateFormat("EEEE");
+        Object[] storeWeek = new Object[7];
+        for(int i=0;i<7;i++){
+            cal.add(Calendar.DAY_OF_MONTH, -1);
+            Date date = cal.getTime();
+            storeWeek[i] = formatterWeek.format(date);
+        }
+        return storeWeek;
+    }
+
+    private static Object[] getDate(){
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy/MM/dd");
+        Date today = new Date();
+        Calendar cal = new GregorianCalendar();
+        cal.setTime(today);
+        Object[] storeDate = new Object[30];
+        for(int i=0;i<30;i++){
+            cal.add(Calendar.DAY_OF_MONTH, -1);
+            Date date = cal.getTime();
+            storeDate[i]=formatter.format(date);
+        }
+        return storeDate;
     }
 }
 

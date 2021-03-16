@@ -173,32 +173,40 @@ public class ReportFragment extends Fragment {
     private double getAverageRate(Number[] number){
         numberToDouble(number);
         double total = 0;
+        int len =number.length;
         for(int i=1;i<number.length;i++){
+            if((double)number[i] == 0){
+                len--;
+                continue;
+            }
             total += (double)number[i];
         }
-        double result = total/(number.length);
+        double result = total/(len);
         BigDecimal bd = new BigDecimal(result).setScale(2, RoundingMode.HALF_UP);
         result = bd.doubleValue();
         return result;
     }
 
     private void refreshDailyRate(Number[] number){
-        low.setText("The highest heart rate: "+ castToDouble(dao.getMaxHrDay().getHeartRate())+"  The time is: "+dao.getMaxHrDay().getTimestamp());
-        high.setText("The lowest heart rate: " + castToDouble(dao.getMinHrDay().getHeartRate()) +"  The time is: "+dao.getMinHrDay().getTimestamp());
+        SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
+        low.setText("The highest heart rate: "+ castToDouble(dao.getMaxHrDay().getHeartRate())+"\nThe time is: "+formatter.format(dao.getMaxHrDay().getTimestamp()));
+        high.setText("The lowest heart rate: " + castToDouble(dao.getMinHrDay().getHeartRate()) +"\nThe time is: "+formatter.format(dao.getMinHrDay().getTimestamp()));
         double averageRate = getAverageRate(number);
         average.setText("The Average heart rate: " + averageRate);
     }
 
     private void refreshMonthlyRate(Number[] number){
-        low.setText("The highest heart rate: "+ castToDouble(dao.getMaxHrMonth().getHeartRate())+"  The time is: "+dao.getMaxHrMonth().getTimestamp());
-        high.setText("The lowest heart rate: " + castToDouble(dao.getMinHrMonth().getHeartRate()) +"  The time is: "+dao.getMinHrMonth().getTimestamp());
+        SimpleDateFormat formatter = new SimpleDateFormat("YY/MM/dd");
+        low.setText("The highest heart rate: "+ castToDouble(dao.getMaxHrMonth().getHeartRate())+"\nThe date is: "+formatter.format(dao.getMaxHrMonth().getTimestamp()));
+        high.setText("The lowest heart rate: " + castToDouble(dao.getMinHrMonth().getHeartRate()) +"\nThe date is: "+formatter.format(dao.getMinHrMonth().getTimestamp()));
         double averageRate = getAverageRate(number);
         average.setText("The Average heart rate: " + averageRate);
     }
 
     private void refreshWeeklyRate(Number[] number){
-        low.setText("The highest heart rate: "+ castToDouble(dao.getMaxHrWeek().getHeartRate())+"  The time is: "+dao.getMaxHrWeek().getTimestamp());
-        high.setText("The lowest heart rate: " + castToDouble(dao.getMinHrWeek().getHeartRate()) +"  The time is: "+dao.getMinHrWeek().getTimestamp());
+        SimpleDateFormat formatter = new SimpleDateFormat("EEEE");
+        low.setText("The highest heart rate: "+ castToDouble(dao.getMaxHrWeek().getHeartRate())+"\nThe day is: "+formatter.format(dao.getMaxHrWeek().getTimestamp()));
+        high.setText("The lowest heart rate: " + castToDouble(dao.getMinHrWeek().getHeartRate()) +"\nThe day is: "+formatter.format(dao.getMinHrWeek().getTimestamp()));
         double averageRate = getAverageRate(number);
         average.setText("The Average heart rate: " + averageRate);
     }
@@ -207,11 +215,11 @@ public class ReportFragment extends Fragment {
         Date today = new Date();
         Calendar cal = new GregorianCalendar();
         cal.setTime(today);
-        DateFormat formatterWeek = new SimpleDateFormat("EE");
+        DateFormat formatter = new SimpleDateFormat("EE");
         Object[] storeWeek = new Object[7];
         for(int i=0;i<7;i++){
             Date date = cal.getTime();
-            storeWeek[6-i] = formatterWeek.format(date);
+            storeWeek[6-i] = formatter.format(date);
             cal.add(Calendar.DAY_OF_MONTH, -1);
         }
         return storeWeek;

@@ -68,6 +68,12 @@ public class ReportFragment extends Fragment {
         }
     }
 
+    private static double castToDouble(long number){
+        BigDecimal bd = BigDecimal.valueOf(number).setScale(2, RoundingMode.HALF_UP);
+        double num = bd.doubleValue();
+        return num;
+    }
+
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
@@ -88,7 +94,7 @@ public class ReportFragment extends Fragment {
                 super.onPageFinished(view, url);
                 //最好在h5页面加载完毕后再加载数据，防止html的标签还未加载完成，不能正常显示
                 refreshDailyChart();
-                refreshRate(dao.getDailyData());
+                refreshDailyRate(dao.getDailyData());
                 weightChart.setVisibility(View.GONE);
             }
         });
@@ -100,20 +106,20 @@ public class ReportFragment extends Fragment {
                 if (durationTab.getTabAt(0).isSelected()) {
                     monitor.showToast("Daily Tab");
                     refreshDailyChart();
-                    refreshRate(dao.getDailyData());
+                    refreshDailyRate(dao.getDailyData());
                     weightChart.setVisibility(View.GONE);
                 } else if (durationTab.getTabAt(1).isSelected()) {
                     monitor.showToast("Weekly Tab");
                     weightChart.setVisibility(View.VISIBLE);
                     refreshWeeklyChart();
                     refreshWeeklyWeight();
-                    refreshRate(dao.getWeeklyData());
+                    refreshWeeklyRate(dao.getWeeklyData());
                 } else if (durationTab.getTabAt(2).isSelected()) {
                     monitor.showToast("Monthly Tab");
                     refreshMonthlyChart();
                     weightChart.setVisibility(View.VISIBLE);
                     refreshMonthlyWeight();
-                    refreshRate(dao.getMonthlyData());
+                    refreshMonthlyRate(dao.getMonthlyData());
                 }
             }
             @Override
@@ -173,27 +179,6 @@ public class ReportFragment extends Fragment {
         weightChart.refreshEchartsWithOption(EchartOptionUtil.getLineChartOptions(x, y, "Weight"));
     }
 
-    private double getLowestRate(Number[] number){
-        numberToDouble(number);
-        double minValue = (double)number[0];
-        for(int i=1;i<number.length;i++){
-            if((double)number[i] < minValue){
-                minValue = (double)number[i];
-            }
-        }
-        return minValue;
-    }
-
-    private double getHighestRate(Number[] number){
-        numberToDouble(number);
-        double maxValue = (double)number[0];
-        for(int i=1;i<number.length;i++){
-            if((double)number[i] > maxValue){
-                maxValue = (double)number[i];
-            }
-        }
-        return maxValue;
-    }
 
     private double getAverageRate(Number[] number){
         numberToDouble(number);
@@ -207,13 +192,23 @@ public class ReportFragment extends Fragment {
         return result;
     }
 
-    private void refreshRate(Number[] number){
-        number = new Number[]{820, 932, 901, 934, 1290, 1330, 1320};
-        numberToDouble(number);
-        double lowRate = getLowestRate(number);
-        low.setText("The lowest heart rate: "+ lowRate);
-        double highRate = getHighestRate(number);
-        high.setText("The highest heart rate: " + highRate);
+    private void refreshDailyRate(Number[] number){
+        low.setText("The highest heart rate: "+ castToDouble(dao.getMaxHrDay().getHeartRate())+"  The time is: "+dao.getMaxHrDay().getTimestamp());
+        high.setText("The lowest heart rate: " + castToDouble(dao.getMinHrDay().getHeartRate()) +"  The time is: "+dao.getMinHrDay().getTimestamp());
+        double averageRate = getAverageRate(number);
+        average.setText("The Average heart rate: " + averageRate);
+    }
+
+    private void refreshMonthlyRate(Number[] number){
+        low.setText("The highest heart rate: "+ castToDouble(dao.getMaxHrMonth().getHeartRate())+"  The time is: "+dao.getMaxHrMonth().getTimestamp());
+        high.setText("The lowest heart rate: " + castToDouble(dao.getMinHrMonth().getHeartRate()) +"  The time is: "+dao.getMinHrMonth().getTimestamp());
+        double averageRate = getAverageRate(number);
+        average.setText("The Average heart rate: " + averageRate);
+    }
+
+    private void refreshWeeklyRate(Number[] number){
+        low.setText("The highest heart rate: "+ castToDouble(dao.getMaxHrWeek().getHeartRate())+"  The time is: "+dao.getMaxHrWeek().getTimestamp());
+        high.setText("The lowest heart rate: " + castToDouble(dao.getMinHrWeek().getHeartRate()) +"  The time is: "+dao.getMinHrWeek().getTimestamp());
         double averageRate = getAverageRate(number);
         average.setText("The Average heart rate: " + averageRate);
     }

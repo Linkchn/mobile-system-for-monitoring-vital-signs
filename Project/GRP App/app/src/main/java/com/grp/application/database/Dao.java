@@ -146,7 +146,7 @@ public class Dao {
         db.close();
     }
 
-    private HeartRateData getMaxHrDay() {
+    public HeartRateData getMaxHrDay() {
         long timestamp = System.currentTimeMillis();
         SQLiteDatabase db = mHelper.getWritableDatabase();
         long maxHr = 0;
@@ -163,7 +163,7 @@ public class Dao {
         return new HeartRateData(maxHr,time);
     }
 
-    private HeartRateData getMinHrDay() {
+    public HeartRateData getMinHrDay() {
         long timestamp = System.currentTimeMillis();
         SQLiteDatabase db = mHelper.getWritableDatabase();
         long minHr = 0;
@@ -180,7 +180,7 @@ public class Dao {
         return new HeartRateData(minHr,time);
     }
 
-    private HeartRateData getMaxHrWeek() {
+    public HeartRateData getMaxHrWeek() {
         long timestamp = System.currentTimeMillis();
         SQLiteDatabase db = mHelper.getWritableDatabase();
         long maxHr = 0;
@@ -202,7 +202,7 @@ public class Dao {
         return new HeartRateData(maxHr,time);
     }
 
-    private HeartRateData getMinHrWeek() {
+    public HeartRateData getMinHrWeek() {
         long timestamp = System.currentTimeMillis();
         SQLiteDatabase db = mHelper.getWritableDatabase();
         long minHr = 1000;
@@ -224,7 +224,7 @@ public class Dao {
         return new HeartRateData(minHr,time);
     }
 
-    private HeartRateData getMaxHrMonth() {
+    public HeartRateData getMaxHrMonth() {
         long timestamp = System.currentTimeMillis();
         SQLiteDatabase db = mHelper.getWritableDatabase();
         long maxHr = 0;
@@ -246,7 +246,7 @@ public class Dao {
         return new HeartRateData(maxHr,time);
     }
 
-    private HeartRateData getMinHrMonth() {
+    public HeartRateData getMinHrMonth() {
         long timestamp = System.currentTimeMillis();
         SQLiteDatabase db = mHelper.getWritableDatabase();
         long minHr = 1000;

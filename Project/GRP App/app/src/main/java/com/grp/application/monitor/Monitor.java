@@ -36,6 +36,8 @@ public class Monitor {
     private MonitorState monitorState;
     private ViewSetter viewSetter;
 
+    public String getHrValue() { return hrValue; }
+
     public String getEcgValue() {
         return ecgValue;
     }
@@ -44,10 +46,14 @@ public class Monitor {
         return accValue;
     }
 
+    private String hrValue;
     private String ecgValue;
     private String accValue;
+    private boolean hrStatus;
     private boolean ecgStatus;
     private boolean accStatus;
+
+    private void resetHr() { hrValue = "";}
 
     private void resetECG(){
         ecgValue = "";
@@ -56,6 +62,14 @@ public class Monitor {
     private void resetACC(){
         accValue = "";
 
+    }
+
+    public boolean isHrStatus() {
+        return hrStatus;
+    }
+
+    public void setHrStatus(boolean hrStatus) {
+        this.hrStatus = hrStatus;
     }
 
     public boolean isEcgStatus() {
@@ -266,6 +280,11 @@ public class Monitor {
         Date date = new Date(lt);
         res = simpleDateFormat.format(date);
         return res;
+    }
+
+    public void stopHr(){
+        this.hrStatus = false;
+        resetHr();
     }
 
     public void stopECG(){

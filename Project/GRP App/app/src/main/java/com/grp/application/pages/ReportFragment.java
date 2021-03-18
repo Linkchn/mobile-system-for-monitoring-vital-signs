@@ -42,6 +42,7 @@ public class ReportFragment extends Fragment {
     private TextView low;
     private TextView high;
     private TextView average;
+    private static int[] newZeroArray;
 
     private TabLayout durationTab;
 
@@ -65,12 +66,24 @@ public class ReportFragment extends Fragment {
         return number;
     }
 
-    private static void numberToDouble(Number[] number){
+    private static Object[] doubleToObject(double[] array){
+        int len = array.length;
+        Number[] newArray = new Number[len];
+        for(int i=0;i<len;i++){
+            Number num = array[i];
+            newArray[i] = num;
+        }
+        return newArray;
+    }
+
+    private double[] numberToDouble(Number[] number){
+        double[] array = new double[number.length];
         for(int i=0;i<number.length;i++){
             number[i] = number[i].doubleValue();
             BigDecimal bd = BigDecimal.valueOf((Double) number[i]).setScale(2, RoundingMode.HALF_UP);
             number[i] = bd.doubleValue();
         }
+        return array;
     }
 
     private static double castToDouble(long number){
@@ -137,24 +150,36 @@ public class ReportFragment extends Fragment {
     }
 
     private void refreshDailyChart(){
-        Object[] x = new Object[]{
+        Object[] array = new Object[]{
                 "00:00", "1:00", "2:00", "3:00", "4:00", "5:00", "6:00","7:00","8:00",
                 "9:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00",
                 "18:00","19:00","20:00","21:00","22:00","23:00"
         };
-        Object[] y = dailyData();
+//        Object[] y = dailyData();
+//        Object[]y =new Object[]{
+//                98, 96, 97.5, 99, 101.2, 99.2,87.9,98, 96, 97.5, 99, 101.2, 99.2,87.9,98, 96, 97.5, 99, 101.2, 99.2,87.9,101,103.2,102.1
+//        };
+        Object[] y = doubleToObject(dealZero(numberToDouble(dao.getDailyData())));
+        Object[] x = removeElement(array);
         lineChart.refreshEchartsWithOption(EchartOptionUtil.getLineChartOptions(x, y, "Heart rate"));
     }
 
     private void refreshWeeklyChart(){
-        Object[] x = getWeek();
-        Object[] y = weeklyData();
+        Object[] y = doubleToObject(dealZero(numberToDouble(dao.getWeeklyData())));
+        Object[] x = removeElement(getWeek());
+//        Object[]y = weeklyData();
+//        Object[]y =new Object[]{
+//                98, 96, 97.5, 99, 101.2, 99.2,87.9
+//        };
+//        Object []x  =getWeek();
         lineChart.refreshEchartsWithOption(EchartOptionUtil.getLineChartOptions(x, y, "Heart rate"));
     }
 
     private void refreshMonthlyChart(){
-        Object[] x = getDate();
-        Object[] y = monthlyData();
+//        Object[] x = getDate();
+//        Object[] y = monthlyData();
+        Object[] y = doubleToObject(dealZero(numberToDouble(dao.getMonthlyData())));
+        Object[] x = removeElement(getDate());
         lineChart.refreshEchartsWithOption(EchartOptionUtil.getLineChartOptions(x, y, "Heart rate"));
     }
 
@@ -237,6 +262,48 @@ public class ReportFragment extends Fragment {
             cal.add(Calendar.DAY_OF_MONTH, -1);
         }
         return storeDate;
+    }
+
+    private double[] dealZero(double[] array){
+        int len = 0;
+        int len_zero = 0;
+        for (int i=0; i<array.length; i++){
+            if (array[i] != 0){
+                len++;
+            }else {
+                len_zero++;
+            }
+        }
+        double [] newArray = new double[len];
+        newZeroArray = new int[len_zero];
+        int Index= 0;
+        for (int i=0, j=0; i<array.length; i++){
+            if (array[i] != 0) {
+                newArray[j] = array[i];
+                j++;
+            }else{
+                newZeroArray[Index] = i;
+                Index++;
+            }
+        }
+        return newArray;
+    }
+
+    private static Object[] removeElement(Object[] array){
+        int len = array.length;
+        int length = len - newZeroArray.length;
+        Object[] newArray = new Object[length];
+        int j=0;
+        for (int i = 0, k = 0; i<array.length; i++){
+            if (i == newZeroArray[j]) {
+                if(j<newZeroArray.length-1){
+                    j++;
+                }
+                continue;
+            }
+            newArray[k++] = array[i];
+        }
+        return newArray;
     }
 }
 

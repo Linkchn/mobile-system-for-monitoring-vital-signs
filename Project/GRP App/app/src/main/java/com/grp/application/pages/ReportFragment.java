@@ -23,6 +23,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -79,9 +80,9 @@ public class ReportFragment extends Fragment {
     private double[] numberToDouble(Number[] number){
         double[] array = new double[number.length];
         for(int i=0;i<number.length;i++){
-            number[i] = number[i].doubleValue();
-            BigDecimal bd = BigDecimal.valueOf((Double) number[i]).setScale(2, RoundingMode.HALF_UP);
-            number[i] = bd.doubleValue();
+            array[i] = number[i].doubleValue();
+            BigDecimal bd = BigDecimal.valueOf(array[i]).setScale(2, RoundingMode.HALF_UP);
+            array[i] = bd.doubleValue();
         }
         return array;
     }
@@ -155,10 +156,6 @@ public class ReportFragment extends Fragment {
                 "9:00","10:00","11:00","12:00","13:00","14:00","15:00","16:00","17:00",
                 "18:00","19:00","20:00","21:00","22:00","23:00"
         };
-//        Object[] y = dailyData();
-//        Object[]y =new Object[]{
-//                98, 96, 97.5, 99, 101.2, 99.2,87.9,98, 96, 97.5, 99, 101.2, 99.2,87.9,98, 96, 97.5, 99, 101.2, 99.2,87.9,101,103.2,102.1
-//        };
         Object[] y = doubleToObject(dealZero(numberToDouble(dao.getDailyData())));
         Object[] x = removeElement(array);
         lineChart.refreshEchartsWithOption(EchartOptionUtil.getLineChartOptions(x, y, "Heart rate"));
@@ -167,17 +164,10 @@ public class ReportFragment extends Fragment {
     private void refreshWeeklyChart(){
         Object[] y = doubleToObject(dealZero(numberToDouble(dao.getWeeklyData())));
         Object[] x = removeElement(getWeek());
-//        Object[]y = weeklyData();
-//        Object[]y =new Object[]{
-//                98, 96, 97.5, 99, 101.2, 99.2,87.9
-//        };
-//        Object []x  =getWeek();
         lineChart.refreshEchartsWithOption(EchartOptionUtil.getLineChartOptions(x, y, "Heart rate"));
     }
 
     private void refreshMonthlyChart(){
-//        Object[] x = getDate();
-//        Object[] y = monthlyData();
         Object[] y = doubleToObject(dealZero(numberToDouble(dao.getMonthlyData())));
         Object[] x = removeElement(getDate());
         lineChart.refreshEchartsWithOption(EchartOptionUtil.getLineChartOptions(x, y, "Heart rate"));
@@ -196,15 +186,15 @@ public class ReportFragment extends Fragment {
     }
 
     private double getAverageRate(Number[] number){
-        numberToDouble(number);
+        double[] num = numberToDouble(number);
         double total = 0;
-        int len =number.length;
-        for(int i=1;i<number.length;i++){
-            if((double)number[i] == 0){
+        int len =num.length;
+        for(int i=1;i<num.length;i++){
+            if(num[i] == 0){
                 len--;
                 continue;
             }
-            total += (double)number[i];
+            total += (double)num[i];
         }
         double result = total/(len);
         BigDecimal bd = new BigDecimal(result).setScale(2, RoundingMode.HALF_UP);
@@ -295,6 +285,9 @@ public class ReportFragment extends Fragment {
         Object[] newArray;
         if(length<0) {
             newArray = new Object[]{};
+        }
+        if(newZeroArray.length == 0){
+            newArray = array;
         }else {
             newArray = new Object[length];
             int j=0;
@@ -309,7 +302,6 @@ public class ReportFragment extends Fragment {
             }
         }
         return newArray;
-
     }
 }
 

@@ -292,18 +292,24 @@ public class ReportFragment extends Fragment {
     private static Object[] removeElement(Object[] array){
         int len = array.length;
         int length = len - newZeroArray.length;
-        Object[] newArray = new Object[length];
-        int j=0;
-        for (int i = 0, k = 0; i<array.length; i++){
-            if (i == newZeroArray[j]) {
-                if(j<newZeroArray.length-1){
-                    j++;
+        Object[] newArray;
+        if(length<0) {
+            newArray = new Object[]{};
+        }else {
+            newArray = new Object[length];
+            int j=0;
+            for (int i = 0, k = 0; i<array.length; i++){
+                if (i == newZeroArray[j]) {
+                    if(j<newZeroArray.length-1){
+                        j++;
+                    }
+                    continue;
                 }
-                continue;
+                newArray[k++] = array[i];
             }
-            newArray[k++] = array[i];
         }
         return newArray;
+
     }
 }
 

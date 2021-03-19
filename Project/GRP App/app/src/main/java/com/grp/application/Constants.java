@@ -7,6 +7,6 @@ public class Constants {
     public static final String HR_TABLE_DAILY = "heartRateTableDaily";
     public static final String HR_TABLE_MAX = "heartRateTableMax";
     public static final String HR_TABLE_MIN = "heartRateTableMin";
-    public static final String HR_TABLE_NAME_MONTH = "heartRateTableMonth";
+    public static final String HR_TABLE_STORE = "heartRateTableSec";
     public static final String WEIGHT_TABLE = "weightTable";
 }

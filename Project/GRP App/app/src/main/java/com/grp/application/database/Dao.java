@@ -46,24 +46,36 @@ public class Dao {
         long hrMin = 1000;
         long totalHr = 0;
         int numOfHr = 0;
+        db.beginTransaction();
+        try {
+            for(int i=0; i<list.size(); i++){
 
-        for(int i=0; i<list.size(); i++){
-
-            long hr = list.get(i).getHeartRate();
-            long timestamp = list.get(i).getTimestamp();
-            if(hr>hrMax){
-                hrMax = hr;
-                timestampCurrent = timestamp;
-            }
-            if(hr<hrMin){
-                hrMin = hr;
-                timestampCurrent = timestamp;
-            }
-            totalHr+= hr;
-            numOfHr++;
-
+                long hr = list.get(i).getHeartRate();
+                long timestamp = list.get(i).getTimestamp();
+                if(hr>hrMax){
+                    hrMax = hr;
+                    timestampCurrent = timestamp;
+                }
+                if(hr<hrMin){
+                    hrMin = hr;
+                    timestampCurrent = timestamp;
+                }
+                totalHr+= hr;
+                numOfHr++;
+                ContentValues values = new ContentValues();
+                values.put("timestamp", timestamp);
+                values.put("hr", hr);
+                db.insert(Constants.HR_TABLE_DETAIL, null, values);
 //                Log.i("db",values.toString());
+            }
+
+            db.setTransactionSuccessful();
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            db.endTransaction();
         }
+
         if(numOfHr>0){
             long hr = totalHr/numOfHr;
             long timestamp = list.get(0).getTimestamp();
@@ -321,7 +333,6 @@ public class Dao {
             int todayHR = (int) totalHR/totalCount;
             long timestamp = Calendar.getInstance().getTimeInMillis();
             insert(timestamp,todayHR,Constants.HR_TABLE_DAILY);
-            insert(timestamp,todayHR,Constants.HR_TABLE_NAME_MONTH);
             Log.d(TAG,"totalCount"+totalCount+",endTime"+endTime);
         }
     }
@@ -420,10 +431,85 @@ public class Dao {
             }else {
                 hrList[i] = 0;
             }
-//            Log.d(TAG, i+":"+String.valueOf(hrList[i]));
+        }
+        return hrList;
+    }
+
+    public Number[] getDailyWeight(){
+        Number[] weightList = new Number[1];
+        long startTime = TimeHelper.getDailyStartTime(System.currentTimeMillis());
+        long endTime = startTime+1*ONE_DAY;
+        SQLiteDatabase db = mHelper.getWritableDatabase();
+        String sql = "SELECT timestamp,weitgt FROM "+Constants.WEIGHT_TABLE+" WHERE timestamp>"+startTime+" AND timestamp<"+endTime;
+        Cursor cursor = db.rawQuery(sql, null);
+        long totalWeight = 0;
+        int totalCount = 0;
+        if(cursor.moveToFirst()){
+            do{
+                totalWeight += cursor.getLong(cursor.getColumnIndex("weight"));
+                totalCount++;
+            }while (cursor.moveToNext());
+        }
+        if(totalCount>0){
+            weightList[0] = (long) totalWeight/totalCount;
+        }else {
+            weightList[0] = 0;
+        }
+        return weightList;
+    }
+
+    public Number[] getWeeklyWeight() {
+        Number[] weightList = new Number[7];
+        long startTime = TimeHelper.getDailyStartTime(System.currentTimeMillis()) - 6*ONE_DAY;
+        SQLiteDatabase db = mHelper.getWritableDatabase();
+        for(int i=0; i<7; i++){
+            long dayStartTime = startTime+i*ONE_DAY;
+            long dayEndTime = startTime+(i+1)*ONE_DAY;
+            String sql = "SELECT timestamp,hr FROM "+Constants.HR_TABLE_DAILY +" WHERE timestamp>"+dayStartTime+" AND timestamp<"+dayEndTime;
+            Cursor cursor = db.rawQuery(sql, null);
+//            Cursor cursor = query(hourStartTime,hourEndTime,Constants.HR_TABLE_NAME_DAY);
+            long totalWeight = 0;
+            int totalCount = 0;
+            if(cursor.moveToFirst()){
+                do{
+                    totalWeight += cursor.getLong(cursor.getColumnIndex("weight"));
+                    totalCount++;
+                }while (cursor.moveToNext());
+            }
+            if(totalCount>0){
+                weightList[i] = (long) totalWeight/totalCount;
+            }else {
+                weightList[i] = 0;
+            }
         }
 
-        return hrList;
+        return weightList;
+    }
+
+    public Number[] getMonthlyWeight() {
+        Number[] weightList = new Number[31];
+        long startTime =  TimeHelper.getDailyStartTime(System.currentTimeMillis()) - 30*ONE_DAY;
+        SQLiteDatabase db = mHelper.getWritableDatabase();
+        for(int i=0; i<31; i++){
+            long dayStartTime = startTime+i*ONE_DAY;
+            long dayEndTime = startTime+(i+1)*ONE_DAY;
+            String sql = "SELECT timestamp,hr FROM "+Constants.HR_TABLE_DAILY+" WHERE timestamp>"+dayStartTime+" AND timestamp<"+dayEndTime;
+            Cursor cursor = db.rawQuery(sql, null);
+            long totalWeight = 0;
+            int totalCount = 0;
+            if(cursor.moveToFirst()){
+                do{
+                    totalWeight += cursor.getLong(cursor.getColumnIndex("weight"));
+                    totalCount++;
+                }while (cursor.moveToNext());
+            }
+            if(totalCount>0){
+                weightList[i] = (long) totalWeight/totalCount;
+            }else {
+                weightList[i] = 0;
+            }
+        }
+        return weightList;
     }
 
     public void clearDatabase() {

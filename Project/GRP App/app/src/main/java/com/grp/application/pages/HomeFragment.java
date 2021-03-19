@@ -29,6 +29,7 @@ import com.androidplot.xy.XYGraphWidget;
 import com.androidplot.xy.XYPlot;
 import com.google.android.material.textfield.TextInputEditText;
 import com.grp.application.Application;
+import com.grp.application.Constants;
 import com.grp.application.GlobalData;
 import com.grp.application.HeartRateData;
 import com.grp.application.MainActivity;
@@ -202,8 +203,11 @@ public class HomeFragment extends Fragment implements PlotterListener {
                     float weight = weightSimulator.readNextWeightData();
                     if(weight <= 0){
                         grpNotification.sendNotification(mainActivity);
+                    }else{
+                        weightText.setText(String.format("%.2f", weight));
+                        Dao dao = new Dao(getContext());
+                        dao.insert(System.currentTimeMillis(),(long)weight, Constants.WEIGHT_TABLE);
                     }
-                    weightText.setText(String.format("%.2f", weight));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

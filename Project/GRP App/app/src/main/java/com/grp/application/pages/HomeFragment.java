@@ -156,7 +156,10 @@ public class HomeFragment extends Fragment implements PlotterListener {
             }
         };
 
-
+        if (!monitor.getMonitorState().isSimulationEnabled()) {
+            simHandler.removeCallbacks(simulate);
+            stopPlot();
+        }
         initDevice();
         initUI();
         if (monitor.getMonitorState().isStartCaptureDataEnabled()) {
@@ -174,11 +177,13 @@ public class HomeFragment extends Fragment implements PlotterListener {
                 startPlot();
                 if (monitor.getMonitorState().isSimulationEnabled()) {
                     simHandler.postDelayed(simulate, 1000);
+                    monitor.getMonitorState().simulationOn();
                 }
             } else {
                 monitor.showToast("Stop Capture Data");
                 monitor.getMonitorState().disableStartCaptureData();
                 simHandler.removeCallbacks(simulate);
+                monitor.getMonitorState().simulationOff();
                 stopPlot();
             }
         });

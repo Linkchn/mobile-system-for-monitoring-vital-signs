@@ -102,7 +102,9 @@ public class SettingsFragment extends Fragment {
                 monitor.getMonitorState().enableSimulation();
             } else {
                 monitor.showToast("Stop Simulation");
+                monitor.getMonitorState().simulationOff();
                 monitor.getMonitorState().disableSimulation();
+                monitor.getMonitorState().disableStartCaptureData();
             }
             resetUI();
         });

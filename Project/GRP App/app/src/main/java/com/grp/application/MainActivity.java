@@ -2,7 +2,10 @@ package com.grp.application;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.bluetooth.BluetoothAdapter;
+import android.content.Context;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.content.pm.PackageManager;
@@ -13,6 +16,7 @@ import android.widget.Toast;
 
 import com.example.application.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.grp.application.database.AlarmService;
 import com.grp.application.database.Dao;
 import com.grp.application.database.DatabaseHelper;
 import com.grp.application.database.DatabaseSimulator;
@@ -45,6 +49,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+//        Intent intent = new Intent(this, AlarmService.class);
+//        startService(intent);
+
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP) {
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
                 //
@@ -67,6 +74,8 @@ public class MainActivity extends AppCompatActivity {
         // Create database
         DatabaseHelper helper = new DatabaseHelper(this);
         helper.getWritableDatabase();
+
+
 
         // Database simulator
 //        DatabaseSimulator databaseSimulator = new DatabaseSimulator(getApplicationContext());
@@ -106,4 +115,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
+
+    private void alarmTry() {
+
+    }
 }

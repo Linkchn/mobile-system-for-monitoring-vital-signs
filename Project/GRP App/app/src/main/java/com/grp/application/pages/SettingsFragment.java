@@ -41,6 +41,8 @@ public class SettingsFragment extends Fragment {
     private Button scaleConnectButton;
     private Button hrDeviceDisconenctButton;
     private Button scaleDeviceDisconnectButton;
+    private  Button resetDatabaseButton;
+    private  Button exportDatabaseButton;
     private SwitchMaterial simulationSwitch;
     private SwitchMaterial msgOnNotWearDeviceSwitch;
     private SwitchMaterial msgOnNotCaptureDataSwitch;
@@ -65,6 +67,8 @@ public class SettingsFragment extends Fragment {
         msgOnNotWearDeviceSwitch = root.findViewById(R.id.switch_msg_not_wear_device);
         msgOnNotCaptureDataSwitch = root.findViewById(R.id.switch_msg_not_capture_data);
         msgOnReportGenerated = root.findViewById(R.id.switch_msg_report_generated);
+        resetDatabaseButton =  root.findViewById(R.id.reset_database);
+        exportDatabaseButton =  root.findViewById(R.id.export_database);
 
         resetUI();
         initDevice();
@@ -169,6 +173,11 @@ public class SettingsFragment extends Fragment {
             @Override
             public void ecgFeatureReady(@NonNull String identifier) {
                 monitor.streamECG();
+            }
+
+            @Override
+            public void accelerometerFeatureReady(@NonNull String identifier) {
+                monitor.streamACC();
             }
         });
     }

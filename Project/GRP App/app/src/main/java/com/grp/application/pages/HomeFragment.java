@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.DocumentsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,10 +50,12 @@ import com.grp.application.scale.datatypes.ScaleMeasurement;
 import com.grp.application.simulation.HrSimulator;
 import com.grp.application.simulation.WeightSimulator;
 
+import java.io.File;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Date;
+
 
 import polar.com.sdk.api.PolarBleApiCallback;
 import polar.com.sdk.api.model.PolarDeviceInfo;
@@ -95,7 +98,6 @@ public class HomeFragment extends Fragment implements PlotterListener {
     private Boolean ecgStatus = false;
     private String hrData = "";
     private  String ecgData = "";
-
     private TimePlotter plotterHR;
     private Plotter plotterECG;
 
@@ -120,6 +122,7 @@ public class HomeFragment extends Fragment implements PlotterListener {
         measureButton = root.findViewById(R.id.button_measure_weight);
         hrSimulator = HrSimulator.getInstance();
         weightSimulator = WeightSimulator.getInstance();
+
 
         startRecordingHrButton = root.findViewById(R.id.button_start_recording_hr);
         stopRecordingHrButton = root.findViewById(R.id.button_stop_recording_hr);
@@ -254,12 +257,22 @@ public class HomeFragment extends Fragment implements PlotterListener {
          *
          */
         startRecordingECGButton.setOnClickListener((view) -> {
-            if(hrStatus == true){
-
+            if(monitor.isEcgStatus()){
+                alertDialog("Problem", "Already recording ");
+                startRecordingECGButton.setTextColor(Color.rgb(244,67,54));
             }else{
-
+                if(!startCaptureDataSwitch.isChecked()){
+                    alertDialog("Problem", "No data capturing!");
+                }
+                else if (polarDevice.getDeviceId() == null){
+                    alertDialog("Problem", "No device connected!");
+                }
+                else{
+                    alertDialog("Recording", "Recording starts");
+                    startRecordingECGButton.setTextColor(Color.rgb(244,67,54));
+                    monitor.setEcgStatus(true);
+                }
             }
-
         });
 
         /**
@@ -282,8 +295,88 @@ public class HomeFragment extends Fragment implements PlotterListener {
          *
          */
         stopRecordingECGButton.setOnClickListener((view) -> {
+            if (monitor.isEcgStatus()){
+                alertDialog("Recording", "Recording ends");
+                startRecordingECGButton.setTextColor(Color.rgb(21,131,216));
 
+                if (ContextCompat.checkSelfPermission(mainActivity,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(mainActivity, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 101);
+                } else {
+                    // if clicked, changes the status to "False"
+                    monitor.setEcgStatus(false);
+                    String fileName = "ECG_Recording_" + new Date().getTime();
+                    try {
+                        FileLog.saveLog(monitor.getEcgValue(),fileName,"ECG");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    Toast.makeText(Application.context, "ECG Export successfully!", Toast.LENGTH_LONG).show();
+                    monitor.stopECG();
+                }
+            }
         });
+
+        /**
+         * A button listener that every time it is clicked, the directory that contains recording
+         * data will be opened.
+         */
+        viewRecordingECGButton.setOnClickListener((view) -> {
+            openAssignFolder("%2fECG%2f");
+        });
+
+
+        // ACC
+        startRecordingAccButton.setOnClickListener((view) -> {
+            if(monitor.isAccStatus()){
+                alertDialog("Problem", "Already recording ");
+                startRecordingAccButton.setTextColor(Color.rgb(244,67,54));
+            }else{
+                if(!startCaptureDataSwitch.isChecked()){
+                    alertDialog("Problem", "No data capturing!");
+                }
+                else if (polarDevice.getDeviceId() == null){
+                    alertDialog("Problem", "No device connected!");
+                }
+                else{
+                    alertDialog("Recording", "Recording starts");
+                    startRecordingAccButton.setTextColor(Color.rgb(244,67,54));
+                    monitor.setAccStatus(true);
+                }
+            }
+        });
+
+        stopRecordingAccButton.setOnClickListener((view) -> {
+            if (monitor.isAccStatus()){
+                alertDialog("Recording", "Recording ends");
+                startRecordingAccButton.setTextColor(Color.rgb(21,131,216));
+
+                if (ContextCompat.checkSelfPermission(mainActivity,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(mainActivity, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 101);
+                } else {
+                    // if clicked, changes the status to "False"
+                    monitor.setAccStatus(false);
+                    String fileName = "ACC_Recording_" + new Date().getTime();
+                    try {
+                        FileLog.saveLog(monitor.getAccValue(),fileName,"ACC");
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    Toast.makeText(Application.context, "ACC Export successfully!", Toast.LENGTH_LONG).show();
+                    monitor.stopACC();
+                }
+            }
+        });
+
+        /**
+         * A button listener that every time it is clicked, the directory that contains recording
+         * data will be opened.
+         */
+        viewRecordingAccButton.setOnClickListener((view) -> {
+            openAssignFolder("%2fACC%2f");
+        });
+
 
 
         /**
@@ -314,26 +407,32 @@ public class HomeFragment extends Fragment implements PlotterListener {
          *
          */
         startRecordingHrButton.setOnClickListener((view) -> {
-            if(hrStatus){
-                alertDialog("Problem", "Already recording ");
-                startRecordingHrButton.setTextColor(Color.rgb(244,67,54));
-            }else{
-                if (monitor.getMonitorState().isSimulationEnabled()){
-                    alertDialog("Problem", "Recording");
+            if(monitor.getMonitorState().isSimulationEnabled() && startCaptureDataSwitch.isChecked()){
+                if(monitor.isHrStatus()){
+                    alertDialog("Simulator recordings", "Recording starts");
                     startRecordingHrButton.setTextColor(Color.rgb(244,67,54));
-                    hrStatus = true;
-                } else {
-                    if(!detectDeviceConnect(view)){
-                        alertDialog("Problem", "No Device Connected ");
-                    }
-                    else if(!detectDeviceSupport(view)){
-                        alertDialog("Problem", "Device Not Supported");
+                }else{
+                    alertDialog("Problem", "Already recording ");
+                    startRecordingHrButton.setTextColor(Color.rgb(244,67,54));
+                }
+            }else{
+                if(monitor.isHrStatus()){
+                    alertDialog("Problem", "Already recording ");
+                    startRecordingHrButton.setTextColor(Color.rgb(244,67,54));
+                }else{
+                    if(!startCaptureDataSwitch.isChecked()){
+                        alertDialog("Problem", "No data capturing!");
+                    } else if (polarDevice.getDeviceId() == null){
+                        alertDialog("Problem", "No device connected!");
+                    } else{
+                        alertDialog("Recording", "Recording starts");
+                        startRecordingHrButton.setTextColor(Color.rgb(244,67,54));
+                        monitor.setHrStatus(true);
                     }
                 }
-
             }
-
         });
+
 
         /**
          * A button listener that monitors the StopRecordingHrButton, reacting differently in
@@ -355,7 +454,7 @@ public class HomeFragment extends Fragment implements PlotterListener {
          *
          */
         stopRecordingHrButton.setOnClickListener((view) -> {
-            if (hrStatus == true){
+            if (monitor.isHrStatus() || monitor.getMonitorState().isSimulationEnabled()){
                 alertDialog("Recording", "Recording ends");
                 startRecordingHrButton.setTextColor(Color.rgb(21,131,216));
 
@@ -364,16 +463,15 @@ public class HomeFragment extends Fragment implements PlotterListener {
                     ActivityCompat.requestPermissions(mainActivity, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 101);
                 } else {
                     // if clicked, changes the status to "False"
-                    hrStatus = false;
+                    monitor.setHrStatus(false);
                     String fileName = "HR_Recording_" + new Date().getTime();
                     try {
-                        FileLog.saveLog("Heart Beat per Minute",hrData,fileName);
+                        FileLog.saveLog(hrData,fileName,"HR");
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    Toast.makeText(Application.context, "Export successfully!", Toast.LENGTH_LONG).show(); // <--
-                    hrData = "";
-                    hrStatus = false;
+                    Toast.makeText(Application.context, "HR Export successfully!", Toast.LENGTH_LONG).show(); // <--
+                    monitor.stopHr();
                 }
             }
         });
@@ -383,7 +481,8 @@ public class HomeFragment extends Fragment implements PlotterListener {
          * data will be opened.
          */
         viewRecordingHrButton.setOnClickListener((view) -> {
-            openAssignFolder(Environment.getExternalStorageDirectory() + "/HR");
+            openAssignFolder("%2fHR%2f");
+
         });
 
 
@@ -564,6 +663,11 @@ public class HomeFragment extends Fragment implements PlotterListener {
             public void ecgFeatureReady(@NonNull String identifier) {
                 monitor.streamECG();
             }
+
+            @Override
+            public void accelerometerFeatureReady(@NonNull String identifier) {
+                monitor.streamACC();
+            }
         });
     }
 
@@ -623,10 +727,26 @@ public class HomeFragment extends Fragment implements PlotterListener {
     }
 
     private void openAssignFolder(String path) {
-        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-        Uri uri = Uri.parse(path);
-        intent.setDataAndType(uri, "*/*");
-        startActivity(Intent.createChooser(intent, "Open folder"));
+
+        Uri uri = Uri.parse("content://com.android.externalstorage.documents/document/primary:" + path);
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("*/*");
+        intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, uri);
+        startActivityForResult(intent, 0);
+//        File files = new File(path);
+//        if (!files.exists()) {
+//            files.mkdirs();
+//        }
+//        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+//        Uri uri = Uri.parse(path);
+//        intent.setDataAndType(uri, "*/*");
+//        System.out.println(path + "\n");
+//
+//
+////        intent.addCategory(Intent.CATEGORY_OPENABLE);
+//        startActivity(Intent.createChooser(intent, "Open folder"));
+
     }
 
     private void loadHrValue(PolarHrData data) {

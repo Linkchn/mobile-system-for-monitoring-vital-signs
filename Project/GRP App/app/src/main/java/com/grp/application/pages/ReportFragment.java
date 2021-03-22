@@ -1,5 +1,6 @@
 package com.grp.application.pages;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -199,27 +200,46 @@ public class ReportFragment extends Fragment {
     }
 
     private void refreshDailyRate(Number[] number){
-        SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
-        low.setText("The highest heart rate: "+ castToDouble(dao.getMaxHrDay().getHeartRate())+"\nThe time is: "+formatter.format(dao.getMaxHrDay().getTimestamp()));
-        high.setText("The lowest heart rate: " + castToDouble(dao.getMinHrDay().getHeartRate()) +"\nThe time is: "+formatter.format(dao.getMinHrDay().getTimestamp()));
         double averageRate = getAverageRate(number);
-        average.setText("The Average heart rate: " + averageRate);
+        if(averageRate != 0){
+            SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
+            low.setText("The highest heart rate: "+ castToDouble(dao.getMaxHrDay().getHeartRate())+"\nThe time is: "+formatter.format(dao.getMaxHrDay().getTimestamp()));
+            high.setText("The lowest heart rate: " + castToDouble(dao.getMinHrDay().getHeartRate()) +"\nThe time is: "+formatter.format(dao.getMinHrDay().getTimestamp()));
+            average.setText("The Average heart rate: " + averageRate);
+        }else{
+            low.setText("The highest heart rate: "+ "\nThe time is: ");
+            high.setText("The lowest heart rate: " + "\nThe time is: ");
+            average.setText("The Average heart rate: ");
+        }
     }
 
+    @SuppressLint("SetTextI18n")
     private void refreshMonthlyRate(Number[] number){
+        double averageRate = getAverageRate(number);
+        if(averageRate != 0){
         SimpleDateFormat formatter = new SimpleDateFormat("YY/MM/dd");
         low.setText("The highest heart rate: "+ castToDouble(dao.getMaxHrMonth().getHeartRate())+"\nThe date is: "+formatter.format(dao.getMaxHrMonth().getTimestamp()));
         high.setText("The lowest heart rate: " + castToDouble(dao.getMinHrMonth().getHeartRate()) +"\nThe date is: "+formatter.format(dao.getMinHrMonth().getTimestamp()));
-        double averageRate = getAverageRate(number);
         average.setText("The Average heart rate: " + averageRate);
+        }else{
+            low.setText("The highest heart rate: "+ "\nThe date is: ");
+            high.setText("The lowest heart rate: "+"\nThe date is: ");
+            average.setText("The Average heart rate: ");
+        }
     }
 
     private void refreshWeeklyRate(Number[] number){
+        double averageRate = getAverageRate(number);
+        if(averageRate != 0){
         SimpleDateFormat formatter = new SimpleDateFormat("EEEE");
         low.setText("The highest heart rate: "+ castToDouble(dao.getMaxHrWeek().getHeartRate())+"\nThe day is: "+formatter.format(dao.getMaxHrWeek().getTimestamp()));
         high.setText("The lowest heart rate: " + castToDouble(dao.getMinHrWeek().getHeartRate()) +"\nThe day is: "+formatter.format(dao.getMinHrWeek().getTimestamp()));
-        double averageRate = getAverageRate(number);
         average.setText("The Average heart rate: " + averageRate);
+        }else{
+            low.setText("The highest heart rate: "+"\nThe date is: ");
+            high.setText("The lowest heart rate: " +"\nThe date is: ");
+            average.setText("The Average heart rate: ");
+        }
     }
 
     private static Object[] getWeek(){
@@ -241,10 +261,10 @@ public class ReportFragment extends Fragment {
         Date today = new Date();
         Calendar cal = new GregorianCalendar();
         cal.setTime(today);
-        Object[] storeDate = new Object[30];
-        for(int i=0;i<30;i++){
+        Object[] storeDate = new Object[31];
+        for(int i=0;i<31;i++){
             Date date = cal.getTime();
-            storeDate[29-i]=formatter.format(date);
+            storeDate[30-i]=formatter.format(date);
             cal.add(Calendar.DAY_OF_MONTH, -1);
         }
         return storeDate;

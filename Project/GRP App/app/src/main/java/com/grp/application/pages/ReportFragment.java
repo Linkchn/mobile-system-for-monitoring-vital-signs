@@ -43,29 +43,12 @@ public class ReportFragment extends Fragment {
     private TextView low;
     private TextView high;
     private TextView average;
+    private TextView Weight;
     private static int[] newZeroArray;
 
     private TabLayout durationTab;
 
     public ReportFragment() {}
-
-    private Object[] dailyData(){
-        Number[] number = dao.getDailyData();
-        numberToDouble(number);
-        return number;
-    }
-
-    private Object[] weeklyData(){
-        Number[] number = dao.getWeeklyData();
-        numberToDouble(number);
-        return number;
-    }
-
-    private Object[] monthlyData(){
-        Number[] number = dao.getMonthlyData();
-        numberToDouble(number);
-        return number;
-    }
 
     private static Object[] doubleToObject(double[] array){
         int len = array.length;
@@ -106,6 +89,7 @@ public class ReportFragment extends Fragment {
         low = root.findViewById(R.id.low);
         high = root.findViewById(R.id.high);
         average = root.findViewById(R.id.average);
+        Weight = root.findViewById(R.id.Weight);
 
         lineChart.setWebViewClient(new WebViewClient(){
             @Override
@@ -113,6 +97,7 @@ public class ReportFragment extends Fragment {
                 super.onPageFinished(view, url);
                 //最好在h5页面加载完毕后再加载数据，防止html的标签还未加载完成，不能正常显示
                 refreshDailyChart();
+                refreshDailyWeight();
                 refreshDailyRate(dao.getDailyData());
                 weightChart.setVisibility(View.GONE);
             }
@@ -124,6 +109,7 @@ public class ReportFragment extends Fragment {
             public void onTabSelected(TabLayout.Tab tab) {
                 if (durationTab.getTabAt(0).isSelected()) {
                     monitor.showToast("Daily Tab");
+                    refreshDailyWeight();
                     refreshDailyChart();
                     refreshDailyRate(dao.getDailyData());
                     weightChart.setVisibility(View.GONE);
@@ -174,15 +160,25 @@ public class ReportFragment extends Fragment {
     }
 
     private void refreshWeeklyWeight(){
-        Object[] x = getWeek();
-        Object[] y = dailyData();
+        Object[] y  = doubleToObject(dealZero(numberToDouble(dao.getWeeklyWeight())));
+        Object[] x = removeElement(getWeek());
         weightChart.refreshEchartsWithOption(EchartOptionUtil.getLineChartOptions(x, y, "Weight"));
     }
 
     private void refreshMonthlyWeight(){
-        Object[] x = getDate();
-        Object[] y = dailyData();
+        Object[] y = doubleToObject(dealZero(numberToDouble(dao.getMonthlyWeight())));
+        Object[] x = removeElement(getDate());
         weightChart.refreshEchartsWithOption(EchartOptionUtil.getLineChartOptions(x, y, "Weight"));
+    }
+
+    private void refreshDailyWeight(){
+        double[] num = numberToDouble(dao.getDailyData());
+        if(num[0] != 0){
+            double number = num[0];
+            BigDecimal bd = BigDecimal.valueOf(number).setScale(2, RoundingMode.HALF_UP);
+            number = bd.doubleValue();
+            Weight.setText("Weight: " + number + "Kg");
+        }
     }
 
     private double getAverageRate(Number[] number){

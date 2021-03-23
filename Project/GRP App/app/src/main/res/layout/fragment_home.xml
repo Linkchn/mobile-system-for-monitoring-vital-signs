@@ -115,7 +115,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="110dp"
             android:layout_marginEnd="110dp"
-            android:layout_marginBottom="30dp"
+            android:layout_marginBottom="10dp"
             android:text="Start Capture Data"
             android:textColor="@color/main_color"
             android:textSize="14sp" />
@@ -130,6 +130,7 @@
             android:layout_marginBottom="10dp"
             android:text="Start Recording ECG"
             android:textAllCaps="false"
+            android:enabled="false"
             app:strokeColor="@color/main_color" />
         <Button
             android:id="@+id/button_start_recording_hr"
@@ -140,6 +141,7 @@
             android:layout_marginTop="5dp"
             android:layout_marginBottom="10dp"
             android:text="Start Recording Hr"
+            android:enabled="false"
             app:strokeColor="@color/main_color"
             android:textAllCaps="false"/>
         <Button
@@ -150,6 +152,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="10dp"
+            android:enabled="false"
             android:text="Recording Accelerator"
             app:strokeColor="@color/main_color"
             android:textAllCaps="false"/>

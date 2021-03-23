@@ -53,6 +53,7 @@ import androidx.navigation.Navigation;
 
 import com.example.application.R;
 
+import com.grp.application.monitor.Monitor;
 import com.grp.application.scale.Scale;
 import com.grp.application.scale.bluetooth.BluetoothCommunication;
 import com.grp.application.scale.bluetooth.BluetoothFactory;
@@ -315,12 +316,21 @@ public class BluetoothSettingsFragment extends Fragment {
         public void onClick(View view) {
             BluetoothDevice device = foundDevices.get(getDeviceAddress());
 
+            /*
             SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(requireContext());
 
             prefs.edit()
                     .putString(PREFERENCE_KEY_BLUETOOTH_HW_ADDRESS, device.getAddress())
                     .putString(PREFERENCE_KEY_BLUETOOTH_DEVICE_NAME, device.getName())
                     .apply();
+
+             */
+            Scale scale = Scale.getInstance();
+            scale.setDeviceName(device.getName());
+            scale.setHwAddress(device.getAddress());
+
+            Monitor monitor = Monitor.getInstance();
+            monitor.getMonitorState().connectScaleDevice();
 
             Timber.d("Saved Bluetooth device " + device.getName() + " with address " + device.getAddress());
 

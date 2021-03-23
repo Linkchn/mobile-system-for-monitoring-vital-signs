@@ -131,7 +131,7 @@ public class HomeFragment extends Fragment implements PlotterListener {
         recordingAccButton = root.findViewById(R.id.button_start_recording_acc);
 //        stopRecordingAccButton = root.findViewById(R.id.button_stop_recording_acc);
 //        viewRecordingAccButton = root.findViewById(R.id.button_view_recording_acc);
-        receiveWarningSwitch = root.findViewById(R.id.switch_msg_report_generated);
+        receiveWarningSwitch = root.findViewById(R.id.switch_msg_not_capture_data);
 
 
         polarDevice = PolarDevice.getInstance();
@@ -154,8 +154,9 @@ public class HomeFragment extends Fragment implements PlotterListener {
                 try {
                     PolarHrData data = hrSimulator.getNextHrData();
                     if(data.hr <= 0){
+                        grpNotification.sendNotification(mainActivity);
                             if(receiveWarningSwitch.isChecked()){
-                                grpNotification.sendNotification(mainActivity);
+
                             }
                     }
                     textViewHR.setText("Current Heart Rate: " + data.hr);

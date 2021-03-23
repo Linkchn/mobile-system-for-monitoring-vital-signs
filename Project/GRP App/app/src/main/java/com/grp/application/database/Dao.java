@@ -290,29 +290,29 @@ public class Dao {
         db.close();
     }
 
-    public void insertTodayDataToDailyTable(){
-        SQLiteDatabase db = mHelper.getWritableDatabase();
-        long startTime = TimeHelper.getDailyStartTime(new Date().getTime());
-        long endTime = TimeHelper.getDailyEndTime(new Date().getTime());
-        String[] args = {Long.toString(startTime),Long.toString(endTime)};
-        Cursor cursor = db.query(Constants.HR_TABLE_DETAIL, new String[]{"timestamp","hr"},"timestamp>=? AND timestamp<=?", args,null,null,null );
-        long totalHR = 0;
-        int totalCount = 0;
-        if(cursor.moveToFirst()){
-            do{
-                Log.i("count",Integer.toString(cursor.getColumnIndex("number")));
-                totalHR += cursor.getLong(cursor.getColumnIndex("hr"));
-                totalCount ++;
-            }while (cursor.moveToNext());
-        }
-
-        if(totalCount>0){
-            long todayHR = totalHR/totalCount;
-            long timestamp = Calendar.getInstance().getTimeInMillis();
-            insert(timestamp,todayHR,Constants.HR_TABLE_DAILY);
-            Log.d(TAG,"todayHR"+todayHR+",endTime"+endTime);
-        }
-    }
+//    public void insertTodayDataToDailyTable(){
+//        SQLiteDatabase db = mHelper.getWritableDatabase();
+//        long startTime = TimeHelper.getDailyStartTime(new Date().getTime());
+//        long endTime = TimeHelper.getDailyEndTime(new Date().getTime());
+//        String[] args = {Long.toString(startTime),Long.toString(endTime)};
+//        Cursor cursor = db.query(Constants.HR_TABLE_DETAIL, new String[]{"timestamp","hr"},"timestamp>=? AND timestamp<=?", args,null,null,null );
+//        long totalHR = 0;
+//        int totalCount = 0;
+//        if(cursor.moveToFirst()){
+//            do{
+//                Log.i("count",Integer.toString(cursor.getColumnIndex("number")));
+//                totalHR += cursor.getLong(cursor.getColumnIndex("hr"));
+//                totalCount ++;
+//            }while (cursor.moveToNext());
+//        }
+//
+//        if(totalCount>0){
+//            long todayHR = totalHR/totalCount;
+//            long timestamp = Calendar.getInstance().getTimeInMillis();
+//            insert(timestamp,todayHR,Constants.HR_TABLE_DAILY);
+//            Log.d(TAG,"todayHR"+todayHR+",endTime"+endTime);
+//        }
+//    }
 
     public void computeInsertTodayData() {
         SQLiteDatabase db = mHelper.getWritableDatabase();
@@ -468,7 +468,7 @@ public class Dao {
         for(int i=0; i<7; i++){
             long dayStartTime = startTime+i*ONE_DAY;
             long dayEndTime = startTime+(i+1)*ONE_DAY;
-            String sql = "SELECT timestamp,hr FROM "+Constants.HR_TABLE_DAILY +" WHERE timestamp>"+dayStartTime+" AND timestamp<"+dayEndTime;
+            String sql = "SELECT timestamp,weight FROM "+Constants.WEIGHT_TABLE+" WHERE timestamp>"+dayStartTime+" AND timestamp<"+dayEndTime;
             Cursor cursor = db.rawQuery(sql, null);
 //            Cursor cursor = query(hourStartTime,hourEndTime,Constants.HR_TABLE_NAME_DAY);
             long totalWeight = 0;
@@ -496,7 +496,7 @@ public class Dao {
         for(int i=0; i<31; i++){
             long dayStartTime = startTime+i*ONE_DAY;
             long dayEndTime = startTime+(i+1)*ONE_DAY;
-            String sql = "SELECT timestamp,hr FROM "+Constants.HR_TABLE_DAILY+" WHERE timestamp>"+dayStartTime+" AND timestamp<"+dayEndTime;
+            String sql = "SELECT timestamp,weight FROM "+Constants.WEIGHT_TABLE+" WHERE timestamp>"+dayStartTime+" AND timestamp<"+dayEndTime;
             Cursor cursor = db.rawQuery(sql, null);
             long totalWeight = 0;
             int totalCount = 0;
@@ -528,7 +528,9 @@ public class Dao {
 
     }
 
+    public void exportHr() {
 
+    }
     public SQLiteDatabase getDatabase() {
         return mHelper.getWritableDatabase();
     }

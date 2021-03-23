@@ -38,9 +38,9 @@ public class AlarmService extends Service {
             public void run() {
                 if(GlobalData.isNeedCompute || GlobalData.isStartRecord){
                    Dao dao = new Dao(getApplicationContext());
-                   dao.clearTodayDataInWeeklyTable();
+//                   dao.clearTodayDataInWeeklyTable();
 //                   dao.computeInsertTodayData();
-                   dao.insertTodayDataToDailyTable();
+//                   dao.insertTodayDataToDailyTable();
                    GlobalData.weeklyData = dao.getWeeklyData();
                    GlobalData.dailyData = dao.getDailyData();
                    GlobalData.monthlyData = dao.getMonthlyData();

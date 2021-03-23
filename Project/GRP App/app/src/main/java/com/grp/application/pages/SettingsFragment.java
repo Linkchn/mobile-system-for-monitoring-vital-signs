@@ -16,6 +16,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.application.R;
 import com.google.android.material.switchmaterial.SwitchMaterial;
+import com.grp.application.database.Dao;
 import com.grp.application.monitor.Monitor;
 import com.grp.application.polar.PolarDevice;
 import com.grp.application.scale.Scale;
@@ -138,6 +139,10 @@ public class SettingsFragment extends Fragment {
                 monitor.showToast("Stop Alert");
                 monitor.getMonitorState().disableMsgOnReportGenerated();
             }
+        });
+
+        exportDatabaseButton.setOnClickListener((views) -> {
+            Dao dao = new Dao(getContext());
         });
 
         return root;

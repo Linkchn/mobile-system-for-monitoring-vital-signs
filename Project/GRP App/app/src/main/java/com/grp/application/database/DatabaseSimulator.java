@@ -32,7 +32,7 @@ public class DatabaseSimulator {
             for(int i=0; i<70000; i++){
                 polarHrData = HrSimulator.getInstance().getNextHrData();
                 hr = polarHrData.hr;
-                insertSql = "insert into "+ Constants.HR_TABLE_NAME_DAY+"(timestamp,hr) values(?,?)";
+                insertSql = "insert into "+ Constants.HR_TABLE_DETAIL +"(timestamp,hr) values(?,?)";
                 db.execSQL(insertSql, new Object[]{timestamp+i*1000,hr});
             }
             db.setTransactionSuccessful();
@@ -50,9 +50,9 @@ public class DatabaseSimulator {
 
     public void computeInsertTodayData() {
         SQLiteDatabase db = dao.getDatabase();
-        long startTime = timeHelper.getDailyStartTime(new Date().getTime());
-        long endTime = timeHelper.getDailyEndTime(new Date().getTime());
-        String sql = "SELECT timestamp,hr FROM "+Constants.HR_TABLE_NAME_DAY+" WHERE timestamp>"+startTime+" AND timestamp<"+endTime;
+        long startTime = TimeHelper.getDailyStartTime(new Date().getTime());
+        long endTime = TimeHelper.getDailyEndTime(new Date().getTime());
+        String sql = "SELECT timestamp,hr FROM "+Constants.HR_TABLE_DETAIL +" WHERE timestamp>"+startTime+" AND timestamp<"+endTime;
         Cursor cursor = db.rawQuery(sql, null);
         long totalHR = 0;
         int totalCount = 0;
@@ -66,17 +66,16 @@ public class DatabaseSimulator {
         if(totalCount>0){
             int todayHR = (int) totalHR/totalCount;
             long timestamp = Calendar.getInstance().getTimeInMillis();
-            dao.insert(timestamp,todayHR,Constants.HR_TABLE_NAME_WEEK);
-            dao.insert(timestamp,todayHR,Constants.HR_TABLE_NAME_MONTH);
+            dao.insert(timestamp,todayHR,Constants.HR_TABLE_DAILY);
             Log.d(TAG,"totalCount"+totalCount+",endTime"+endTime);
         }
     }
 
     public void clearTodayData() {
         SQLiteDatabase db = dao.getDatabase();
-        long startTime = timeHelper.getDailyStartTime(new Date().getTime());
-        long endTime = timeHelper.getDailyEndTime(new Date().getTime());
-        dao.delete(startTime,endTime,Constants.HR_TABLE_NAME_DAY);
+        long startTime = TimeHelper.getDailyStartTime(new Date().getTime());
+        long endTime = TimeHelper.getDailyEndTime(new Date().getTime());
+        dao.delete(startTime,endTime,Constants.HR_TABLE_DETAIL);
         Log.d(TAG,"Clear data of today");
     }
 

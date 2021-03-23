@@ -4,7 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
-public class timeHelper {
+public class TimeHelper {
     public static Long getDailyStartTime(Long timeStamp) {
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(timeStamp);
@@ -58,9 +58,9 @@ public class timeHelper {
         return calendar.getTimeInMillis();
     }
 
-    public static Long getMonthStartTime(Long timeStamp) {
+    public static Long getMonthStartTime() {
         Calendar calendar = Calendar.getInstance();// 获取当前日期
-        calendar.setTimeInMillis(timeStamp);
+//        calendar.setTimeInMillis(timeStamp);
         calendar.add(Calendar.YEAR, 0);
         calendar.add(Calendar.MONTH, 0);
         calendar.set(Calendar.DAY_OF_MONTH, 1);// 设置为1号,当前日期既为本月第一天

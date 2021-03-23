@@ -1,5 +1,6 @@
 package com.grp.application.pages;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.LayoutInflater;
@@ -16,6 +17,8 @@ import androidx.fragment.app.Fragment;
 
 import com.example.application.R;
 import com.google.android.material.switchmaterial.SwitchMaterial;
+import com.grp.application.MainActivity;
+import com.grp.application.ScaleSearchActivity;
 import com.grp.application.monitor.Monitor;
 import com.grp.application.polar.PolarDevice;
 import com.grp.application.scale.Scale;
@@ -77,7 +80,10 @@ public class SettingsFragment extends Fragment {
         hrConnectButton.setOnClickListener(this::showPolarDeviceDialog);
 
         // Set action for connect button of scale device
-        scaleConnectButton.setOnClickListener(this::showScaleDialog);
+        scaleConnectButton.setOnClickListener((view) -> {
+            Intent intent = new Intent(getActivity(), ScaleSearchActivity.class);
+            startActivity(intent);
+        });
 
         // Set action for disconnect button of heart rate device
         hrDeviceDisconenctButton.setOnClickListener((buttonView) -> {
@@ -143,6 +149,12 @@ public class SettingsFragment extends Fragment {
         });
 
         return root;
+    }
+
+    @Override
+    public void onResume() {
+        resetUI();
+        super.onResume();
     }
 
     /**

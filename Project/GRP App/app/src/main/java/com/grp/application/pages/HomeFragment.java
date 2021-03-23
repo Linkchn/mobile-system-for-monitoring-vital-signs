@@ -179,7 +179,8 @@ public class HomeFragment extends Fragment implements PlotterListener {
         initUI();
         if (monitor.getMonitorState().isStartCaptureDataEnabled()) {
             startPlot();
-            if (monitor.getMonitorState().isSimulationEnabled()) {
+            if (monitor.getMonitorState().isSimulationEnabled() &&
+                    !monitor.getMonitorState().isSimulationOn()) {
                 simHandler.postDelayed(simulate, 1000);
             }
         }

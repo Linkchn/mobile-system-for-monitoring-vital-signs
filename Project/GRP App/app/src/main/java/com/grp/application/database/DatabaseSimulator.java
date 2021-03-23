@@ -67,7 +67,6 @@ public class DatabaseSimulator {
             int todayHR = (int) totalHR/totalCount;
             long timestamp = Calendar.getInstance().getTimeInMillis();
             dao.insert(timestamp,todayHR,Constants.HR_TABLE_DAILY);
-            dao.insert(timestamp,todayHR,Constants.HR_TABLE_NAME_MONTH);
             Log.d(TAG,"totalCount"+totalCount+",endTime"+endTime);
         }
     }

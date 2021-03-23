@@ -12,6 +12,7 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.provider.DocumentsContract;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -409,11 +410,12 @@ public class HomeFragment extends Fragment implements PlotterListener {
         startRecordingHrButton.setOnClickListener((view) -> {
             if(monitor.getMonitorState().isSimulationEnabled() && startCaptureDataSwitch.isChecked()){
                 if(monitor.isHrStatus()){
-                    alertDialog("Simulator recordings", "Recording starts");
-                    startRecordingHrButton.setTextColor(Color.rgb(244,67,54));
-                }else{
                     alertDialog("Problem", "Already recording ");
                     startRecordingHrButton.setTextColor(Color.rgb(244,67,54));
+                }else{
+                    alertDialog("Simulator recordings", "Recording starts");
+                    startRecordingHrButton.setTextColor(Color.rgb(244,67,54));
+                    monitor.setHrStatus(true);
                 }
             }else{
                 if(monitor.isHrStatus()){
@@ -753,7 +755,7 @@ public class HomeFragment extends Fragment implements PlotterListener {
         long currentTime = System.currentTimeMillis();
         int hr = data.hr;
         heartRateDataList.add(new HeartRateData((long)hr, currentTime));
-        if(hrStatus){
+        if(monitor.isHrStatus()){
             hrData = hrData + currentTime + "," + hr + ",\n";
         }
 

@@ -183,7 +183,7 @@ public class Dao {
         long startTime = TimeHelper.getDailyStartTime(timestamp);
         long endTime = TimeHelper.getDailyEndTime(timestamp);
         String[] args = {Long.toString(startTime),Long.toString(endTime)};
-        Cursor cursor = db.query(Constants.HR_TABLE_MAX, new String[]{"timestamp","hr"},"timestamp>=? AND timestamp<=?", args,null,null,null );
+        Cursor cursor = db.query(Constants.HR_TABLE_MIN, new String[]{"timestamp","hr"},"timestamp>=? AND timestamp<=?", args,null,null,null );
         if(cursor.moveToFirst()){
             minHr = cursor.getLong(cursor.getColumnIndex("hr"));
             time = cursor.getLong(cursor.getColumnIndex("timestamp"));

@@ -13,9 +13,25 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        tools:layout_editor_absoluteX="0dp">
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/textView1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="30dp"
+
+            android:layout_marginBottom="20dp"
+
+            android:text="@string/real_time_data"
+            android:textSize="22sp" />
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider" />
 
         <com.androidplot.xy.XYPlot
             android:id="@+id/plot_ecg"
@@ -28,19 +44,9 @@
             app:gridBackgroundColor="@color/white"
             app:lineLabelInsetLeft="12dp"
             app:lineLabels="left"
+            app:marginTop="20dp"
             app:renderMode="use_background_thread"
             app:title="" />
-
-        <TextView
-            android:id="@+id/textView1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_marginBottom="30dp"
-
-            android:text="@string/real_time_data"
-
-            android:textSize="22sp" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -59,7 +65,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="30dp"
-            android:text="Start Recording ECG      >"
+            android:text="Start Recording ECG"
             app:strokeColor="@color/main_color" />
 
         <Button
@@ -224,7 +230,7 @@
 
             <TableRow
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" >
+                android:layout_height="match_parent">
 
                 <Button
                     android:id="@+id/button_stop_recording_acc"

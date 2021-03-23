@@ -1,9 +1,6 @@
 package com.grp.application.export;
 
 import android.os.Environment;
-import android.widget.Toast;
-
-import com.grp.application.Application;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -14,15 +11,15 @@ import java.util.Locale;
 
 public class FileLog {
 
+
     /**
      * Save
      *
-     * @param heart_beat_per_minute
      * @param message  The content of message
      * @param fileName name of the file to export
      */
-    public static void saveLog(String heart_beat_per_minute, String message, String fileName) throws IOException {
-        String path = Environment.getExternalStorageDirectory() + "/HR";
+    public static void saveLog(String message, String fileName, String type) throws IOException {
+        String path = Environment.getExternalStorageDirectory() + File.separator +type;
         File files = new File(path);
         Date date = new Date();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-M-dd HH:mm:ss,EE", Locale.getDefault());
@@ -36,6 +33,13 @@ public class FileLog {
             FileWriter fw = new FileWriter(path + File.separator
                     + fileName + ".csv");
             fw.write(formatDate);
+            if (type == "HR"){
+                fw.write("timestamp,bpm\n");
+            }else if (type == "ECG"){
+                fw.write("timestamp,uV\n");
+            }else if (type == "ACC"){
+                fw.write("timestamp,x,y,z\n");
+            }
             fw.write(message);
             fw.close();
         } catch (Exception e) {

@@ -186,7 +186,7 @@ public class ReportFragment extends Fragment {
         double[] num = numberToDouble(number);
         double total = 0;
         int len =num.length;
-        for(int i=0;i<num.length;i++){
+        for(int i=1;i<num.length;i++){
             if(num[i] == 0){
                 len--;
                 continue;

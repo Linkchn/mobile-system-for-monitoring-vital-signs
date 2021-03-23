@@ -134,7 +134,6 @@ public class HomeFragment extends Fragment implements PlotterListener {
         startRecordingAccButton = root.findViewById(R.id.button_start_recording_acc);
         stopRecordingAccButton = root.findViewById(R.id.button_stop_recording_acc);
         viewRecordingAccButton = root.findViewById(R.id.button_view_recording_acc);
-        receiveWarningSwitch = root.findViewById(R.id.switch_msg_report_generated);
 
 
         polarDevice = PolarDevice.getInstance();
@@ -157,9 +156,9 @@ public class HomeFragment extends Fragment implements PlotterListener {
                 try {
                     PolarHrData data = hrSimulator.getNextHrData();
                     if(data.hr <= 0){
-                            if(receiveWarningSwitch.isChecked()){
-                                grpNotification.sendNotification(mainActivity);
-                            }
+                        if(Monitor.getInstance().getMonitorState().isMsgOnNotWearDeviceEnabled()){
+                            grpNotification.sendNotification(getActivity());
+                        }
                     }
                     textViewHR.setText("Current Heart Rate: " + data.hr);
                     loadHrValue(data);
@@ -217,8 +216,8 @@ public class HomeFragment extends Fragment implements PlotterListener {
                 try {
                     float weight = weightSimulator.readNextWeightData();
                     if(weight <= 0){
-                        if(receiveWarningSwitch.isChecked()){
-                        grpNotification.sendNotification(mainActivity);
+                        if(Monitor.getInstance().getMonitorState().isMsgOnNotWearDeviceEnabled()){
+                            grpNotification.sendNotification(getActivity());
                         }else {
                             weightText.setText(String.format("%.2f", weight));
                             Dao dao = new Dao(getContext());
@@ -590,8 +589,8 @@ public class HomeFragment extends Fragment implements PlotterListener {
                     Scale scale = Scale.getInstance();
                     scale.addScaleMeasurement(scaleBtData);
                     if(monitor.getWeight()<=0){
-                        if(receiveWarningSwitch.isChecked()){
-                        grpNotification.sendNotification(mainActivity);
+                        if(Monitor.getInstance().getMonitorState().isMsgOnNotWearDeviceEnabled()){
+                            grpNotification.sendNotification(getActivity());
                         }
                     }
                     weightText.setText(String.format("%.2f", monitor.getWeight()));
@@ -650,8 +649,8 @@ public class HomeFragment extends Fragment implements PlotterListener {
                     textViewHR.setText("No HR Signal");
                 }
                 if(data.hr <= 0){
-                    if(receiveWarningSwitch.isChecked()){
-                    grpNotification.sendNotification(mainActivity);
+                    if(Monitor.getInstance().getMonitorState().isMsgOnNotWearDeviceEnabled()){
+                        grpNotification.sendNotification(getActivity());
                     }
                 }
                 loadHrValue(data);

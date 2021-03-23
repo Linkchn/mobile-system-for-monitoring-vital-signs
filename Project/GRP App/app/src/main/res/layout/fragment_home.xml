@@ -20,12 +20,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="30dp"
-
-            android:layout_marginBottom="20dp"
-
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="10dp"
             android:text="@string/real_time_data"
-            android:textSize="22sp" />
+            android:textSize="20sp" />
 
         <View
             android:id="@+id/divider"
@@ -57,38 +55,29 @@
             android:text="ECG"
             android:textSize="16sp" />
 
-        <Button
-            android:id="@+id/button_start_recording_ecg"
-            style="?attr/materialButtonOutlinedStyle"
-            android:layout_width="255dp"
-            android:layout_height="45dp"
-            android:layout_gravity="center"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="30dp"
-            android:text="Start Recording ECG"
-            app:strokeColor="@color/main_color" />
 
-        <Button
-            android:id="@+id/button_stop_recording_ecg"
-            style="?attr/materialButtonOutlinedStyle"
-            android:layout_width="255dp"
-            android:layout_height="45dp"
-            android:layout_gravity="center"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="30dp"
-            android:text="Stop Recording ECG      >"
-            app:strokeColor="@color/main_color" />
 
-        <Button
-            android:id="@+id/button_view_recording_ecg"
-            style="?attr/materialButtonOutlinedStyle"
-            android:layout_width="255dp"
-            android:layout_height="45dp"
-            android:layout_gravity="center"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="30dp"
-            android:text="View Recording ECG      >"
-            app:strokeColor="@color/main_color" />
+<!--        <Button-->
+<!--            android:id="@+id/button_stop_recording_ecg"-->
+<!--            style="?attr/materialButtonOutlinedStyle"-->
+<!--            android:layout_width="255dp"-->
+<!--            android:layout_height="45dp"-->
+<!--            android:layout_gravity="center"-->
+<!--            android:layout_marginTop="10dp"-->
+<!--            android:layout_marginBottom="30dp"-->
+<!--            android:text="Stop Recording ECG      >"-->
+<!--            app:strokeColor="@color/main_color" />-->
+
+<!--        <Button-->
+<!--            android:id="@+id/button_view_recording_ecg"-->
+<!--            style="?attr/materialButtonOutlinedStyle"-->
+<!--            android:layout_width="255dp"-->
+<!--            android:layout_height="45dp"-->
+<!--            android:layout_gravity="center"-->
+<!--            android:layout_marginTop="10dp"-->
+<!--            android:layout_marginBottom="30dp"-->
+<!--            android:text="View Recording ECG      >"-->
+<!--            app:strokeColor="@color/main_color" />-->
 
         <TextView
             android:id="@+id/number_heart_rate"
@@ -116,7 +105,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_marginTop="5dp"
-            android:layout_marginBottom="40dp"
+            android:layout_marginBottom="20dp"
             android:text="@string/heart_rate"
             android:textSize="16sp" />
 
@@ -126,42 +115,66 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="110dp"
             android:layout_marginEnd="110dp"
+            android:layout_marginBottom="30dp"
             android:text="Start Capture Data"
             android:textColor="@color/main_color"
             android:textSize="14sp" />
 
         <Button
+            android:id="@+id/button_start_recording_ecg"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="255dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="10dp"
+            android:text="Start Recording ECG"
+            android:textAllCaps="false"
+            app:strokeColor="@color/main_color" />
+        <Button
             android:id="@+id/button_start_recording_hr"
             style="?attr/materialButtonOutlinedStyle"
             android:layout_width="255dp"
-            android:layout_height="45dp"
+            android:layout_height="50dp"
             android:layout_gravity="center"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="30dp"
-            android:text="Start Recording Hr          >"
-            app:strokeColor="@color/main_color" />
-
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="10dp"
+            android:text="Start Recording Hr"
+            app:strokeColor="@color/main_color"
+            android:textAllCaps="false"/>
         <Button
-            android:id="@+id/button_stop_recording_hr"
+            android:id="@+id/button_start_recording_acc"
             style="?attr/materialButtonOutlinedStyle"
             android:layout_width="255dp"
-            android:layout_height="45dp"
+            android:layout_height="50dp"
             android:layout_gravity="center"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="30dp"
-            android:text=" Stop Recording Hr          >"
-            app:strokeColor="@color/main_color" />
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="10dp"
+            android:text="Recording Accelerator"
+            app:strokeColor="@color/main_color"
+            android:textAllCaps="false"/>
 
-        <Button
-            android:id="@+id/button_view_recording_hr"
-            style="?attr/materialButtonOutlinedStyle"
-            android:layout_width="255dp"
-            android:layout_height="45dp"
-            android:layout_gravity="center"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="30dp"
-            android:text="View Recording Hr          >"
-            app:strokeColor="@color/main_color" />
+<!--        <Button-->
+<!--            android:id="@+id/button_stop_recording_hr"-->
+<!--            style="?attr/materialButtonOutlinedStyle"-->
+<!--            android:layout_width="255dp"-->
+<!--            android:layout_height="45dp"-->
+<!--            android:layout_gravity="center"-->
+<!--            android:layout_marginTop="10dp"-->
+<!--            android:layout_marginBottom="30dp"-->
+<!--            android:text=" Stop Recording Hr          >"-->
+<!--            app:strokeColor="@color/main_color" />-->
+
+<!--        <Button-->
+<!--            android:id="@+id/button_view_recording_hr"-->
+<!--            style="?attr/materialButtonOutlinedStyle"-->
+<!--            android:layout_width="255dp"-->
+<!--            android:layout_height="45dp"-->
+<!--            android:layout_gravity="center"-->
+<!--            android:layout_marginTop="10dp"-->
+<!--            android:layout_marginBottom="30dp"-->
+<!--            android:text="View Recording Hr          >"-->
+<!--            app:strokeColor="@color/main_color" />-->
 
         <View
             android:layout_width="match_parent"
@@ -205,52 +218,53 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="2dp"
+            android:layout_marginBottom="30dp"
             android:background="?android:attr/listDivider" />
 
-        <TableLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+<!--        <TableLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent">-->
 
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+<!--            <TableRow-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent">-->
 
-                <Button
-                    android:id="@+id/button_start_recording_acc"
-                    android:layout_width="200dp"
-                    android:layout_height="45dp"
-                    android:text="Start Accelerator" />
+<!--                <Button-->
+<!--                    android:id="@+id/button_start_recording_acc"-->
+<!--                    android:layout_width="200dp"-->
+<!--                    android:layout_height="45dp"-->
+<!--                    android:text="Start Accelerator" />-->
 
-                <Button
-                    android:id="@+id/button_view_recording_acc"
-                    android:layout_width="200dp"
-                    android:layout_height="45dp"
-                    android:text="View Accelerator" />
-            </TableRow>
+<!--                <Button-->
+<!--                    android:id="@+id/button_view_recording_acc"-->
+<!--                    android:layout_width="200dp"-->
+<!--                    android:layout_height="45dp"-->
+<!--                    android:text="View Accelerator" />-->
+<!--            </TableRow>-->
 
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+<!--            <TableRow-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent">-->
 
-                <Button
-                    android:id="@+id/button_stop_recording_acc"
-                    android:layout_width="200dp"
-                    android:layout_height="45dp"
-                    android:text="Stop Accelerator" />
-            </TableRow>
+<!--                <Button-->
+<!--                    android:id="@+id/button_stop_recording_acc"-->
+<!--                    android:layout_width="200dp"-->
+<!--                    android:layout_height="45dp"-->
+<!--                    android:text="Stop Accelerator" />-->
+<!--            </TableRow>-->
 
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+<!--            <TableRow-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="match_parent">-->
 
-                <Button
-                    android:id="@+id/button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Button" />
-            </TableRow>
+<!--                <Button-->
+<!--                    android:id="@+id/button"-->
+<!--                    android:layout_width="wrap_content"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="Button" />-->
+<!--            </TableRow>-->
 
-        </TableLayout>
+<!--        </TableLayout>-->
 
     </LinearLayout>
 

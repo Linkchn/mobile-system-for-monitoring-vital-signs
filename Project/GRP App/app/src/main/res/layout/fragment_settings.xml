@@ -8,15 +8,16 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        >
+        android:orientation="vertical">
 
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="70dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="10dp"
             android:gravity="center"
             android:text="@string/settings"
-            android:textSize="20sp"/>
+            android:textSize="20sp" />
 
         <View
             android:layout_width="match_parent"
@@ -28,57 +29,58 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingTop="30dp"
-        android:paddingBottom="30dp"
         android:paddingStart="40dp"
-        android:paddingEnd="40dp">
+        android:paddingTop="30dp"
+        android:paddingEnd="40dp"
+        android:paddingBottom="30dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="10dp">
+            android:layout_marginBottom="10dp"
+            android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/text_hr_device"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center|start"
-            android:text="HR Device:"
-            android:textSize="16sp"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"/>
+            <TextView
+                android:id="@+id/text_hr_device"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_weight="1"
+                android:gravity="center|start"
+                android:text="HR Device:"
+                android:textSize="16sp" />
 
-        <ImageView
-            android:id="@+id/symbol_hr_device"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:src="@drawable/ic_outline_cancel_24"/>
+            <ImageView
+                android:id="@+id/symbol_hr_device"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:src="@drawable/ic_outline_cancel_24" />
 
-        <Button
-            android:id="@+id/button_connect_hr_device"
-            android:layout_width="120dp"
-            android:layout_height="40dp"
-            android:layout_gravity="center"
-            android:text="@string/text_device_not_connected"
-            android:textSize="12sp"
-            android:layout_marginStart="10dp"
-            style="?attr/materialButtonOutlinedStyle"
-            app:strokeColor="@color/main_color" />
+            <Button
+                android:id="@+id/button_connect_hr_device"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="120dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:layout_marginStart="10dp"
+                android:text="@string/text_device_not_connected"
+                android:textSize="12sp"
+                app:strokeColor="@color/main_color" />
 
             <Button
                 android:id="@+id/button_disconnect_hr_device"
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_gravity="center"
-                android:textSize="12sp"
                 android:layout_marginStart="10dp"
-                android:foreground="@drawable/ic_baseline_link_off_24"
                 android:background="@drawable/ripple"
-                android:visibility="invisible"/>
+                android:foreground="@drawable/ic_baseline_link_off_24"
+                android:textSize="12sp"
+                android:visibility="invisible" />
 
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -87,28 +89,28 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
                 android:layout_weight="1"
                 android:gravity="center|start"
                 android:text="Scale Device:"
-                android:textSize="16sp"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"/>
+                android:textSize="16sp" />
 
             <ImageView
                 android:id="@+id/symbol_scale_device"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:src="@drawable/ic_outline_cancel_24"/>
+                android:src="@drawable/ic_outline_cancel_24" />
 
             <Button
                 android:id="@+id/button_connect_scale_device"
+                style="?attr/materialButtonOutlinedStyle"
                 android:layout_width="120dp"
                 android:layout_height="40dp"
                 android:layout_gravity="center"
+                android:layout_marginStart="10dp"
                 android:text="@string/text_device_not_connected"
                 android:textSize="12sp"
-                android:layout_marginStart="10dp"
-                style="?attr/materialButtonOutlinedStyle"
                 app:strokeColor="@color/main_color" />
 
             <Button
@@ -116,11 +118,11 @@
                 android:layout_width="30dp"
                 android:layout_height="30dp"
                 android:layout_gravity="center"
-                android:textSize="12sp"
                 android:layout_marginStart="10dp"
-                android:foreground="@drawable/ic_baseline_link_off_24"
                 android:background="@drawable/ripple"
-                android:visibility="invisible"/>
+                android:foreground="@drawable/ic_baseline_link_off_24"
+                android:textSize="12sp"
+                android:visibility="invisible" />
 
 
         </LinearLayout>
@@ -130,16 +132,16 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
+            android:layout_marginStart="80dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="80dp"
             android:text="Simulation"
             android:textColor="@color/main_color"
-            android:textSize="14sp"
-            android:layout_marginTop="20dp"
-            android:layout_marginStart="80dp"
-            android:layout_marginEnd="80dp"/>
+            android:textSize="14sp" />
     </LinearLayout>
 
 
-        <View
+    <View
             android:layout_width="match_parent"
             android:layout_height="2dp"
             android:background="?android:attr/listDivider" />
@@ -215,55 +217,63 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginTop="20dp"/>
+        android:layout_marginTop="20dp">
 
-    <com.google.android.material.switchmaterial.SwitchMaterial
-        android:id="@+id/switch_msg_not_wear_device"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Receive message when not wear device"
-        android:textColor="@color/main_color"
-        android:textSize="13sp"
-        android:layout_marginStart="40dp"
-        android:layout_marginEnd="40dp"/>
-
-    <com.google.android.material.switchmaterial.SwitchMaterial
-        android:id="@+id/switch_msg_not_capture_data"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Receive warning when not capture data"
-        android:textColor="@color/main_color"
-        android:textSize="13sp"
-        android:layout_marginStart="40dp"
-        android:layout_marginEnd="40dp"/>
-
-    <com.google.android.material.switchmaterial.SwitchMaterial
-        android:id="@+id/switch_msg_report_generated"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Receive alert when report generated"
-        android:textColor="@color/main_color"
-        android:textSize="13sp"
-        android:layout_marginStart="40dp"
-        android:layout_marginEnd="40dp"/>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/reset_database"
-            android:layout_width="150dp"
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/switch_msg_not_capture_data"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Reset Database" />
+            android:layout_marginStart="40dp"
+            android:layout_marginEnd="40dp"
+            android:text="Receive warning when not capture data"
+            android:textColor="@color/main_color"
+            android:textSize="13sp" />
 
-        <Button
-            android:id="@+id/export_database"
-            android:layout_width="200dp"
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/switch_msg_report_generated"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Export Database" />
+            android:layout_marginStart="40dp"
+            android:layout_marginEnd="40dp"
+            android:text="Receive alert when report generated"
+            android:textColor="@color/main_color"
+            android:textSize="13sp" />
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/switch_msg_not_wear_device"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="40dp"
+            android:layout_marginEnd="40dp"
+            android:text="Receive message when not wear device"
+            android:textColor="@color/main_color"
+            android:textSize="13sp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:layout_marginTop="10dp">
+
+            <Button
+                android:id="@+id/export_database"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="20dp"
+                android:text="Export Data"
+                android:textSize="12sp"/>
+
+            <Button
+                android:id="@+id/reset_database"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="50dp"
+                android:text="Clear Data"
+                android:textSize="12sp"/>
+
+        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>

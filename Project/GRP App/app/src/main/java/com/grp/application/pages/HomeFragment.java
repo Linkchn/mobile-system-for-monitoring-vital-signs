@@ -126,14 +126,14 @@ public class HomeFragment extends Fragment implements PlotterListener {
 
 
         startRecordingHrButton = root.findViewById(R.id.button_start_recording_hr);
-        stopRecordingHrButton = root.findViewById(R.id.button_stop_recording_hr);
-        viewRecordingHrButton = root.findViewById(R.id.button_view_recording_hr);
+//        stopRecordingHrButton = root.findViewById(R.id.button_stop_recording_hr);
+//        viewRecordingHrButton = root.findViewById(R.id.button_view_recording_hr);
         startRecordingECGButton = root.findViewById(R.id.button_start_recording_ecg);
-        stopRecordingECGButton = root.findViewById(R.id.button_stop_recording_ecg);
-        viewRecordingECGButton = root.findViewById(R.id.button_view_recording_ecg);
+//        stopRecordingECGButton = root.findViewById(R.id.button_stop_recording_ecg);
+//        viewRecordingECGButton = root.findViewById(R.id.button_view_recording_ecg);
         startRecordingAccButton = root.findViewById(R.id.button_start_recording_acc);
-        stopRecordingAccButton = root.findViewById(R.id.button_stop_recording_acc);
-        viewRecordingAccButton = root.findViewById(R.id.button_view_recording_acc);
+//        stopRecordingAccButton = root.findViewById(R.id.button_stop_recording_acc);
+//        viewRecordingAccButton = root.findViewById(R.id.button_view_recording_acc);
         receiveWarningSwitch = root.findViewById(R.id.switch_msg_report_generated);
 
 
@@ -295,36 +295,36 @@ public class HomeFragment extends Fragment implements PlotterListener {
          * @param ECGStatus represents whether the recording is on or not
          *
          */
-        stopRecordingECGButton.setOnClickListener((view) -> {
-            if (monitor.isEcgStatus()){
-                alertDialog("Recording", "Recording ends");
-                startRecordingECGButton.setTextColor(Color.rgb(21,131,216));
-
-                if (ContextCompat.checkSelfPermission(mainActivity,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(mainActivity, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 101);
-                } else {
-                    // if clicked, changes the status to "False"
-                    monitor.setEcgStatus(false);
-                    String fileName = "ECG_Recording_" + new Date().getTime();
-                    try {
-                        FileLog.saveLog(monitor.getEcgValue(),fileName,"ECG");
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    Toast.makeText(Application.context, "ECG Export successfully!", Toast.LENGTH_LONG).show();
-                    monitor.stopECG();
-                }
-            }
-        });
+//        stopRecordingECGButton.setOnClickListener((view) -> {
+//            if (monitor.isEcgStatus()){
+//                alertDialog("Recording", "Recording ends");
+//                startRecordingECGButton.setTextColor(Color.rgb(21,131,216));
+//
+//                if (ContextCompat.checkSelfPermission(mainActivity,
+//                        Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//                    ActivityCompat.requestPermissions(mainActivity, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 101);
+//                } else {
+//                    // if clicked, changes the status to "False"
+//                    monitor.setEcgStatus(false);
+//                    String fileName = "ECG_Recording_" + new Date().getTime();
+//                    try {
+//                        FileLog.saveLog(monitor.getEcgValue(),fileName,"ECG");
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                    Toast.makeText(Application.context, "ECG Export successfully!", Toast.LENGTH_LONG).show();
+//                    monitor.stopECG();
+//                }
+//            }
+//        });
 
         /**
          * A button listener that every time it is clicked, the directory that contains recording
          * data will be opened.
          */
-        viewRecordingECGButton.setOnClickListener((view) -> {
-            openAssignFolder("%2fECG%2f");
-        });
+//        viewRecordingECGButton.setOnClickListener((view) -> {
+//            openAssignFolder("%2fECG%2f");
+//        });
 
 
         // ACC
@@ -347,36 +347,36 @@ public class HomeFragment extends Fragment implements PlotterListener {
             }
         });
 
-        stopRecordingAccButton.setOnClickListener((view) -> {
-            if (monitor.isAccStatus()){
-                alertDialog("Recording", "Recording ends");
-                startRecordingAccButton.setTextColor(Color.rgb(21,131,216));
-
-                if (ContextCompat.checkSelfPermission(mainActivity,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(mainActivity, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 101);
-                } else {
-                    // if clicked, changes the status to "False"
-                    monitor.setAccStatus(false);
-                    String fileName = "ACC_Recording_" + new Date().getTime();
-                    try {
-                        FileLog.saveLog(monitor.getAccValue(),fileName,"ACC");
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    Toast.makeText(Application.context, "ACC Export successfully!", Toast.LENGTH_LONG).show();
-                    monitor.stopACC();
-                }
-            }
-        });
+//        stopRecordingAccButton.setOnClickListener((view) -> {
+//            if (monitor.isAccStatus()){
+//                alertDialog("Recording", "Recording ends");
+//                startRecordingAccButton.setTextColor(Color.rgb(21,131,216));
+//
+//                if (ContextCompat.checkSelfPermission(mainActivity,
+//                        Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//                    ActivityCompat.requestPermissions(mainActivity, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 101);
+//                } else {
+//                    // if clicked, changes the status to "False"
+//                    monitor.setAccStatus(false);
+//                    String fileName = "ACC_Recording_" + new Date().getTime();
+//                    try {
+//                        FileLog.saveLog(monitor.getAccValue(),fileName,"ACC");
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                    Toast.makeText(Application.context, "ACC Export successfully!", Toast.LENGTH_LONG).show();
+//                    monitor.stopACC();
+//                }
+//            }
+//        });
 
         /**
          * A button listener that every time it is clicked, the directory that contains recording
          * data will be opened.
          */
-        viewRecordingAccButton.setOnClickListener((view) -> {
-            openAssignFolder("%2fACC%2f");
-        });
+//        viewRecordingAccButton.setOnClickListener((view) -> {
+//            openAssignFolder("%2fACC%2f");
+//        });
 
 
 
@@ -455,37 +455,37 @@ public class HomeFragment extends Fragment implements PlotterListener {
          * @param hrStatus represents whether the recording is on or not
          *
          */
-        stopRecordingHrButton.setOnClickListener((view) -> {
-            if (monitor.isHrStatus() || monitor.getMonitorState().isSimulationEnabled()){
-                alertDialog("Recording", "Recording ends");
-                startRecordingHrButton.setTextColor(Color.rgb(21,131,216));
-
-                if (ContextCompat.checkSelfPermission(mainActivity,
-                        Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(mainActivity, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 101);
-                } else {
-                    // if clicked, changes the status to "False"
-                    monitor.setHrStatus(false);
-                    String fileName = "HR_Recording_" + new Date().getTime();
-                    try {
-                        FileLog.saveLog(hrData,fileName,"HR");
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    Toast.makeText(Application.context, "HR Export successfully!", Toast.LENGTH_LONG).show(); // <--
-                    monitor.stopHr();
-                }
-            }
-        });
+//        stopRecordingHrButton.setOnClickListener((view) -> {
+//            if (monitor.isHrStatus() || monitor.getMonitorState().isSimulationEnabled()){
+//                alertDialog("Recording", "Recording ends");
+//                startRecordingHrButton.setTextColor(Color.rgb(21,131,216));
+//
+//                if (ContextCompat.checkSelfPermission(mainActivity,
+//                        Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//                    ActivityCompat.requestPermissions(mainActivity, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 101);
+//                } else {
+//                    // if clicked, changes the status to "False"
+//                    monitor.setHrStatus(false);
+//                    String fileName = "HR_Recording_" + new Date().getTime();
+//                    try {
+//                        FileLog.saveLog(hrData,fileName,"HR");
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                    Toast.makeText(Application.context, "HR Export successfully!", Toast.LENGTH_LONG).show(); // <--
+//                    monitor.stopHr();
+//                }
+//            }
+//        });
 
         /**
          * A button listener that every time it is clicked, the directory that contains recording
          * data will be opened.
          */
-        viewRecordingHrButton.setOnClickListener((view) -> {
-            openAssignFolder("%2fHR%2f");
-
-        });
+//        viewRecordingHrButton.setOnClickListener((view) -> {
+//            openAssignFolder("%2fHR%2f");
+//
+//        });
 
 
         // updated at 2/17. Problems occur in android simulator.

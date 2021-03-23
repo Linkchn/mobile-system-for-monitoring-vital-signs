@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<ScrollView xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <androidx.constraintlayout.widget.ConstraintLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context="com.grp.application.pages.ReportFragment"
@@ -18,6 +16,23 @@
             android:orientation="vertical"
             app:layout_constraintTop_toTopOf="parent"
             >
+
+            <TextView
+                android:id="@+id/healthReport"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="10dp"
+                android:text="@string/health_report"
+                android:textSize="20sp" />
+
+
+            <View
+                android:id="@+id/divider"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="?android:attr/listDivider" />
 
             <com.google.android.material.tabs.TabLayout
                 android:id="@+id/tab_duration"
@@ -46,16 +61,6 @@
                     android:layout_height="wrap_content"
                     android:text="@string/monthly" />
             </com.google.android.material.tabs.TabLayout>
-
-            <TextView
-                android:id="@+id/healthReport"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="@string/health_report"
-                android:textSize="22sp"
-                android:layout_marginTop="20dp"
-                android:layout_marginBottom="40dp" />
 
             <com.grp.application.GRPchart.EchartView
                 android:id="@+id/lineChart"
@@ -107,33 +112,33 @@
 
 
 
-            <FrameLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
-                android:paddingStart="60dp"
-                android:paddingEnd="40dp">
+<!--            <FrameLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                app:layout_constraintBottom_toBottomOf="parent"-->
+<!--                android:paddingStart="60dp"-->
+<!--                android:paddingEnd="40dp">-->
 
 
-                <Button
-                    android:id="@+id/button_save"
-                    style="?attr/materialButtonOutlinedStyle"
-                    android:layout_width="140dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="start"
-                    android:text="@string/save"
-                    app:strokeColor="@color/main_color" />
+<!--                <Button-->
+<!--                    android:id="@+id/button_save"-->
+<!--                    style="?attr/materialButtonOutlinedStyle"-->
+<!--                    android:layout_width="140dp"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_gravity="start"-->
+<!--                    android:text="@string/save"-->
+<!--                    app:strokeColor="@color/main_color" />-->
 
-                <Button
-                    android:id="@+id/button_export"
-                    android:layout_width="140dp"
-                    android:layout_height="wrap_content"
-                    android:text="@string/export"
-                    android:layout_gravity="end"
-                    style="?attr/materialButtonOutlinedStyle"
-                    app:strokeColor="@color/main_color"/>
+<!--                <Button-->
+<!--                    android:id="@+id/button_export"-->
+<!--                    android:layout_width="140dp"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:text="@string/export"-->
+<!--                    android:layout_gravity="end"-->
+<!--                    style="?attr/materialButtonOutlinedStyle"-->
+<!--                    app:strokeColor="@color/main_color"/>-->
 
-            </FrameLayout>
+<!--            </FrameLayout>-->
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

@@ -186,17 +186,21 @@ public class ReportFragment extends Fragment {
         double[] num = numberToDouble(number);
         double total = 0;
         int len =num.length;
-        for(int i=1;i<num.length;i++){
+        for(int i=0;i<num.length;i++){
             if(num[i] == 0){
                 len--;
                 continue;
             }
             total += (double)num[i];
         }
-        double result = total/(len);
-        BigDecimal bd = new BigDecimal(result).setScale(2, RoundingMode.HALF_UP);
-        result = bd.doubleValue();
-        return result;
+        if(len == 0){
+            return 0;
+        }else{
+            double result = total/(len);
+            BigDecimal bd = new BigDecimal(result).setScale(2, RoundingMode.HALF_UP);
+            result = bd.doubleValue();
+            return result;
+        }
     }
 
     private void refreshDailyRate(Number[] number){

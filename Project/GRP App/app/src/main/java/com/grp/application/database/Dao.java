@@ -65,7 +65,7 @@ public class Dao {
                 ContentValues values = new ContentValues();
                 values.put("timestamp", timestamp);
                 values.put("hr", hr);
-                db.insert(Constants.HR_TABLE_DETAIL, null, values);
+                db.insert(Constants.HR_TABLE_STORE, null, values);
 //                Log.i("db",values.toString());
             }
 
@@ -375,7 +375,7 @@ public class Dao {
             }
 //            Log.d(TAG, i+":"+String.valueOf(hrList[i]));
         }
-
+        db.close();
         return hrList;
     }
 
@@ -386,7 +386,7 @@ public class Dao {
         for(int i=0; i<7; i++){
             long dayStartTime = startTime+i*ONE_DAY;
             long dayEndTime = startTime+(i+1)*ONE_DAY;
-            String sql = "SELECT timestamp,hr FROM "+Constants.HR_TABLE_DAILY +" WHERE timestamp>"+dayStartTime+" AND timestamp<"+dayEndTime;
+            String sql = "SELECT timestamp,hr FROM "+Constants.HR_TABLE_DETAIL +" WHERE timestamp>"+dayStartTime+" AND timestamp<"+dayEndTime;
             Cursor cursor = db.rawQuery(sql, null);
 //            Cursor cursor = query(hourStartTime,hourEndTime,Constants.HR_TABLE_NAME_DAY);
             long totalHR = 0;
@@ -404,6 +404,7 @@ public class Dao {
             }
 //            Log.d(TAG, i+":"+String.valueOf(hrList[i]));
         }
+        db.close();
 
         return hrList;
     }
@@ -415,7 +416,7 @@ public class Dao {
         for(int i=0; i<31; i++){
             long dayStartTime = startTime+i*ONE_DAY;
             long dayEndTime = startTime+(i+1)*ONE_DAY;
-            String sql = "SELECT timestamp,hr FROM "+Constants.HR_TABLE_DAILY+" WHERE timestamp>"+dayStartTime+" AND timestamp<"+dayEndTime;
+            String sql = "SELECT timestamp,hr FROM "+Constants.HR_TABLE_DETAIL+" WHERE timestamp>"+dayStartTime+" AND timestamp<"+dayEndTime;
             Cursor cursor = db.rawQuery(sql, null);
 //            Cursor cursor = query(hourStartTime,hourEndTime,Constants.HR_TABLE_NAME_DAY);
             long totalHR = 0;
@@ -432,6 +433,7 @@ public class Dao {
                 hrList[i] = 0;
             }
         }
+        db.close();
         return hrList;
     }
 
@@ -455,6 +457,7 @@ public class Dao {
         }else {
             weightList[0] = 0;
         }
+        db.close();
         return weightList;
     }
 
@@ -482,7 +485,7 @@ public class Dao {
                 weightList[i] = 0;
             }
         }
-
+        db.close();
         return weightList;
     }
 
@@ -509,6 +512,7 @@ public class Dao {
                 weightList[i] = 0;
             }
         }
+        db.close();
         return weightList;
     }
 

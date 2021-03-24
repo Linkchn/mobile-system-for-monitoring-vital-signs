@@ -57,6 +57,26 @@
             android:text="ECG"
             android:textSize="16sp" />
 
+        <View
+            android:id="@+id/view4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/switch_start_capture_data"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="110dp"
+            android:layout_marginEnd="110dp"
+            android:text="Start Capture Data"
+            android:textColor="@color/main_color"
+            android:textSize="14sp" />
+
+        <View
+            android:id="@+id/view5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
         <Button
             android:id="@+id/button_start_recording_ecg"
             style="?attr/materialButtonOutlinedStyle"
@@ -65,7 +85,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="30dp"
-            android:text="Start Recording ECG"
+            android:text="Start Recording ECG    >"
             app:strokeColor="@color/main_color" />
 
         <Button
@@ -120,16 +140,6 @@
             android:text="@string/heart_rate"
             android:textSize="16sp" />
 
-        <com.google.android.material.switchmaterial.SwitchMaterial
-            android:id="@+id/switch_start_capture_data"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="110dp"
-            android:layout_marginEnd="110dp"
-            android:text="Start Capture Data"
-            android:textColor="@color/main_color"
-            android:textSize="14sp" />
-
         <Button
             android:id="@+id/button_start_recording_hr"
             style="?attr/materialButtonOutlinedStyle"
@@ -138,7 +148,7 @@
             android:layout_gravity="center"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="30dp"
-            android:text="Start Recording Hr          >"
+            android:text="Start Recording Hr        >"
             app:strokeColor="@color/main_color" />
 
         <Button
@@ -207,50 +217,43 @@
             android:layout_height="2dp"
             android:background="?android:attr/listDivider" />
 
-        <TableLayout
+        <Button
+            android:id="@+id/button_start_recording_acc"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="255dp"
+            android:layout_height="45dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="30dp"
+            android:text="Start Recording ACC      >"
+            app:strokeColor="@color/main_color" />
+
+        <Button
+            android:id="@+id/button_stop_recording_acc"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="255dp"
+            android:layout_height="45dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="30dp"
+            android:text=" Stop Recording ACC      >"
+            app:strokeColor="@color/main_color" />
+
+        <Button
+            android:id="@+id/button_view_recording_acc"
+            style="?attr/materialButtonOutlinedStyle"
+            android:layout_width="255dp"
+            android:layout_height="45dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="30dp"
+            android:text="View Recording ACC      >"
+            app:strokeColor="@color/main_color" />
+
+        <View
+            android:id="@+id/view"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <Button
-                    android:id="@+id/button_start_recording_acc"
-                    android:layout_width="200dp"
-                    android:layout_height="45dp"
-                    android:text="Start Accelerator" />
-
-                <Button
-                    android:id="@+id/button_view_recording_acc"
-                    android:layout_width="200dp"
-                    android:layout_height="45dp"
-                    android:text="View Accelerator" />
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <Button
-                    android:id="@+id/button_stop_recording_acc"
-                    android:layout_width="200dp"
-                    android:layout_height="45dp"
-                    android:text="Stop Accelerator" />
-            </TableRow>
-
-            <TableRow
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <Button
-                    android:id="@+id/button"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Button" />
-            </TableRow>
-
-        </TableLayout>
+            android:layout_height="100dp" />
 
     </LinearLayout>
 

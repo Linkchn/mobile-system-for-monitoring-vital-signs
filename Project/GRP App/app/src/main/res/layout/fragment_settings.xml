@@ -253,13 +253,14 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal"
-            android:layout_marginTop="10dp">
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="35dp"
+            android:layout_marginEnd="35dp">
 
             <Button
                 android:id="@+id/export_database"
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="30dp"
                 android:layout_marginRight="20dp"
                 android:text="Export Data"
                 android:textSize="12sp"/>
@@ -269,11 +270,21 @@
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
-                android:layout_marginRight="50dp"
                 android:text="Clear Data"
                 android:textSize="12sp"/>
 
         </LinearLayout>
+
     </LinearLayout>
+
+    <Button
+        android:id="@+id/view_recorded_data"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="View recorded data"
+        android:layout_marginStart="35dp"
+        android:layout_marginEnd="35dp"
+        android:layout_marginTop="10dp"
+        style="?attr/materialButtonOutlinedStyle"/>
 
 </LinearLayout>

@@ -695,28 +695,7 @@ public class HomeFragment extends Fragment implements PlotterListener {
         });
     }
 
-    private void openAssignFolder(String path) {
 
-        Uri uri = Uri.parse("content://com.android.externalstorage.documents/document/primary:" + path);
-        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-        intent.addCategory(Intent.CATEGORY_OPENABLE);
-        intent.setType("*/*");
-        intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, uri);
-        startActivityForResult(intent, 0);
-//        File files = new File(path);
-//        if (!files.exists()) {
-//            files.mkdirs();
-//        }
-//        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-//        Uri uri = Uri.parse(path);
-//        intent.setDataAndType(uri, "*/*");
-//        System.out.println(path + "\n");
-//
-//
-////        intent.addCategory(Intent.CATEGORY_OPENABLE);
-//        startActivity(Intent.createChooser(intent, "Open folder"));
-
-    }
 
     private void loadHrValue(PolarHrData data) {
         long currentTime = System.currentTimeMillis();

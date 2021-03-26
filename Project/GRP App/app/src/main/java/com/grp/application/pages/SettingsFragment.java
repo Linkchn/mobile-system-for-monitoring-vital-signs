@@ -1,6 +1,9 @@
 package com.grp.application.pages;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.DocumentsContract;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,6 +47,7 @@ public class SettingsFragment extends Fragment {
     private Button scaleDeviceDisconnectButton;
     private  Button resetDatabaseButton;
     private  Button exportDatabaseButton;
+    private  Button viewRecordedButton;
     private SwitchMaterial simulationSwitch;
     private SwitchMaterial msgOnNotWearDeviceSwitch;
     private SwitchMaterial msgOnNotCaptureDataSwitch;
@@ -70,6 +74,7 @@ public class SettingsFragment extends Fragment {
         msgOnReportGenerated = root.findViewById(R.id.switch_msg_report_generated);
         resetDatabaseButton =  root.findViewById(R.id.reset_database);
         exportDatabaseButton =  root.findViewById(R.id.export_database);
+        viewRecordedButton = root.findViewById(R.id.view_recorded_data);
 
         resetUI();
         initDevice();
@@ -145,7 +150,34 @@ public class SettingsFragment extends Fragment {
             Dao dao = new Dao(getContext());
         });
 
+        viewRecordedButton.setOnClickListener((views) -> {
+            openAssignFolder("%2fVitalSigns%2f");
+        });
+
         return root;
+    }
+
+    private void openAssignFolder(String path) {
+
+        Uri uri = Uri.parse("content://com.android.externalstorage.documents/document/primary:" + path);
+        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+        intent.addCategory(Intent.CATEGORY_OPENABLE);
+        intent.setType("*/*");
+        intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, uri);
+        startActivityForResult(intent, 0);
+//        File files = new File(path);
+//        if (!files.exists()) {
+//            files.mkdirs();
+//        }
+//        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+//        Uri uri = Uri.parse(path);
+//        intent.setDataAndType(uri, "*/*");
+//        System.out.println(path + "\n");
+//
+//
+////        intent.addCategory(Intent.CATEGORY_OPENABLE);
+//        startActivity(Intent.createChooser(intent, "Open folder"));
+
     }
 
     /**

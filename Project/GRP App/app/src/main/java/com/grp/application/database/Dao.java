@@ -280,62 +280,7 @@ public class Dao {
         return new HeartRateData(minHr,time);
     }
 
-    public void clearTodayDataInWeeklyTable(){
-        SQLiteDatabase db = mHelper.getWritableDatabase();
-        long startTime = TimeHelper.getDailyStartTime(new Date().getTime());
-        long endTime = TimeHelper.getDailyEndTime(new Date().getTime());
-        String[] args = {Long.toString(startTime),Long.toString(endTime)};
 
-        db.delete(Constants.HR_TABLE_DAILY, "timestamp>=? AND timestamp<=?", args);
-        db.close();
-    }
-
-//    public void insertTodayDataToDailyTable(){
-//        SQLiteDatabase db = mHelper.getWritableDatabase();
-//        long startTime = TimeHelper.getDailyStartTime(new Date().getTime());
-//        long endTime = TimeHelper.getDailyEndTime(new Date().getTime());
-//        String[] args = {Long.toString(startTime),Long.toString(endTime)};
-//        Cursor cursor = db.query(Constants.HR_TABLE_DETAIL, new String[]{"timestamp","hr"},"timestamp>=? AND timestamp<=?", args,null,null,null );
-//        long totalHR = 0;
-//        int totalCount = 0;
-//        if(cursor.moveToFirst()){
-//            do{
-//                Log.i("count",Integer.toString(cursor.getColumnIndex("number")));
-//                totalHR += cursor.getLong(cursor.getColumnIndex("hr"));
-//                totalCount ++;
-//            }while (cursor.moveToNext());
-//        }
-//
-//        if(totalCount>0){
-//            long todayHR = totalHR/totalCount;
-//            long timestamp = Calendar.getInstance().getTimeInMillis();
-//            insert(timestamp,todayHR,Constants.HR_TABLE_DAILY);
-//            Log.d(TAG,"todayHR"+todayHR+",endTime"+endTime);
-//        }
-//    }
-
-    public void computeInsertTodayData() {
-        SQLiteDatabase db = mHelper.getWritableDatabase();
-        long startTime = TimeHelper.getDailyStartTime(new Date().getTime());
-        long endTime = TimeHelper.getDailyEndTime(new Date().getTime());
-        String sql = "SELECT timestamp,hr FROM "+Constants.HR_TABLE_DETAIL +" WHERE timestamp>"+startTime+" AND timestamp<"+endTime;
-        Cursor cursor = db.rawQuery(sql, null);
-        long totalHR = 0;
-        int totalCount = 0;
-        if(cursor.moveToFirst()){
-            do{
-                totalHR += cursor.getLong(cursor.getColumnIndex("hr"));
-                totalCount++;
-            }while (cursor.moveToNext());
-        }
-
-        if(totalCount>0){
-            int todayHR = (int) totalHR/totalCount;
-            long timestamp = Calendar.getInstance().getTimeInMillis();
-            insert(timestamp,todayHR,Constants.HR_TABLE_DAILY);
-            Log.d(TAG,"totalCount"+totalCount+",endTime"+endTime);
-        }
-    }
 
     public void delete(long startTime, long endTime, String tableName) {
         SQLiteDatabase db = mHelper.getWritableDatabase();
@@ -520,7 +465,6 @@ public class Dao {
         SQLiteDatabase db = mHelper.getWritableDatabase();
         db.delete(Constants.HR_TABLE_MAX,"1=1",null);
         db.delete(Constants.HR_TABLE_MIN,"1=1",null);
-        db.delete(Constants.HR_TABLE_DAILY,"1=1",null);
         db.delete(Constants.HR_TABLE_DETAIL,"1=1",null);
         db.delete(Constants.WEIGHT_TABLE,"1=1",null);
 

@@ -20,6 +20,8 @@ import androidx.fragment.app.Fragment;
 import com.example.application.R;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.grp.application.database.Dao;
+import com.grp.application.MainActivity;
+import com.grp.application.ScaleSearchActivity;
 import com.grp.application.monitor.Monitor;
 import com.grp.application.polar.PolarDevice;
 import com.grp.application.scale.Scale;
@@ -83,7 +85,10 @@ public class SettingsFragment extends Fragment {
         hrConnectButton.setOnClickListener(this::showPolarDeviceDialog);
 
         // Set action for connect button of scale device
-        scaleConnectButton.setOnClickListener(this::showScaleDialog);
+        scaleConnectButton.setOnClickListener((view) -> {
+            Intent intent = new Intent(getActivity(), ScaleSearchActivity.class);
+            startActivity(intent);
+        });
 
         // Set action for disconnect button of heart rate device
         hrDeviceDisconenctButton.setOnClickListener((buttonView) -> {
@@ -108,7 +113,9 @@ public class SettingsFragment extends Fragment {
                 monitor.getMonitorState().enableSimulation();
             } else {
                 monitor.showToast("Stop Simulation");
+                monitor.getMonitorState().simulationOff();
                 monitor.getMonitorState().disableSimulation();
+                monitor.getMonitorState().disableStartCaptureData();
             }
             resetUI();
         });
@@ -157,6 +164,7 @@ public class SettingsFragment extends Fragment {
         return root;
     }
 
+
     private void openAssignFolder(String path) {
 
         Uri uri = Uri.parse("content://com.android.externalstorage.documents/document/primary:" + path);
@@ -177,7 +185,11 @@ public class SettingsFragment extends Fragment {
 //
 ////        intent.addCategory(Intent.CATEGORY_OPENABLE);
 //        startActivity(Intent.createChooser(intent, "Open folder"));
+    }
 
+    public void onResume() {
+        resetUI();
+        super.onResume();
     }
 
     /**

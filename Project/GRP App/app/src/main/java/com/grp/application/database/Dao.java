@@ -1,14 +1,23 @@
 package com.grp.application.database;
 
+import android.Manifest;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+import android.widget.Toast;
 
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
+import com.grp.application.Application;
 import com.grp.application.Constants;
 import com.grp.application.HeartRateData;
+import com.grp.application.export.FileLog;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -66,7 +75,7 @@ public class Dao {
                 values.put("timestamp", timestamp);
                 values.put("hr", hr);
                 db.insert(Constants.HR_TABLE_STORE, null, values);
-//                Log.i("db",values.toString());
+                Log.i("db",values.toString());
             }
 
             db.setTransactionSuccessful();
@@ -466,15 +475,45 @@ public class Dao {
         db.delete(Constants.HR_TABLE_MAX,"1=1",null);
         db.delete(Constants.HR_TABLE_MIN,"1=1",null);
         db.delete(Constants.HR_TABLE_DETAIL,"1=1",null);
+        db.delete(Constants.HR_TABLE_STORE,"1=1",null);
         db.delete(Constants.WEIGHT_TABLE,"1=1",null);
 
         db.close();
 
     }
 
-    public void exportHr() {
-
+    public void exportHrData() {
+        SQLiteDatabase db = mHelper.getWritableDatabase();
+        String sql = "SELECT timestamp,hr FROM "+Constants.HR_TABLE_STORE;
+        Cursor cursor = db.rawQuery(sql, null);
+        int totalCount = 0;
+        String hrData="";
+        if(cursor.moveToFirst()){
+            do{
+                hrData = hrData + cursor.getLong(cursor.getColumnIndex("timestamp")) + "," + cursor.getLong(cursor.getColumnIndex("hr")) + ",\n";
+                totalCount++;
+                if (totalCount > 10000) {
+                    saveInFile(hrData);
+                    totalCount = 0;
+                    hrData = "";
+                }
+            }while (cursor.moveToNext());
+        }
+        saveInFile(hrData);
+        Toast.makeText(Application.context, "HR Export successfully!", Toast.LENGTH_LONG).show(); // <--
+        db.delete(Constants.HR_TABLE_STORE,"1=1",null);
+        db.close();
     }
+
+    private void saveInFile(String hrData) {
+        String fileName = "HR_Recording_" + new Date().getTime();
+        try {
+            FileLog.saveLog(hrData,fileName,"VitalSigns/Exported");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public SQLiteDatabase getDatabase() {
         return mHelper.getWritableDatabase();
     }

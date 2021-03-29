@@ -48,28 +48,6 @@ public class DatabaseSimulator {
 
     }
 
-    public void computeInsertTodayData() {
-        SQLiteDatabase db = dao.getDatabase();
-        long startTime = TimeHelper.getDailyStartTime(new Date().getTime());
-        long endTime = TimeHelper.getDailyEndTime(new Date().getTime());
-        String sql = "SELECT timestamp,hr FROM "+Constants.HR_TABLE_DETAIL +" WHERE timestamp>"+startTime+" AND timestamp<"+endTime;
-        Cursor cursor = db.rawQuery(sql, null);
-        long totalHR = 0;
-        int totalCount = 0;
-        if(cursor.moveToFirst()){
-            do{
-                totalHR += cursor.getInt(cursor.getColumnIndex("hr"));
-                totalCount++;
-            }while (cursor.moveToNext());
-        }
-
-        if(totalCount>0){
-            int todayHR = (int) totalHR/totalCount;
-            long timestamp = Calendar.getInstance().getTimeInMillis();
-            dao.insert(timestamp,todayHR,Constants.HR_TABLE_DAILY);
-            Log.d(TAG,"totalCount"+totalCount+",endTime"+endTime);
-        }
-    }
 
     public void clearTodayData() {
         SQLiteDatabase db = dao.getDatabase();

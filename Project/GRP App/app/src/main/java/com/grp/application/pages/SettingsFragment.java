@@ -1,6 +1,9 @@
 package com.grp.application.pages;
 
+import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.DocumentsContract;
@@ -12,19 +15,27 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import com.example.application.R;
 import com.google.android.material.switchmaterial.SwitchMaterial;
+import com.grp.application.Application;
 import com.grp.application.database.Dao;
 import com.grp.application.MainActivity;
 import com.grp.application.ScaleSearchActivity;
+import com.grp.application.export.FileLog;
 import com.grp.application.monitor.Monitor;
 import com.grp.application.polar.PolarDevice;
 import com.grp.application.scale.Scale;
+
+import java.io.IOException;
+import java.util.Date;
 
 import polar.com.sdk.api.PolarBleApiCallback;
 import polar.com.sdk.api.errors.PolarInvalidArgument;
@@ -154,7 +165,25 @@ public class SettingsFragment extends Fragment {
         });
 
         exportDatabaseButton.setOnClickListener((views) -> {
-            Dao dao = new Dao(getContext());
+            exportHR();
+        });
+
+        resetDatabaseButton.setOnClickListener((views) -> {
+            new AlertDialog.Builder(getContext()).setTitle("Warning")
+                    .setMessage("The reports will disappear if you clear the database. Are you sure to continue? ")
+                    .setPositiveButton("Continue", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Dao dao = new Dao(getContext());
+                            dao.clearDatabase();
+                        }
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                        }
+                    }).show();
         });
 
         viewRecordedButton.setOnClickListener((views) -> {
@@ -173,23 +202,21 @@ public class SettingsFragment extends Fragment {
         intent.setType("*/*");
         intent.putExtra(DocumentsContract.EXTRA_INITIAL_URI, uri);
         startActivityForResult(intent, 0);
-//        File files = new File(path);
-//        if (!files.exists()) {
-//            files.mkdirs();
-//        }
-//        Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
-//        Uri uri = Uri.parse(path);
-//        intent.setDataAndType(uri, "*/*");
-//        System.out.println(path + "\n");
-//
-//
-////        intent.addCategory(Intent.CATEGORY_OPENABLE);
-//        startActivity(Intent.createChooser(intent, "Open folder"));
     }
 
     public void onResume() {
         resetUI();
         super.onResume();
+    }
+
+    private void exportHR() {
+        if (ContextCompat.checkSelfPermission(getActivity(),
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 101);
+        } else {
+            Dao dao = new Dao(getContext());
+            dao.exportHrData();
+        }
     }
 
     /**

@@ -33,11 +33,11 @@ public class FileLog {
             FileWriter fw = new FileWriter(path + File.separator
                     + fileName + ".csv");
             fw.write(formatDate);
-            if (type == "HR"){
+            if (type == "VitalSigns/HR" || type == "VitalSigns/Exported"){
                 fw.write("timestamp,bpm\n");
-            }else if (type == "ECG"){
+            }else if (type == "VitalSigns/ECG"){
                 fw.write("timestamp,uV\n");
-            }else if (type == "ACC"){
+            }else if (type == "VitalSigns/ACC"){
                 fw.write("timestamp,x,y,z\n");
             }
             fw.write(message);

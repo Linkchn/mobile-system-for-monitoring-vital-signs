@@ -179,7 +179,10 @@ public class ReportFragment extends Fragment {
             BigDecimal bd = BigDecimal.valueOf(number).setScale(2, RoundingMode.HALF_UP);
             number = bd.doubleValue();
             Weight.setText("Weight: " + number + "Kg");
+        }else{
+            Weight.setText("Weight: ");
         }
+
     }
 
     private double getAverageRate(Number[] number){
@@ -221,10 +224,10 @@ public class ReportFragment extends Fragment {
     private void refreshMonthlyRate(Number[] number){
         double averageRate = getAverageRate(number);
         if(averageRate != 0){
-        SimpleDateFormat formatter = new SimpleDateFormat("YY/MM/dd");
-        low.setText("The highest heart rate: "+ castToDouble(dao.getMaxHrMonth().getHeartRate())+"\nThe date is: "+formatter.format(dao.getMaxHrMonth().getTimestamp()));
-        high.setText("The lowest heart rate: " + castToDouble(dao.getMinHrMonth().getHeartRate()) +"\nThe date is: "+formatter.format(dao.getMinHrMonth().getTimestamp()));
-        average.setText("The Average heart rate: " + averageRate);
+            SimpleDateFormat formatter = new SimpleDateFormat("YY/MM/dd");
+            low.setText("The highest heart rate: "+ castToDouble(dao.getMaxHrMonth().getHeartRate())+"\nThe date is: "+formatter.format(dao.getMaxHrMonth().getTimestamp()));
+            high.setText("The lowest heart rate: " + castToDouble(dao.getMinHrMonth().getHeartRate()) +"\nThe date is: "+formatter.format(dao.getMinHrMonth().getTimestamp()));
+            average.setText("The Average heart rate: " + averageRate);
         }else{
             low.setText("The highest heart rate: "+ "\nThe date is: ");
             high.setText("The lowest heart rate: "+"\nThe date is: ");
@@ -235,10 +238,10 @@ public class ReportFragment extends Fragment {
     private void refreshWeeklyRate(Number[] number){
         double averageRate = getAverageRate(number);
         if(averageRate != 0){
-        SimpleDateFormat formatter = new SimpleDateFormat("EEEE");
-        low.setText("The highest heart rate: "+ castToDouble(dao.getMaxHrWeek().getHeartRate())+"\nThe day is: "+formatter.format(dao.getMaxHrWeek().getTimestamp()));
-        high.setText("The lowest heart rate: " + castToDouble(dao.getMinHrWeek().getHeartRate()) +"\nThe day is: "+formatter.format(dao.getMinHrWeek().getTimestamp()));
-        average.setText("The Average heart rate: " + averageRate);
+            SimpleDateFormat formatter = new SimpleDateFormat("EEEE");
+            low.setText("The highest heart rate: "+ castToDouble(dao.getMaxHrWeek().getHeartRate())+"\nThe day is: "+formatter.format(dao.getMaxHrWeek().getTimestamp()));
+            high.setText("The lowest heart rate: " + castToDouble(dao.getMinHrWeek().getHeartRate()) +"\nThe day is: "+formatter.format(dao.getMinHrWeek().getTimestamp()));
+            average.setText("The Average heart rate: " + averageRate);
         }else{
             low.setText("The highest heart rate: "+"\nThe date is: ");
             high.setText("The lowest heart rate: " +"\nThe date is: ");

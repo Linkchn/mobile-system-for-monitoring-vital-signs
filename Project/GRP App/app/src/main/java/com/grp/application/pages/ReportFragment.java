@@ -173,7 +173,7 @@ public class ReportFragment extends Fragment {
     }
 
     private void refreshDailyWeight(){
-        double[] num = numberToDouble(dao.getDailyData());
+        double[] num = numberToDouble(dao.getDailyWeight());
         if(num[0] != 0){
             double number = num[0];
             BigDecimal bd = BigDecimal.valueOf(number).setScale(2, RoundingMode.HALF_UP);

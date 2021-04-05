@@ -3,6 +3,7 @@ package com.grp.application;
 import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -10,6 +11,9 @@ import android.os.Bundle;
 import com.example.application.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.grp.application.database.DatabaseHelper;
+import com.grp.application.monitor.Monitor;
+import com.grp.application.polar.PolarDevice;
+import com.grp.application.scale.Scale;
 //import com.jjoe64.graphview.GraphView;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,6 +23,9 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
+import androidx.preference.PreferenceManager;
+
+import polar.com.sdk.api.errors.PolarInvalidArgument;
 
 /**
  * {@code MainActivity} is the root activity for the application.
@@ -28,6 +35,10 @@ import androidx.navigation.ui.NavigationUI;
  */
 public class MainActivity extends AppCompatActivity {
 
+    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(Application.context);
+    static final String POLAR_KEY = "polar_device_id";
+    static final String SCALE_ADDRESS_KEY = "scale_device_address";
+    static final String SCALE_NAME_KEY = "scale_device_name";
     //
     private static final String[] PERMISSIONS_STORAGE = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -44,6 +55,12 @@ public class MainActivity extends AppCompatActivity {
                 int REQUEST_PERMISSION_CODE = 1;
                 ActivityCompat.requestPermissions(this, PERMISSIONS_STORAGE, REQUEST_PERMISSION_CODE);
             }
+        }
+
+        try {
+            checkDevice();
+        } catch (PolarInvalidArgument polarInvalidArgument) {
+            polarInvalidArgument.printStackTrace();
         }
         checkBT();
         requestMyPermissions();
@@ -97,6 +114,23 @@ public class MainActivity extends AppCompatActivity {
                 != PackageManager.PERMISSION_GRANTED) {
             //
             ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 100);
+        }
+    }
+
+    private void checkDevice() throws PolarInvalidArgument {
+        String polarDeviceID = sharedPreferences.getString(POLAR_KEY, "");
+        String scaleDeviceAddress = sharedPreferences.getString(SCALE_ADDRESS_KEY, "");
+
+        if (!polarDeviceID.equals("")) {
+            PolarDevice polarDevice = PolarDevice.getInstance();
+            polarDevice.setDeviceId(polarDeviceID);
+            polarDevice.api().connectToDevice(polarDevice.getDeviceId());
+        }
+        if (!scaleDeviceAddress.equals("")) {
+            Scale scale = Scale.getInstance();
+            scale.setDeviceName(sharedPreferences.getString(SCALE_NAME_KEY, ""));
+            scale.setHwAddress(scaleDeviceAddress);
+            Monitor.getInstance().getMonitorState().connectScaleDevice();
         }
     }
 

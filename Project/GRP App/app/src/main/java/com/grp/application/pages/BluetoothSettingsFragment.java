@@ -31,7 +31,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.preference.PreferenceManager;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
@@ -50,9 +49,12 @@ import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
+import androidx.preference.PreferenceManager;
 
 import com.example.application.R;
 
+import com.grp.application.Application;
+import com.grp.application.MainActivity;
 import com.grp.application.monitor.Monitor;
 import com.grp.application.scale.Scale;
 import com.grp.application.scale.bluetooth.BluetoothCommunication;
@@ -69,8 +71,9 @@ import java.util.Map;
 import timber.log.Timber;
 
 public class BluetoothSettingsFragment extends Fragment {
-    public static final String PREFERENCE_KEY_BLUETOOTH_DEVICE_NAME = "btDeviceName";
-    public static final String PREFERENCE_KEY_BLUETOOTH_HW_ADDRESS = "btHwAddress";
+    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(Application.context);
+    static final String SCALE_ADDRESS_KEY = "scale_device_address";
+    static final String SCALE_NAME_KEY = "scale_device_name";
 
     private Map<String, BluetoothDevice> foundDevices = new HashMap<>();
 
@@ -328,6 +331,11 @@ public class BluetoothSettingsFragment extends Fragment {
             Scale scale = Scale.getInstance();
             scale.setDeviceName(device.getName());
             scale.setHwAddress(device.getAddress());
+
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString(SCALE_NAME_KEY, device.getName());
+            editor.putString(SCALE_ADDRESS_KEY, device.getAddress());
+            editor.apply();
 
             Monitor monitor = Monitor.getInstance();
             monitor.getMonitorState().connectScaleDevice();

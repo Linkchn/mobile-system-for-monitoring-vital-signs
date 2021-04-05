@@ -160,8 +160,10 @@ public class HomeFragment extends Fragment implements PlotterListener {
 //
 //                            }
                     }
-                    textViewHR.setText("Current Heart Rate: " + data.hr);
-                    loadHrValue(data);
+                    else {
+                        textViewHR.setText("Current Heart Rate: " + data.hr);
+                        loadHrValue(data);
+                    }
 
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -216,14 +218,15 @@ public class HomeFragment extends Fragment implements PlotterListener {
             if (monitor.getMonitorState().isSimulationEnabled()) {
                 try {
                     float weight = weightSimulator.readNextWeightData();
-                    if(weight <= 0){
-                        if(receiveWarningSwitch.isChecked()){
-                        grpNotification.sendNotification(mainActivity);
-                        }else {
+                    if(weight <= 0) {
+                        if (receiveWarningSwitch.isChecked()) {
+                            grpNotification.sendNotification(mainActivity);
+                        }
+                    }
+                    else {
                             weightText.setText(String.format("%.2f", weight));
                             Dao dao = new Dao(getContext());
                             dao.insert(System.currentTimeMillis(), (long) weight, Constants.WEIGHT_TABLE);
-                        }
                     }
                 } catch (IOException e) {
                     e.printStackTrace();

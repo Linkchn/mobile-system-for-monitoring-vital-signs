@@ -3,6 +3,7 @@ package com.grp.application.pages;
 import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
@@ -22,6 +23,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.preference.PreferenceManager;
 
 import com.example.application.R;
 import com.google.android.material.switchmaterial.SwitchMaterial;
@@ -66,6 +68,11 @@ public class SettingsFragment extends Fragment {
     private SwitchMaterial msgOnNotCaptureDataSwitch;
     private SwitchMaterial msgOnReportGenerated;
 
+    static final String POLAR_KEY = "polar_device_id";
+    static final String SCALE_ADDRESS_KEY = "scale_device_address";
+    static final String SCALE_NAME_KEY = "scale_device_name";
+    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(Application.context);
+
 
     public SettingsFragment() {}
 
@@ -103,6 +110,10 @@ public class SettingsFragment extends Fragment {
 
         // Set action for disconnect button of heart rate device
         hrDeviceDisconenctButton.setOnClickListener((buttonView) -> {
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.remove(POLAR_KEY);
+            editor.apply();
+
             try {
                 polarDevice.api().disconnectFromDevice(polarDevice.getDeviceId());
             } catch (PolarInvalidArgument polarInvalidArgument) {
@@ -112,6 +123,11 @@ public class SettingsFragment extends Fragment {
 
         // Set action for disconnect button of scale device
         scaleDeviceDisconnectButton.setOnClickListener((buttonView) ->  {
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.remove(SCALE_NAME_KEY);
+            editor.remove(SCALE_ADDRESS_KEY);
+            editor.apply();
+
             monitor.getMonitorState().disconnectScaleDevice();
             monitor.showToast("Disconnect from Scale Device");
             resetUI();
@@ -294,9 +310,9 @@ public class SettingsFragment extends Fragment {
             } catch (PolarInvalidArgument polarInvalidArgument) {
                 polarInvalidArgument.printStackTrace();
             }
-            //SharedPreferences.Editor editor = sharedPreferences.edit();
-            //editor.putString(SHARED_PREFS_KEY, deviceId);
-            //editor.apply();
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putString(POLAR_KEY, polarDevice.getDeviceId());
+            editor.apply();
         });
         dialog.setNegativeButton("Cancel", (dialog12, which) -> dialog12.cancel());
         dialog.show();

@@ -16,6 +16,7 @@ import com.grp.application.polar.PolarDevice;
 import com.grp.application.scale.Scale;
 //import com.jjoe64.graphview.GraphView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -25,7 +26,9 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import androidx.preference.PreferenceManager;
 
+import polar.com.sdk.api.PolarBleApiCallback;
 import polar.com.sdk.api.errors.PolarInvalidArgument;
+import polar.com.sdk.api.model.PolarDeviceInfo;
 
 /**
  * {@code MainActivity} is the root activity for the application.

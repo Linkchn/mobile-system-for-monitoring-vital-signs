@@ -99,6 +99,9 @@ public class HomeFragment extends Fragment implements PlotterListener {
     private TimePlotter plotterHR;
     private Plotter plotterECG;
 
+    private Handler simHandler = new Handler();
+    Runnable simulate;
+
     private GRPNotification grpNotification;
 
     private ArrayList<HeartRateData> heartRateDataList; // Store recorded hr data for temp
@@ -123,14 +126,8 @@ public class HomeFragment extends Fragment implements PlotterListener {
 
 
         recordingHrButton = root.findViewById(R.id.button_start_recording_hr);
-//        stopRecordingHrButton = root.findViewById(R.id.button_stop_recording_hr);
-//        viewRecordingHrButton = root.findViewById(R.id.button_view_recording_hr);
         recordingECGButton = root.findViewById(R.id.button_start_recording_ecg);
-//        stopRecordingECGButton = root.findViewById(R.id.button_stop_recording_ecg);
-//        viewRecordingECGButton = root.findViewById(R.id.button_view_recording_ecg);
         recordingAccButton = root.findViewById(R.id.button_start_recording_acc);
-//        stopRecordingAccButton = root.findViewById(R.id.button_stop_recording_acc);
-//        viewRecordingAccButton = root.findViewById(R.id.button_view_recording_acc);
         receiveWarningSwitch = root.findViewById(R.id.switch_msg_not_capture_data);
 
 
@@ -147,8 +144,7 @@ public class HomeFragment extends Fragment implements PlotterListener {
         heartRateDataList = new ArrayList<>();
 
         // Set hr simulator
-        Handler simHandler = new Handler();
-        Runnable simulate = new Runnable() {
+        simulate = new Runnable() {
             @Override
             public void run() {
                 try {
@@ -205,6 +201,7 @@ public class HomeFragment extends Fragment implements PlotterListener {
                 simHandler.removeCallbacks(simulate);
                 monitor.getMonitorState().simulationOff();
                 stopPlot();
+                clearPlot();
                 Dao dao = new Dao(getContext());    // Dao
                 dao.insertHRdata(heartRateDataList);
                 GlobalData.isStartRecord = false;
@@ -398,6 +395,14 @@ public class HomeFragment extends Fragment implements PlotterListener {
         return root;
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (monitor.getMonitorState().isSimulationEnabled()) {
+            stopPlot();
+            simHandler.removeCallbacks(simulate);
+        }
+    }
 
     /**
      * generate the alert dialog
@@ -613,6 +618,13 @@ public class HomeFragment extends Fragment implements PlotterListener {
     private void initDevice() {
         polarDevice.api().setApiCallback(new PolarBleApiCallback() {
             @Override
+            public void deviceConnected(@NonNull PolarDeviceInfo polarDeviceInfo) {
+                monitor.showToast(polarDeviceInfo.deviceId + " is Connected");
+                monitor.getMonitorState().connectHRDevice();
+                initUI();
+            }
+
+            @Override
             public void hrNotificationReceived(@NonNull String identifier, @NonNull PolarHrData data) {
                 if (monitor.getMonitorState().isStartCaptureDataEnabled()) {
                     textViewHR.setText("Current Heart Rate: " + String.valueOf(data.hr));
@@ -632,6 +644,7 @@ public class HomeFragment extends Fragment implements PlotterListener {
                 monitor.showToast(polarDeviceInfo.deviceId + "is lost");
                 monitor.getMonitorState().disconnectHRDevice();
                 stopPlot();
+                clearPlot();
                 monitor.getMonitorState().disableStartCaptureData();
                 startCaptureDataSwitch.setEnabled(false);
             }
@@ -652,7 +665,8 @@ public class HomeFragment extends Fragment implements PlotterListener {
      * Initial UI.
      */
     private void initUI() {
-        monitor.getViewSetter().setSwitchView(startCaptureDataSwitch, monitor.getMonitorState().isStartCaptureDataEnabled());
+        monitor.getViewSetter().setSwitchView(startCaptureDataSwitch, monitor.getMonitorState().isStartCaptureDataEnabled(),
+                monitor.getMonitorState().isHRDeviceConnected() || monitor.getMonitorState().isSimulationEnabled());
 
         plotHR.setRangeBoundaries(50, 100, BoundaryMode.AUTO);
         plotHR.setDomainBoundaries(0, 360000, BoundaryMode.AUTO);
@@ -689,6 +703,9 @@ public class HomeFragment extends Fragment implements PlotterListener {
     private void stopPlot() {
         plotHR.removeSeries(plotterHR.getHrSeries());
         plotECG.removeSeries(plotterECG.getSeries());
+    }
+
+    private void clearPlot() {
         plotterHR.clearVal();
         plotterECG.clearVal();
     }

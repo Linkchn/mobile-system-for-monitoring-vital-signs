@@ -16,7 +16,7 @@ import polar.com.sdk.api.model.PolarHrData;
 /**
  * Class {@code TimePlotter} is the class to plot HR data.
  *
- * @author UNNC GRP G19
+ * @author UNNC GRP G19 modified from JOikarinen@GitHub
  * @version 1.0
  */
 public class TimePlotter {

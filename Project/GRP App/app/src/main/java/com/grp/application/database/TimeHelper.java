@@ -59,11 +59,11 @@ public class TimeHelper {
     }
 
     public static Long getMonthStartTime() {
-        Calendar calendar = Calendar.getInstance();// 获取当前日期
+        Calendar calendar = Calendar.getInstance();
 //        calendar.setTimeInMillis(timeStamp);
         calendar.add(Calendar.YEAR, 0);
         calendar.add(Calendar.MONTH, 0);
-        calendar.set(Calendar.DAY_OF_MONTH, 1);// 设置为1号,当前日期既为本月第一天
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
         calendar.set(Calendar.HOUR_OF_DAY, 0);
         calendar.set(Calendar.MINUTE, 0);
         calendar.set(Calendar.SECOND, 0);

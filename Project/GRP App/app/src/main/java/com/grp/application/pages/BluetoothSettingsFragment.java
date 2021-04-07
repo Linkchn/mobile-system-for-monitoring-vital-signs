@@ -70,6 +70,13 @@ import java.util.Map;
 
 import timber.log.Timber;
 
+/**
+ * {@code BluetoothSettingsFragment} is class to maintain UI elements and functions of home page.
+ *
+ * @author UNNC GRP G19 modified from oliexdev@GitHub
+ * @version 1.0
+ */
+
 public class BluetoothSettingsFragment extends Fragment {
 
     SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(Application.context);

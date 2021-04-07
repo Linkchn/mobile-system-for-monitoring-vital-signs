@@ -139,6 +139,8 @@ public class SettingsFragment extends Fragment {
                 monitor.getMonitorState().simulationOff();
                 monitor.getMonitorState().disableSimulation();
                 monitor.getMonitorState().disableStartCaptureData();
+                monitor.getPlotterHR().clearVal();
+                monitor.getPlotterECG().clearVal();
             }
             resetUI();
         });

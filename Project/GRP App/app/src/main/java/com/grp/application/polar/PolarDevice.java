@@ -8,7 +8,7 @@ import polar.com.sdk.api.PolarBleApiDefaultImpl;
 /**
  * Class {@code PolarDevice} is the class to represent polar device.
  *
- * @author UNNC GRP G19
+ * @author UNNC GRP G19 modified from JOikarinen@GitHub
  * @version 1.0
  */
 public class PolarDevice {

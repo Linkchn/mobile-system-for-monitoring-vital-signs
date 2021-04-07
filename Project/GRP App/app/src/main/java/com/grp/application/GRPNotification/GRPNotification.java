@@ -15,6 +15,7 @@ public class GRPNotification {
     private static GRPNotification GRPNotification;
     private String CHANNEL_ID = "CHANNEL_ID";
     private int notificationId = 1;
+    private boolean properWorn = true;
 
     public static GRPNotification getInstance(Context context){
         if(GRPNotification == null) {
@@ -52,5 +53,10 @@ public class GRPNotification {
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
         // notificationId is a unique int for each notification that you must define
         notificationManager.notify(notificationId, builder.build());
+        properWorn = false;
+    }
+
+    public boolean getProperSWorn(){
+        return properWorn;
     }
 }

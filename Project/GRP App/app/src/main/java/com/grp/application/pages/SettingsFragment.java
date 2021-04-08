@@ -67,10 +67,6 @@ public class SettingsFragment extends Fragment {
     private SwitchMaterial msgOnNotWearDeviceSwitch;
     private SwitchMaterial msgOnNotCaptureDataSwitch;
     private SwitchMaterial msgOnReportGenerated;
-
-    static final String POLAR_KEY = "polar_device_id";
-    static final String SCALE_ADDRESS_KEY = "scale_device_address";
-    static final String SCALE_NAME_KEY = "scale_device_name";
     SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(Application.context);
 
 
@@ -111,7 +107,7 @@ public class SettingsFragment extends Fragment {
         // Set action for disconnect button of heart rate device
         hrDeviceDisconenctButton.setOnClickListener((buttonView) -> {
             SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.remove(POLAR_KEY);
+            editor.remove(Application.POLAR_KEY);
             editor.apply();
 
             try {
@@ -124,8 +120,8 @@ public class SettingsFragment extends Fragment {
         // Set action for disconnect button of scale device
         scaleDeviceDisconnectButton.setOnClickListener((buttonView) ->  {
             SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.remove(SCALE_NAME_KEY);
-            editor.remove(SCALE_ADDRESS_KEY);
+            editor.remove(Application.SCALE_NAME_KEY);
+            editor.remove(Application.SCALE_ADDRESS_KEY);
             editor.apply();
 
             monitor.getMonitorState().disconnectScaleDevice();
@@ -143,6 +139,8 @@ public class SettingsFragment extends Fragment {
                 monitor.getMonitorState().simulationOff();
                 monitor.getMonitorState().disableSimulation();
                 monitor.getMonitorState().disableStartCaptureData();
+                monitor.getPlotterHR().clearVal();
+                monitor.getPlotterECG().clearVal();
             }
             resetUI();
         });
@@ -156,6 +154,9 @@ public class SettingsFragment extends Fragment {
                 monitor.showToast("Stop Message");
                 monitor.getMonitorState().disableMsgOnNotWearDevice();
             }
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean(Application.MESSAGE_KEY, isChecked);
+            editor.apply();
         });
 
         // Set action for "receive warning when not capture data" switch
@@ -167,6 +168,9 @@ public class SettingsFragment extends Fragment {
                 monitor.showToast("Stop Warning");
                 monitor.getMonitorState().disableMsgOnNotCaptureData();
             }
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean(Application.WARNING_KEY, isChecked);
+            editor.apply();
         });
 
         // Set action for "receive alert when report generated" switch
@@ -178,6 +182,9 @@ public class SettingsFragment extends Fragment {
                 monitor.showToast("Stop Alert");
                 monitor.getMonitorState().disableMsgOnReportGenerated();
             }
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean(Application.ALERT_KEY, isChecked);
+            editor.apply();
         });
 
         exportDatabaseButton.setOnClickListener((views) -> {
@@ -311,7 +318,7 @@ public class SettingsFragment extends Fragment {
                 polarInvalidArgument.printStackTrace();
             }
             SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString(POLAR_KEY, polarDevice.getDeviceId());
+            editor.putString(Application.POLAR_KEY, polarDevice.getDeviceId());
             editor.apply();
         });
         dialog.setNegativeButton("Cancel", (dialog12, which) -> dialog12.cancel());

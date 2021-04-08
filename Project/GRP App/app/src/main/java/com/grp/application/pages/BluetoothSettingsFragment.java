@@ -70,10 +70,16 @@ import java.util.Map;
 
 import timber.log.Timber;
 
+/**
+ * {@code BluetoothSettingsFragment} is class to maintain UI elements and functions of home page.
+ *
+ * @author UNNC GRP G19 modified from oliexdev@GitHub
+ * @version 1.0
+ */
+
 public class BluetoothSettingsFragment extends Fragment {
+
     SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(Application.context);
-    static final String SCALE_ADDRESS_KEY = "scale_device_address";
-    static final String SCALE_NAME_KEY = "scale_device_name";
 
     private Map<String, BluetoothDevice> foundDevices = new HashMap<>();
 
@@ -333,8 +339,8 @@ public class BluetoothSettingsFragment extends Fragment {
             scale.setHwAddress(device.getAddress());
 
             SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.putString(SCALE_NAME_KEY, device.getName());
-            editor.putString(SCALE_ADDRESS_KEY, device.getAddress());
+            editor.putString(Application.SCALE_NAME_KEY, device.getName());
+            editor.putString(Application.SCALE_ADDRESS_KEY, device.getAddress());
             editor.apply();
 
             Monitor monitor = Monitor.getInstance();

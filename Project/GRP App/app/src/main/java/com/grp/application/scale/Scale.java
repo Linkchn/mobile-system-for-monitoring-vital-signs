@@ -18,7 +18,7 @@ import timber.log.Timber;
 /**
  * Class {@code Scale} is the class to represent scale device.
  *
- * @author UNNC GRP G19
+ * @author UNNC GRP G19 modified from oliexdev@GitHub
  * @version 1.0
  */
 public class Scale {

@@ -32,11 +32,6 @@ public class EchartView extends WebView {
         loadUrl("file:///android_asset/echarts.html");
     }
 
-    /**刷新图表
-     * java调用js的loadEcharts方法刷新echart
-     * 不能在第一时间就用此方法来显示图表，因为第一时间html的标签还未加载完成，不能获取到标签值
-     * @param option
-     */
     public void refreshEchartsWithOption(GsonOption option) {
         if (option == null) {
             return;

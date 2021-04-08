@@ -25,7 +25,7 @@ import polar.com.sdk.api.model.PolarSensorSetting;
 import timber.log.Timber;
 
 /**
- * Class {@code Monitor} is the class collect monitor data,
+ * Class {@code Monitor} is the class collects monitor data,
  * maintain monitor state, and set UI elements based on monitor state.
  *
  * @author UNNC GRP G19

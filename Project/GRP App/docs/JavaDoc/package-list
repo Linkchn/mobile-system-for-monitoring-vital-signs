@@ -1,0 +1,16 @@
+com.example.application
+com.grp.application
+com.grp.application.GRPNotification
+com.grp.application.GRPchart
+com.grp.application.database
+com.grp.application.export
+com.grp.application.monitor
+com.grp.application.pages
+com.grp.application.polar
+com.grp.application.scale
+com.grp.application.scale.bluetooth
+com.grp.application.scale.bluetooth.lib
+com.grp.application.scale.datatypes
+com.grp.application.scale.utils
+com.grp.application.simulation
+com.grp.application.utils

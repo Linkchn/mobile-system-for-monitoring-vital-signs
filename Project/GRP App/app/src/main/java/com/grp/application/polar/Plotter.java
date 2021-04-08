@@ -11,7 +11,7 @@ import java.util.Arrays;
 /**
  * Class {@code Plotter} is the class to plot ECG data.
  *
- * @author UNNC GRP G19
+ * @author UNNC GRP G19 modified from JOikarinen@GitHub
  * @version 1.0
  */
 public class Plotter {

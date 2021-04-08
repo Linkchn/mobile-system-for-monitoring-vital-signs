@@ -23,7 +23,10 @@ import java.util.Calendar;
 import java.util.Date;
 
 /**
- * @author Hudie LIU
+ * {@code Dao} is the class for database
+ *
+ * @author Hudie Liu
+ * @version 1.0
  */
 public class Dao {
     private static final String TAG = "Dao";

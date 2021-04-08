@@ -16,6 +16,7 @@ import com.grp.application.polar.PolarDevice;
 import com.grp.application.scale.Scale;
 //import com.jjoe64.graphview.GraphView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -25,7 +26,9 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import androidx.preference.PreferenceManager;
 
+import polar.com.sdk.api.PolarBleApiCallback;
 import polar.com.sdk.api.errors.PolarInvalidArgument;
+import polar.com.sdk.api.model.PolarDeviceInfo;
 
 /**
  * {@code MainActivity} is the root activity for the application.
@@ -36,9 +39,7 @@ import polar.com.sdk.api.errors.PolarInvalidArgument;
 public class MainActivity extends AppCompatActivity {
 
     SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(Application.context);
-    static final String POLAR_KEY = "polar_device_id";
-    static final String SCALE_ADDRESS_KEY = "scale_device_address";
-    static final String SCALE_NAME_KEY = "scale_device_name";
+
     //
     private static final String[] PERMISSIONS_STORAGE = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -58,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         try {
-            checkDevice();
+            checkPreferences();
         } catch (PolarInvalidArgument polarInvalidArgument) {
             polarInvalidArgument.printStackTrace();
         }
@@ -117,9 +118,13 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void checkDevice() throws PolarInvalidArgument {
-        String polarDeviceID = sharedPreferences.getString(POLAR_KEY, "");
-        String scaleDeviceAddress = sharedPreferences.getString(SCALE_ADDRESS_KEY, "");
+    private void checkPreferences() throws PolarInvalidArgument {
+        String polarDeviceID = sharedPreferences.getString(Application.POLAR_KEY, "");
+        String scaleDeviceAddress = sharedPreferences.getString(Application.SCALE_ADDRESS_KEY, "");
+        boolean isMessageEnabled = sharedPreferences.getBoolean(Application.MESSAGE_KEY, false);
+        boolean isWarningEnabled = sharedPreferences.getBoolean(Application.WARNING_KEY, true);
+        boolean isAlertEnabled = sharedPreferences.getBoolean(Application.ALERT_KEY, false);
+        Monitor monitor = Monitor.getInstance();
 
         if (!polarDeviceID.equals("")) {
             PolarDevice polarDevice = PolarDevice.getInstance();
@@ -128,9 +133,18 @@ public class MainActivity extends AppCompatActivity {
         }
         if (!scaleDeviceAddress.equals("")) {
             Scale scale = Scale.getInstance();
-            scale.setDeviceName(sharedPreferences.getString(SCALE_NAME_KEY, ""));
+            scale.setDeviceName(sharedPreferences.getString(Application.SCALE_NAME_KEY, ""));
             scale.setHwAddress(scaleDeviceAddress);
-            Monitor.getInstance().getMonitorState().connectScaleDevice();
+            monitor.getMonitorState().connectScaleDevice();
+        }
+        if (isMessageEnabled) {
+            monitor.getMonitorState().enableMsgOnNotWearDevice();
+        }
+        if (isWarningEnabled) {
+            monitor.getMonitorState().enableMsgOnNotCaptureData();
+        }
+        if (isAlertEnabled) {
+            monitor.getMonitorState().enableMsgOnReportGenerated();
         }
     }
 

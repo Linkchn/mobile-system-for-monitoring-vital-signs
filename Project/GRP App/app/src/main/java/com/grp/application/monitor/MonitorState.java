@@ -18,7 +18,7 @@ public class MonitorState {
     /** {@code True} if the switch of "receive message when not wear device" is on, {@code false} otherwise. */
     private static boolean msgOnNotWearDeviceEnabled = false;
     /** {@code True} if the switch of "receive warning when not capture data" is on, {@code false} otherwise. */
-    private static boolean msgOnNotCaptureDataEnabled = true;
+    private static boolean msgOnNotCaptureDataEnabled = false;
     /** {@code True} if the switch of "receive alert when report generated" is on, {@code false} otherwise. */
     private static boolean msgOnReportGeneratedEnabled = false;
     /** {@code True} if heart rate device is connected, {@code false} otherwise. */

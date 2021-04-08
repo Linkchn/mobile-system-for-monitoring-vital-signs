@@ -96,7 +96,6 @@ public class ReportFragment extends Fragment {
             @Override
             public void onPageFinished(WebView view, String url) {
                 super.onPageFinished(view, url);
-                //最好在h5页面加载完毕后再加载数据，防止html的标签还未加载完成，不能正常显示
                 refreshDailyChart();
                 refreshDailyWeight();
                 refreshDailyRate(dao.getDailyData());

@@ -28,7 +28,6 @@ public class ShareView extends FrameLayout {
     }
 
     /**
-     * 设置相关信息
      *
      * @param info
      */
@@ -37,13 +36,11 @@ public class ShareView extends FrameLayout {
     }
 
     /**
-     * 生成图片
      *
      * @return
      */
     public Bitmap createImage() {
 
-        //由于直接new出来的view是不会走测量、布局、绘制的方法的，所以需要我们手动去调这些方法，不然生成的图片就是黑色的。
 
         int widthMeasureSpec = MeasureSpec.makeMeasureSpec(IMAGE_WIDTH, MeasureSpec.EXACTLY);
         int heightMeasureSpec = MeasureSpec.makeMeasureSpec(IMAGE_HEIGHT, MeasureSpec.EXACTLY);

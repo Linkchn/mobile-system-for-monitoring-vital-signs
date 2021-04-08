@@ -1,5 +1,9 @@
 # Test Report
 
+The details of test case could be seen in the  Test Case File in this directory.
+
+
+
 This report will introduce the software testing we did during the whole development stage. We followed test-driven development methodology in this stage to  achieve the agile method. “Test-driven development” refers to a style of programming in which three activities are tightly interwoven: coding, testing (in the form of writing unit tests) and design (in the form of refactoring). It can be succinctly described by the following set of rules: 
 
 1. write a “single” unit test describing an aspect of the program 

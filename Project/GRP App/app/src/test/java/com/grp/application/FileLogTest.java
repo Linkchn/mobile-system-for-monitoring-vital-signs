@@ -1,6 +1,5 @@
-package com.example.application;
+package com.grp.application;
 
-import android.Manifest;
 import android.os.Environment;
 
 import com.grp.application.export.FileLog;
@@ -9,7 +8,6 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 
 import static org.junit.Assert.assertEquals;
 

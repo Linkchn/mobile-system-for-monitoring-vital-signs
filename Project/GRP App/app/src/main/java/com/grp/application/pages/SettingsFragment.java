@@ -17,7 +17,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -26,20 +25,15 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 
-import com.example.application.R;
+import com.grp.application.R;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.grp.application.Application;
 import com.grp.application.GRPNotification.GRPNotification;
 import com.grp.application.database.Dao;
-import com.grp.application.MainActivity;
 import com.grp.application.ScaleSearchActivity;
-import com.grp.application.export.FileLog;
 import com.grp.application.monitor.Monitor;
 import com.grp.application.polar.PolarDevice;
 import com.grp.application.scale.Scale;
-
-import java.io.IOException;
-import java.util.Date;
 
 import polar.com.sdk.api.PolarBleApiCallback;
 import polar.com.sdk.api.errors.PolarInvalidArgument;

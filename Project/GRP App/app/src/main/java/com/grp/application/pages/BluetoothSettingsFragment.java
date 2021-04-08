@@ -16,11 +16,9 @@
 package com.grp.application.pages;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.le.ScanResult;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -30,7 +28,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.os.Message;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.style.ForegroundColorSpan;
@@ -51,10 +48,9 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 import androidx.preference.PreferenceManager;
 
-import com.example.application.R;
+import com.grp.application.R;
 
 import com.grp.application.Application;
-import com.grp.application.MainActivity;
 import com.grp.application.monitor.Monitor;
 import com.grp.application.scale.Scale;
 import com.grp.application.scale.bluetooth.BluetoothCommunication;

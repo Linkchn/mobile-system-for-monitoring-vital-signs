@@ -5,7 +5,7 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.os.Build;
 
-import com.example.application.R;
+import com.grp.application.R;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;

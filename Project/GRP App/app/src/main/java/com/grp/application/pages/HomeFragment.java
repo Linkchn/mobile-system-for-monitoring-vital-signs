@@ -30,7 +30,7 @@ import com.grp.application.Constants;
 import com.grp.application.GlobalData;
 import com.grp.application.HeartRateData;
 import com.grp.application.MainActivity;
-import com.example.application.R;
+import com.grp.application.R;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.grp.application.database.Dao;
 import com.grp.application.export.FileLog;

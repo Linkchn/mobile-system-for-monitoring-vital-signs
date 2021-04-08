@@ -21,7 +21,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 
-import com.example.application.R;
+import com.grp.application.R;
 import com.grp.application.scale.bluetooth.lib.YunmaiLib;
 import com.grp.application.scale.datatypes.ScaleMeasurement;
 import com.grp.application.scale.utils.Converters;

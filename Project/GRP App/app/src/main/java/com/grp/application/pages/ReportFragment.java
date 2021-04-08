@@ -50,6 +50,12 @@ public class ReportFragment extends Fragment {
 
     public ReportFragment() {}
 
+    /**
+     * This method is to change the double array to object so that
+     * the array can be used in the chart.
+     * @param array the input array
+     * @return an object array
+     */
     private static Object[] doubleToObject(double[] array){
         int len = array.length;
         Number[] newArray = new Number[len];
@@ -60,6 +66,11 @@ public class ReportFragment extends Fragment {
         return newArray;
     }
 
+    /**
+     * This method convert a number array to double array
+     * @param number a number array
+     * @return a double array
+     */
     private double[] numberToDouble(Number[] number){
         double[] array = new double[number.length];
         for(int i=0;i<number.length;i++){
@@ -70,12 +81,24 @@ public class ReportFragment extends Fragment {
         return array;
     }
 
+    /**
+     * This method cast the double to two decimal places.
+     * @param number the input
+     * @return a double number
+     */
     private static double castToDouble(long number){
         BigDecimal bd = BigDecimal.valueOf(number).setScale(2, RoundingMode.HALF_UP);
         double num = bd.doubleValue();
         return num;
     }
 
+    /**
+     * The view of the report page
+     * @param inflater  the input
+     * @param container the input
+     * @param savedInstanceState the input
+     * @return a view of report page
+     */
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
 
@@ -135,6 +158,9 @@ public class ReportFragment extends Fragment {
         return root;
     }
 
+    /**
+     * refresh the chart to show daily heart rate.
+     */
     private void refreshDailyChart(){
         Object[] array = new Object[]{
                 "00:00", "1:00", "2:00", "3:00", "4:00", "5:00", "6:00","7:00","8:00",
@@ -146,30 +172,45 @@ public class ReportFragment extends Fragment {
         lineChart.refreshEchartsWithOption(EchartOptionUtil.getLineChartOptions(x, y, "Heart rate"));
     }
 
+    /**
+     * refresh the chart to show weekly heart rate.
+     */
     private void refreshWeeklyChart(){
         Object[] y = doubleToObject(dealZero(numberToDouble(dao.getWeeklyData())));
         Object[] x = removeElement(getWeek());
         lineChart.refreshEchartsWithOption(EchartOptionUtil.getLineChartOptions(x, y, "Heart rate"));
     }
 
+    /**
+     * refresh the chart to show monthly heart rate.
+     */
     private void refreshMonthlyChart(){
         Object[] y = doubleToObject(dealZero(numberToDouble(dao.getMonthlyData())));
         Object[] x = removeElement(getDate());
         lineChart.refreshEchartsWithOption(EchartOptionUtil.getLineChartOptions(x, y, "Heart rate"));
     }
 
+    /**
+     * refresh the chart to show weekly weight.
+     */
     private void refreshWeeklyWeight(){
         Object[] y  = doubleToObject(dealZero(numberToDouble(dao.getWeeklyWeight())));
         Object[] x = removeElement(getWeek());
         weightChart.refreshEchartsWithOption(EchartOptionUtil.getLineChartOptions(x, y, "Weight"));
     }
 
+    /**
+     * refresh the chart to show monthly weight.
+     */
     private void refreshMonthlyWeight(){
         Object[] y = doubleToObject(dealZero(numberToDouble(dao.getMonthlyWeight())));
         Object[] x = removeElement(getDate());
         weightChart.refreshEchartsWithOption(EchartOptionUtil.getLineChartOptions(x, y, "Weight"));
     }
 
+    /**
+     * refresh the text to show the daily weight.
+     */
     private void refreshDailyWeight(){
         double[] num = numberToDouble(dao.getDailyData());
         if(num[0] != 0){
@@ -180,6 +221,11 @@ public class ReportFragment extends Fragment {
         }
     }
 
+    /**
+     * Get average heart rate using the array that stores the heart rate.
+     * @param number the input array  storing heart rate.
+     * @return an average heart rate.
+     */
     private double getAverageRate(Number[] number){
         double[] num = numberToDouble(number);
         double total = 0;
@@ -201,6 +247,10 @@ public class ReportFragment extends Fragment {
         }
     }
 
+    /**
+     * Refresh the text to show daily heart rate.
+     * @param number the input number array
+     */
     private void refreshDailyRate(Number[] number){
         double averageRate = getAverageRate(number);
         if(averageRate != 0){
@@ -215,6 +265,10 @@ public class ReportFragment extends Fragment {
         }
     }
 
+    /**
+     * Refresh the text to show monthly heart rate.
+     * @param number the input number array
+     */
     @SuppressLint("SetTextI18n")
     private void refreshMonthlyRate(Number[] number){
         double averageRate = getAverageRate(number);
@@ -230,6 +284,10 @@ public class ReportFragment extends Fragment {
         }
     }
 
+    /**
+     * Refresh the text to show weekly heart rate.
+     * @param number the input number array
+     */
     private void refreshWeeklyRate(Number[] number){
         double averageRate = getAverageRate(number);
         if(averageRate != 0){
@@ -244,6 +302,10 @@ public class ReportFragment extends Fragment {
         }
     }
 
+    /**
+     * Get the object array that store the weekdays in last week.
+     * @return object array that store the weekdays in last week
+     */
     private static Object[] getWeek(){
         Date today = new Date();
         Calendar cal = new GregorianCalendar();
@@ -258,6 +320,10 @@ public class ReportFragment extends Fragment {
         return storeWeek;
     }
 
+    /**
+     * Get the object array that store the past 31 dates.
+     * @return the object array that store the past 31 dates
+     */
     private static Object[] getDate(){
         SimpleDateFormat formatter = new SimpleDateFormat("MM/dd");
         Date today = new Date();
@@ -272,6 +338,11 @@ public class ReportFragment extends Fragment {
         return storeDate;
     }
 
+    /**
+     * Delete all the zero values in the array, and store the index in another array for further using.
+     * @param array the input array
+     * @return an array that deletes all zero values
+     */
     private double[] dealZero(double[] array){
         int len = 0;
         int len_zero = 0;
@@ -297,6 +368,11 @@ public class ReportFragment extends Fragment {
         return newArray;
     }
 
+    /**
+     * Remove all the elements in the array that corresponding to zero values
+     * @param array the input array
+     * @return the array that removes all the elements in the array that corresponding to zero values
+     */
     private static Object[] removeElement(Object[] array){
         int len = array.length;
         int length = len - newZeroArray.length;

@@ -6,5 +6,5 @@ For more information, please refer to:
 
 - [Installation Instruction](./docs/Installation Instruction.md)
 - [User Manual](./docs/User Manual.md)
-
+- [Test Report](./docs/Test Report.md)
 - Final Report

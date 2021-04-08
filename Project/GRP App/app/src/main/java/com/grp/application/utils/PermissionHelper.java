@@ -31,7 +31,7 @@ import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
 
-import com.example.application.R;
+import com.grp.application.R;
 
 import static android.content.Context.LOCATION_SERVICE;
 

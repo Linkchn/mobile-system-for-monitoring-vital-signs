@@ -25,6 +25,8 @@ public class MonitorState {
     private static boolean hrDeviceConnected = false;
     /** {@code True} if scale device is connected, {@code false} otherwise. */
     private static boolean scaleDeviceConnected = false;
+    /** {@code True} if age is set, {@code false} otherwise */
+    private static boolean ageSet = false;
 
     private static MonitorState instance;
 
@@ -138,5 +140,13 @@ public class MonitorState {
 
     public boolean isScaleDeviceConnected() {
         return scaleDeviceConnected;
+    }
+
+    public void setAge() {
+        ageSet = true;
+    }
+
+    public boolean isAgeSet() {
+        return ageSet;
     }
 }

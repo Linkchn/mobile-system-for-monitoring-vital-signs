@@ -16,7 +16,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RadioButton;
-import android.widget.Toast;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -25,19 +25,15 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.preference.PreferenceManager;
 
-import com.example.application.R;
+import com.grp.application.R;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.grp.application.Application;
+import com.grp.application.GRPNotification.GRPNotification;
 import com.grp.application.database.Dao;
-import com.grp.application.MainActivity;
 import com.grp.application.ScaleSearchActivity;
-import com.grp.application.export.FileLog;
 import com.grp.application.monitor.Monitor;
 import com.grp.application.polar.PolarDevice;
 import com.grp.application.scale.Scale;
-
-import java.io.IOException;
-import java.util.Date;
 
 import polar.com.sdk.api.PolarBleApiCallback;
 import polar.com.sdk.api.errors.PolarInvalidArgument;
@@ -60,6 +56,7 @@ public class SettingsFragment extends Fragment {
     private Button scaleConnectButton;
     private Button hrDeviceDisconenctButton;
     private Button scaleDeviceDisconnectButton;
+    private Button ageSetButton;
     private  Button resetDatabaseButton;
     private  Button exportDatabaseButton;
     private  Button viewRecordedButton;
@@ -67,6 +64,7 @@ public class SettingsFragment extends Fragment {
     private SwitchMaterial msgOnNotWearDeviceSwitch;
     private SwitchMaterial msgOnNotCaptureDataSwitch;
     private SwitchMaterial msgOnReportGenerated;
+    private TextView ageText;
     SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(Application.context);
 
 
@@ -84,6 +82,7 @@ public class SettingsFragment extends Fragment {
         scaleConnectButton = root.findViewById(R.id.button_connect_scale_device);
         hrDeviceDisconenctButton = root.findViewById(R.id.button_disconnect_hr_device);
         scaleDeviceDisconnectButton = root.findViewById(R.id.button_disconnect_scale_device);
+        ageSetButton = root.findViewById(R.id.button_set_age);
         simulationSwitch = root.findViewById(R.id.switch_simulation);
         msgOnNotWearDeviceSwitch = root.findViewById(R.id.switch_msg_not_wear_device);
         msgOnNotCaptureDataSwitch = root.findViewById(R.id.switch_msg_not_capture_data);
@@ -91,6 +90,7 @@ public class SettingsFragment extends Fragment {
         resetDatabaseButton =  root.findViewById(R.id.reset_database);
         exportDatabaseButton =  root.findViewById(R.id.export_database);
         viewRecordedButton = root.findViewById(R.id.view_recorded_data);
+        ageText = root.findViewById(R.id.text_age);
 
         resetUI();
         initDevice();
@@ -128,6 +128,8 @@ public class SettingsFragment extends Fragment {
             monitor.showToast("Disconnect from Scale Device");
             resetUI();
         });
+
+        ageSetButton.setOnClickListener(this::showAgeSetDialog);
 
         // Set action for "simulation" switch
         simulationSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -266,7 +268,13 @@ public class SettingsFragment extends Fragment {
 
             @Override
             public void hrNotificationReceived(@NonNull String identifier, @NonNull PolarHrData data) {
+                if(data.hr <= 0 && monitor.getMonitorState().isMsgOnNotWearDeviceEnabled()){
+                    GRPNotification grpNotification = GRPNotification.getInstance(Application.context);
+                    grpNotification.sendMsgOnNotWearDevice(Application.context);
+                } else {
                     monitor.getPlotterHR().addValues(data);
+                    monitor.checkHrRange(data.hr);
+                }
             }
 
             @Override
@@ -294,6 +302,7 @@ public class SettingsFragment extends Fragment {
         monitor.getViewSetter().setSwitchView(msgOnNotWearDeviceSwitch, monitor.getMonitorState().isMsgOnNotWearDeviceEnabled());
         monitor.getViewSetter().setSwitchView(msgOnNotCaptureDataSwitch, monitor.getMonitorState().isMsgOnNotCaptureDataEnabled());
         monitor.getViewSetter().setSwitchView(msgOnReportGenerated, monitor.getMonitorState().isMsgOnReportGeneratedEnabled());
+        monitor.getViewSetter().setAgeView(ageSetButton, ageText, monitor.getMonitorState().isAgeSet());
     }
 
     /**
@@ -350,6 +359,27 @@ public class SettingsFragment extends Fragment {
             }
             scale.setHwAddress(input.getText().toString());
             monitor.getMonitorState().connectScaleDevice();
+            resetUI();
+        });
+        dialog.setNegativeButton("Cancel", (dialog12, which) -> dialog12.cancel());
+        dialog.show();
+    }
+
+    private void showAgeSetDialog(View view) {
+        AlertDialog.Builder dialog = new AlertDialog.Builder(this.getContext(), R.style.PolarTheme);
+        dialog.setTitle("Enter your age");
+
+        View viewInflated = LayoutInflater.from(monitor.getContext()).inflate(R.layout.age_dialog_layout, (ViewGroup) view.getRootView(), false);
+
+        final EditText input = viewInflated.findViewById(R.id.input_age);
+        dialog.setView(viewInflated);
+
+        dialog.setPositiveButton("OK", (dialog1, which) -> {
+            monitor.setAge(Integer.parseInt(input.getText().toString()));
+            monitor.getMonitorState().setAge();
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putInt(Application.AGE_KEY, monitor.getAge());
+            editor.apply();
             resetUI();
         });
         dialog.setNegativeButton("Cancel", (dialog12, which) -> dialog12.cancel());

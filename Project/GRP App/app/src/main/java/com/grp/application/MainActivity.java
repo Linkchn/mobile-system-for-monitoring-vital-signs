@@ -8,7 +8,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 
-import com.example.application.R;
+import com.grp.application.R;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.grp.application.database.DatabaseHelper;
 import com.grp.application.monitor.Monitor;
@@ -16,7 +16,6 @@ import com.grp.application.polar.PolarDevice;
 import com.grp.application.scale.Scale;
 //import com.jjoe64.graphview.GraphView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -26,9 +25,7 @@ import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 import androidx.preference.PreferenceManager;
 
-import polar.com.sdk.api.PolarBleApiCallback;
 import polar.com.sdk.api.errors.PolarInvalidArgument;
-import polar.com.sdk.api.model.PolarDeviceInfo;
 
 /**
  * {@code MainActivity} is the root activity for the application.
@@ -121,9 +118,10 @@ public class MainActivity extends AppCompatActivity {
     private void checkPreferences() throws PolarInvalidArgument {
         String polarDeviceID = sharedPreferences.getString(Application.POLAR_KEY, "");
         String scaleDeviceAddress = sharedPreferences.getString(Application.SCALE_ADDRESS_KEY, "");
-        boolean isMessageEnabled = sharedPreferences.getBoolean(Application.MESSAGE_KEY, false);
-        boolean isWarningEnabled = sharedPreferences.getBoolean(Application.WARNING_KEY, true);
+        boolean isMessageEnabled = sharedPreferences.getBoolean(Application.MESSAGE_KEY, true);
+        boolean isWarningEnabled = sharedPreferences.getBoolean(Application.WARNING_KEY, false);
         boolean isAlertEnabled = sharedPreferences.getBoolean(Application.ALERT_KEY, false);
+        int age = sharedPreferences.getInt(Application.AGE_KEY, -1);
         Monitor monitor = Monitor.getInstance();
 
         if (!polarDeviceID.equals("")) {
@@ -145,6 +143,10 @@ public class MainActivity extends AppCompatActivity {
         }
         if (isAlertEnabled) {
             monitor.getMonitorState().enableMsgOnReportGenerated();
+        }
+        if (age != -1) {
+            monitor.setAge(age);
+            monitor.getMonitorState().setAge();
         }
     }
 

@@ -6,7 +6,7 @@ import android.graphics.Canvas;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-import com.example.application.R;
+import com.grp.application.R;
 
 import androidx.annotation.NonNull;
 

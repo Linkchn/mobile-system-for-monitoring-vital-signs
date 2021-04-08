@@ -1,6 +1,6 @@
 package com.grp.application.simulation;
 
-import com.example.application.R;
+import com.grp.application.R;
 import com.grp.application.Application;
 
 import java.io.BufferedReader;

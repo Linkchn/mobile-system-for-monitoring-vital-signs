@@ -24,6 +24,7 @@ public class Application extends android.app.Application {
     public static final String MESSAGE_KEY = "message_state";
     public static final String WARNING_KEY = "warning_state";
     public static final String ALERT_KEY = "alert_state";
+    public static final String AGE_KEY = "age";
 
     @Override
     public void onCreate() {

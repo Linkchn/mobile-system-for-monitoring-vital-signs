@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">All Link</string>
+    <string name="app_name">Health Link</string>
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
@@ -49,4 +49,6 @@
     <string name="stop_capture_data">Stop Capture Data</string>
     <string name="no_hr_signal">No HR Signal</string>
     <string name="current_hr">\"Current Heart Rate: \"</string>
+    <string name="age_set">Edit</string>
+    <string name="age_not_set">Set</string>
 </resources>

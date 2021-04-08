@@ -18,7 +18,7 @@ package com.grp.application.scale.bluetooth;
 
 import android.content.Context;
 
-import com.example.application.R;
+import com.grp.application.R;
 import com.grp.application.scale.bluetooth.lib.TrisaBodyAnalyzeLib;
 import com.grp.application.scale.datatypes.ScaleMeasurement;
 import com.grp.application.scale.utils.Converters;

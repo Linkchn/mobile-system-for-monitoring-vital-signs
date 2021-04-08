@@ -12,7 +12,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import com.example.application.R;
+import com.grp.application.R;
 import com.google.android.material.tabs.TabLayout;
 import com.grp.application.GRPchart.EchartOptionUtil;
 import com.grp.application.GRPchart.EchartView;
@@ -24,7 +24,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;

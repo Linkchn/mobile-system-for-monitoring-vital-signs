@@ -4,8 +4,9 @@ import android.content.Context;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
 
-import com.example.application.R;
+import com.grp.application.R;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 
 /**
@@ -89,5 +90,18 @@ public class ViewSetter {
      */
     public void setButtonView(Button button, boolean isEnabled) {
         button.setEnabled(isEnabled);
+    }
+
+    /**
+     * Set age view to  based on relative state of monitor.
+     * @param setButton age set button
+     * @param ageText displayed age number
+     * @param isAgeSet boolean parameter whether age is set
+     */
+    public void setAgeView(Button setButton, TextView ageText, boolean isAgeSet) {
+        if (isAgeSet) {
+            setButton.setText(R.string.age_set);
+            ageText.setText(String.valueOf(Monitor.getInstance().getAge()));
+        }
     }
 }

@@ -4,7 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 
-import com.example.application.R;
+import com.grp.application.R;
 import com.grp.application.pages.BluetoothSettingsFragment;
 
 public class ScaleSearchActivity extends AppCompatActivity {

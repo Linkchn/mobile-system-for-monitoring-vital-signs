@@ -121,9 +121,10 @@ public class MainActivity extends AppCompatActivity {
     private void checkPreferences() throws PolarInvalidArgument {
         String polarDeviceID = sharedPreferences.getString(Application.POLAR_KEY, "");
         String scaleDeviceAddress = sharedPreferences.getString(Application.SCALE_ADDRESS_KEY, "");
-        boolean isMessageEnabled = sharedPreferences.getBoolean(Application.MESSAGE_KEY, false);
-        boolean isWarningEnabled = sharedPreferences.getBoolean(Application.WARNING_KEY, true);
+        boolean isMessageEnabled = sharedPreferences.getBoolean(Application.MESSAGE_KEY, true);
+        boolean isWarningEnabled = sharedPreferences.getBoolean(Application.WARNING_KEY, false);
         boolean isAlertEnabled = sharedPreferences.getBoolean(Application.ALERT_KEY, false);
+        int age = sharedPreferences.getInt(Application.AGE_KEY, -1);
         Monitor monitor = Monitor.getInstance();
 
         if (!polarDeviceID.equals("")) {
@@ -145,6 +146,10 @@ public class MainActivity extends AppCompatActivity {
         }
         if (isAlertEnabled) {
             monitor.getMonitorState().enableMsgOnReportGenerated();
+        }
+        if (age != -1) {
+            monitor.setAge(age);
+            monitor.getMonitorState().setAge();
         }
     }
 

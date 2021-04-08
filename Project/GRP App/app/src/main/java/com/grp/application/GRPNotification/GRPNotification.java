@@ -40,7 +40,7 @@ public class GRPNotification {
         }
     }
 
-    public void sendNotification(Context context){
+    public void sendMsgOnNotWearDevice(Context context){
         createNotificationChannel(context);
         String message = "The device has not worn properly!";
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
@@ -50,7 +50,45 @@ public class GRPNotification {
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setAutoCancel(true);
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
-        // notificationId is a unique int for each notification that you must define
-        notificationManager.notify(notificationId, builder.build());
+        notificationManager.notify(1, builder.build());
+    }
+
+    public void sendMsgOnNotCaptureData(Context context){
+        createNotificationChannel(context);
+        String message = "The data is not captured";
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_message)
+                .setContentTitle("Warning!")
+                .setContentText(message)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setAutoCancel(true);
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+        notificationManager.notify(2, builder.build());
+    }
+
+    public void sendMsgOnReportGenerated(Context context){
+        createNotificationChannel(context);
+        String message = "A report is generated";
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_message)
+                .setContentTitle("Report is Ready")
+                .setContentText(message)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setAutoCancel(true);
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+        notificationManager.notify(3, builder.build());
+    }
+
+    public void sendMsgOnHighHR(Context context){
+        createNotificationChannel(context);
+        String message = "Your heart rate is too high. Take a rest!";
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_message)
+                .setContentTitle("Alert!")
+                .setContentText(message)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setAutoCancel(true);
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
+        notificationManager.notify(4, builder.build());
     }
 }

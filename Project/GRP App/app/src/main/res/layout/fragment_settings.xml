@@ -84,7 +84,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:layout_marginBottom="10dp">
 
             <TextView
                 android:layout_width="0dp"
@@ -123,6 +124,51 @@
                 android:foreground="@drawable/ic_baseline_link_off_24"
                 android:textSize="12sp"
                 android:visibility="invisible" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginStart="50dp"
+            android:layout_marginEnd="50dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_weight="0.25"
+                android:gravity="center|end"
+                android:text="Age:"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/text_age"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.3"
+                android:gravity="center|start"
+                android:text="Not Set"
+                android:textSize="16sp"
+                android:textStyle="normal"/>
+
+            <FrameLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.4">
+                <Button
+                    android:id="@+id/button_set_age"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:layout_width="80dp"
+                    android:layout_height="40dp"
+                    android:layout_gravity="center"
+                    android:text="Set"
+                    android:textSize="12sp"
+                    app:strokeColor="@color/main_color" />
+            </FrameLayout>
 
 
         </LinearLayout>
@@ -220,6 +266,16 @@
         android:layout_marginTop="20dp">
 
         <com.google.android.material.switchmaterial.SwitchMaterial
+            android:id="@+id/switch_msg_not_wear_device"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="40dp"
+            android:layout_marginEnd="40dp"
+            android:text="Receive message when not wear device"
+            android:textColor="@color/main_color"
+            android:textSize="13sp" />
+
+        <com.google.android.material.switchmaterial.SwitchMaterial
             android:id="@+id/switch_msg_not_capture_data"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -236,16 +292,6 @@
             android:layout_marginStart="40dp"
             android:layout_marginEnd="40dp"
             android:text="Receive alert when report generated"
-            android:textColor="@color/main_color"
-            android:textSize="13sp" />
-
-        <com.google.android.material.switchmaterial.SwitchMaterial
-            android:id="@+id/switch_msg_not_wear_device"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="40dp"
-            android:layout_marginEnd="40dp"
-            android:text="Receive message when not wear device"
             android:textColor="@color/main_color"
             android:textSize="13sp" />
 

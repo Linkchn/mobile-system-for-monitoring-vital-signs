@@ -3,14 +3,11 @@ package com.grp.application.pages;
 import android.Manifest;
 import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.provider.DocumentsContract;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -83,14 +80,8 @@ public class HomeFragment extends Fragment implements PlotterListener {
     Button measureButton;
 
     Button recordingHrButton;
-    Button stopRecordingHrButton;
-    Button viewRecordingHrButton;
     Button recordingECGButton;
-    Button stopRecordingECGButton;
-    Button viewRecordingECGButton;
     Button recordingAccButton;
-    Button stopRecordingAccButton;
-    Button viewRecordingAccButton;
 
     private Boolean hrStatus = false;
     private Boolean ecgStatus = false;
@@ -149,12 +140,8 @@ public class HomeFragment extends Fragment implements PlotterListener {
             public void run() {
                 try {
                     PolarHrData data = hrSimulator.getNextHrData();
-                    if(data.hr <= 0){
-                        grpNotification.sendNotification(mainActivity);
-                        // TODO: need to fix bug here
-//                            if(receiveWarningSwitch.isChecked()){
-//
-//                            }
+                    if(data.hr <= 0 && monitor.getMonitorState().isMsgOnNotWearDeviceEnabled()){
+                        grpNotification.sendMsgOnNotWearDevice(mainActivity);
                     }
                     else {
                         textViewHR.setText("Current Heart Rate: " + data.hr);
@@ -215,10 +202,8 @@ public class HomeFragment extends Fragment implements PlotterListener {
             if (monitor.getMonitorState().isSimulationEnabled()) {
                 try {
                     float weight = weightSimulator.readNextWeightData();
-                    if(weight <= 0) {
-                        if (receiveWarningSwitch.isChecked()) {
-                            grpNotification.sendNotification(mainActivity);
-                        }
+                    if(weight <= 0 && monitor.getMonitorState().isMsgOnNotWearDeviceEnabled()){
+                        grpNotification.sendMsgOnNotWearDevice(mainActivity);
                     }
                     else {
                             weightText.setText(String.format("%.2f", weight));
@@ -564,10 +549,8 @@ public class HomeFragment extends Fragment implements PlotterListener {
 
                     Scale scale = Scale.getInstance();
                     scale.addScaleMeasurement(scaleBtData);
-                    if(monitor.getWeight()<=0){
-                        if(receiveWarningSwitch.isChecked()){
-                        grpNotification.sendNotification(mainActivity);
-                        }
+                    if(monitor.getWeight() <= 0 && monitor.getMonitorState().isMsgOnNotWearDeviceEnabled()){
+                        grpNotification.sendMsgOnNotWearDevice(mainActivity);
                     }
                     weightText.setText(String.format("%.2f", monitor.getWeight()));
                     break;
@@ -631,12 +614,11 @@ public class HomeFragment extends Fragment implements PlotterListener {
                 } else {
                     textViewHR.setText("No HR Signal");
                 }
-                if(data.hr <= 0){
-                    if(receiveWarningSwitch.isChecked()){
-                    grpNotification.sendNotification(mainActivity);
-                    }
+                if(data.hr <= 0 && monitor.getMonitorState().isMsgOnNotWearDeviceEnabled()){
+                    grpNotification.sendMsgOnNotWearDevice(mainActivity);
+                } else {
+                    loadHrValue(data);
                 }
-                loadHrValue(data);
             }
 
             @Override
@@ -739,6 +721,7 @@ public class HomeFragment extends Fragment implements PlotterListener {
             heartRateDataList.clear();
         }
 
+        monitor.checkHrRange(hr);
         monitor.getPlotterHR().addValues(data);
     }
 

@@ -5,6 +5,8 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.androidplot.util.PixelUtils;
+import com.grp.application.Application;
+import com.grp.application.GRPNotification.GRPNotification;
 import com.grp.application.polar.AccPlotter;
 import com.grp.application.polar.Plotter;
 import com.grp.application.polar.PolarDevice;
@@ -52,6 +54,8 @@ public class Monitor {
     private boolean hrStatus;
     private boolean ecgStatus;
     private boolean accStatus;
+
+    private int age;
 
     private void resetHr() { hrValue = "";}
 
@@ -295,5 +299,20 @@ public class Monitor {
     public void stopACC(){
         this.accStatus = false;
         resetACC();
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public void checkHrRange(int hr) {
+        if (hr > 208 - 0.7 * age) {
+            GRPNotification grpNotification = GRPNotification.getInstance(Application.context);
+            grpNotification.sendMsgOnHighHR(Application.context);
+        }
     }
 }

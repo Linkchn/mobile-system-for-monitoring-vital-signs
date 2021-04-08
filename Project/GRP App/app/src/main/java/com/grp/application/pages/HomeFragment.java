@@ -27,7 +27,6 @@ import com.androidplot.xy.XYPlot;
 import com.google.android.material.textfield.TextInputEditText;
 import com.grp.application.Application;
 import com.grp.application.Constants;
-import com.grp.application.GlobalData;
 import com.grp.application.HeartRateData;
 import com.grp.application.MainActivity;
 import com.grp.application.R;
@@ -180,7 +179,6 @@ public class HomeFragment extends Fragment implements PlotterListener {
                     simHandler.postDelayed(simulate, 1000);
                     monitor.getMonitorState().simulationOn();
                 }
-                GlobalData.isStartRecord = true;
                 lastTimestamp = System.currentTimeMillis();
             } else {
                 monitor.showToast("Stop Capture Data");
@@ -191,7 +189,6 @@ public class HomeFragment extends Fragment implements PlotterListener {
                 clearPlot();
                 Dao dao = new Dao(getContext());    // Dao
                 dao.insertHRdata(heartRateDataList);
-                GlobalData.isStartRecord = false;
                 heartRateDataList.clear();
             }
             setButtonGroup(isChecked);

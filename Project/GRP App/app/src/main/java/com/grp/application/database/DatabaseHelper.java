@@ -18,9 +18,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         super(context, Constants.DATABASE_NAME, null, Constants.VERSION_CODE);
     }
 
+    /**
+     * Call back when create database, only for the first time
+     * @param db the database
+     */
     @Override
     public void onCreate(SQLiteDatabase db) {
-        // call back when create, only for first time
         Log.d(TAG,"Create database");
         String sql1 = "create table "+Constants.HR_TABLE_DETAIL +"(timestamp long, hr long)";
         String sql4 = "create table "+Constants.HR_TABLE_MAX +"(timestamp long, hr long)";
@@ -35,9 +38,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(sql6);
     }
 
+    /**
+     * call back when update databse
+     * @param db  the database
+     * @param oldVersion  old version
+     * @param newVersion  new version
+     */
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // call back when update
+        //
         Log.d(TAG, "Update database");
     }
 

@@ -113,44 +113,6 @@ public class Dao {
 
     }
 
-    public void insertHRdataDetail(ArrayList<HeartRateData> list) {
-        SQLiteDatabase db = mHelper.getWritableDatabase();
-        long timestampCurrent = 0;
-        long hrMax = 0;
-        long hrMin = 1000;
-        db.beginTransaction();
-        try {
-            for(int i=0; i<list.size(); i++){
-
-                long hr = list.get(i).getHeartRate();
-                long timestamp = list.get(i).getTimestamp();
-                if(hr>hrMax){
-                    hrMax = hr;
-                    timestampCurrent = timestamp;
-                }
-                if(hr<hrMin){
-                    hrMin = hr;
-                    timestampCurrent = timestamp;
-                }
-                ContentValues values = new ContentValues();
-                values.put("timestamp", timestamp);
-                values.put("hr", hr);
-                db.insert(Constants.HR_TABLE_DETAIL, null, values);
-//                Log.i("db",values.toString());
-            }
-
-            db.setTransactionSuccessful();
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
-            db.endTransaction();
-        }
-        db.close();
-
-        replaceHrData(timestampCurrent,hrMax, hrMin);
-
-    }
-
     /**
      * This method is to replace the heart rate. If the max is bigger then replace the data.
      * If the min is smaller then replace the data.
@@ -451,6 +413,11 @@ public class Dao {
         return hrList;
     }
 
+
+    /**
+     * Get the data of the weight in past day.
+     * @return the data of the weight in past day.
+     */
     public Number[] getDailyWeight(){
         Number[] weightList = new Number[1];
         long startTime = TimeHelper.getDailyStartTime(System.currentTimeMillis());

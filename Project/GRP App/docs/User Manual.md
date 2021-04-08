@@ -24,9 +24,7 @@ There are 3 pages:
 
 Wear your Polar heart rate device correctly, make sure it has enough power and be open.
 
-[Polor device wear photo here]
-
-
+<img src="User Manual/1e82a037a0dfe9c2253cbed0e3300e2.jpg" alt="1e82a037a0dfe9c2253cbed0e3300e2" style="zoom:25%;" />
 
 ### 2. Connect with device
 
@@ -34,7 +32,9 @@ After wearing the device, open the setting page and click "CONNECT" button for h
 
 <img src=".assets/image-20210329224726313.png" alt="image-20210329224726313" style="zoom:25%;" />
 
-Then input device's ID which can be found in Polar device [photo here]
+Then input device's ID which can be found in Polar device 
+
+<img src="User Manual/c9f415f2d9ca6e0a9f25d81cd2d28d0.jpg" alt="c9f415f2d9ca6e0a9f25d81cd2d28d0" style="zoom: 10%;" />
 
 <img src=".assets/Screenshot_20210329-221434-1617029273416.png" alt="Screenshot_20210329-221434" style="zoom:25%;" />
 
@@ -84,13 +84,13 @@ Then the system will search and show connectible devices, choose the right one [
 
 ### 2. Stand at scale device
 
-After connecting, you need to stand at scale device [photo here]
+After connecting, you need to stand at scale device.
 
 
 
 ### 3. Measure data
 
-[photo here]
+The measurement of your weight data will be transfered to this system
 
 
 

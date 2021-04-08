@@ -9,23 +9,41 @@ package com.grp.application.monitor;
  */
 public class MonitorState {
 
-    /** {@code True} if the switch of "start capture data" is on, {@code false} otherwise. */
+    /**
+     * {@code True} if the switch of "start capture data" is on, {@code false} otherwise.
+     */
     private static boolean startCaptureDataEnabled = false;
-    /** {@code True} if the switch of "simulation" is on, {@code false} otherwise. */
+    /**
+     * {@code True} if the switch of "simulation" is on, {@code false} otherwise.
+     */
     private static boolean simulationEnabled = false;
-    /** {@code True} if the simulator is on, {@code false} otherwise. */
+    /**
+     * {@code True} if the simulator is on, {@code false} otherwise.
+     */
     private static boolean simulationOn = false;
-    /** {@code True} if the switch of "receive message when not wear device" is on, {@code false} otherwise. */
+    /**
+     * {@code True} if the switch of "receive message when not wear device" is on, {@code false} otherwise.
+     */
     private static boolean msgOnNotWearDeviceEnabled = false;
-    /** {@code True} if the switch of "receive warning when not capture data" is on, {@code false} otherwise. */
+    /**
+     * {@code True} if the switch of "receive warning when not capture data" is on, {@code false} otherwise.
+     */
     private static boolean msgOnNotCaptureDataEnabled = false;
-    /** {@code True} if the switch of "receive alert when report generated" is on, {@code false} otherwise. */
+    /**
+     * {@code True} if the switch of "receive alert when report generated" is on, {@code false} otherwise.
+     */
     private static boolean msgOnReportGeneratedEnabled = false;
-    /** {@code True} if heart rate device is connected, {@code false} otherwise. */
+    /**
+     * {@code True} if heart rate device is connected, {@code false} otherwise.
+     */
     private static boolean hrDeviceConnected = false;
-    /** {@code True} if scale device is connected, {@code false} otherwise. */
+    /**
+     * {@code True} if scale device is connected, {@code false} otherwise.
+     */
     private static boolean scaleDeviceConnected = false;
-    /** {@code True} if age is set, {@code false} otherwise */
+    /**
+     * {@code True} if age is set, {@code false} otherwise
+     */
     private static boolean ageSet = false;
 
     private static MonitorState instance;
@@ -33,10 +51,12 @@ public class MonitorState {
     /**
      * Private constructor.
      */
-    private MonitorState() {}
+    private MonitorState() {
+    }
 
     /**
      * Get the unique instance of MonitorState.
+     *
      * @return instance of MonitorState
      */
     protected static MonitorState getInstance() {
@@ -118,7 +138,7 @@ public class MonitorState {
         return msgOnReportGeneratedEnabled;
     }
 
-    public void connectHRDevice () {
+    public void connectHRDevice() {
         hrDeviceConnected = true;
     }
 
@@ -130,7 +150,7 @@ public class MonitorState {
         return hrDeviceConnected;
     }
 
-    public void connectScaleDevice () {
+    public void connectScaleDevice() {
         scaleDeviceConnected = true;
     }
 

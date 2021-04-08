@@ -14,10 +14,6 @@ import com.grp.application.scale.Scale;
  */
 public class Application extends android.app.Application {
 
-    Monitor monitor;
-
-    public static Context context; //Global context
-
     public static final String POLAR_KEY = "polar_device_id";
     public static final String SCALE_ADDRESS_KEY = "scale_device_address";
     public static final String SCALE_NAME_KEY = "scale_device_name";
@@ -25,6 +21,8 @@ public class Application extends android.app.Application {
     public static final String WARNING_KEY = "warning_state";
     public static final String ALERT_KEY = "alert_state";
     public static final String AGE_KEY = "age";
+    public static Context context; //Global context
+    Monitor monitor;
 
     @Override
     public void onCreate() {

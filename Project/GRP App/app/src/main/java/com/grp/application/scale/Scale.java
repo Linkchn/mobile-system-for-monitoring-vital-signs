@@ -22,16 +22,15 @@ import timber.log.Timber;
  * @version 1.0
  */
 public class Scale {
-    private BluetoothCommunication btDeviceDriver;
-
     private static Scale instance;
-
+    private BluetoothCommunication btDeviceDriver;
     private String deviceName;
     private String hwAddress;
     private Context context;
 
     /**
      * Private constructor.
+     *
      * @param context context of the application
      */
     private Scale(Context context) {
@@ -41,6 +40,7 @@ public class Scale {
 
     /**
      * Initial Scale instance.
+     *
      * @param context context of the application
      */
     public static void createInstance(Context context) {
@@ -53,6 +53,7 @@ public class Scale {
 
     /**
      * Get the unique instance of Scale.
+     *
      * @return instance of Scale
      */
     public static Scale getInstance() {
@@ -65,8 +66,9 @@ public class Scale {
 
     /**
      * Set connection of scale device.
-     * @param deviceName name of target device
-     * @param hwAddress bluetooth MAC address of target device
+     *
+     * @param deviceName        name of target device
+     * @param hwAddress         bluetooth MAC address of target device
      * @param callbackBtHandler callback handler of scale device
      * @return {@code true} if target scale device can be connected, {@code false} otherwise
      */
@@ -88,6 +90,7 @@ public class Scale {
 
     /**
      * Disconnect from current scale device.
+     *
      * @return {@code true} if operation managed, {@code false} otherwise.
      */
     public boolean disconnectFromBluetoothDevice() {
@@ -104,6 +107,7 @@ public class Scale {
 
     /**
      * Add measured data to monitor
+     *
      * @param scaleMeasurement measured data
      */
     public void addScaleMeasurement(final ScaleMeasurement scaleMeasurement) {
@@ -113,6 +117,7 @@ public class Scale {
 
     /**
      * Get bluetooth MAC address.
+     *
      * @return bluetooth MAC address
      */
     public String getHwAddress() {
@@ -121,6 +126,7 @@ public class Scale {
 
     /**
      * Set bluetooth MAC address
+     *
      * @param hwAddress bluetooth MAC address
      */
     public void setHwAddress(String hwAddress) {
@@ -129,6 +135,7 @@ public class Scale {
 
     /**
      * Get device name.
+     *
      * @return device name
      */
     public String getDeviceName() {
@@ -137,6 +144,7 @@ public class Scale {
 
     /**
      * Set device name.
+     *
      * @param deviceName device name
      */
     public void setDeviceName(String deviceName) {

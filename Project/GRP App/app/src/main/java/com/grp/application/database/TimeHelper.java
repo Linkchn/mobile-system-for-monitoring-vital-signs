@@ -7,6 +7,7 @@ import java.util.Locale;
 public class TimeHelper {
     /**
      * Get the timestamp of the start of a day
+     *
      * @param timeStamp timestamp of now
      * @return the timestamp of the start of a day
      */
@@ -23,6 +24,7 @@ public class TimeHelper {
 
     /**
      * Get the timestamp of the end of a day
+     *
      * @param timeStamp timestamp of now
      * @return the timestamp of the end of a day
      */

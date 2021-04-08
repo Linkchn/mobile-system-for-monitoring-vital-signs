@@ -16,10 +16,10 @@ import java.util.Arrays;
  */
 public class Plotter {
     private static final String TAG = "Plotter";
-    private PlotterListener listener;
-    private Number[] plotNumbers = new Number[500];
     private final FadeFormatter formatter;
     private final XYSeries series;
+    private PlotterListener listener;
+    private Number[] plotNumbers = new Number[500];
     private int dataIndex;
 
     public Plotter(String title) {
@@ -60,6 +60,13 @@ public class Plotter {
         this.listener = listener;
     }
 
+    public void clearVal() {
+        plotNumbers = new Number[500];
+        for (int i = 0; i < plotNumbers.length - 1; i++) {
+            plotNumbers[i] = 60;
+        }
+    }
+
     //Custom paint stroke to generate a "fade" effect
     public static class FadeFormatter extends AdvancedLineAndPointRenderer.Formatter {
         private final int trailSize;
@@ -81,13 +88,6 @@ public class Plotter {
             int alpha = (int) (255 - (offset * scale));
             getLinePaint().setAlpha(Math.max(alpha, 0));
             return getLinePaint();
-        }
-    }
-
-    public void clearVal() {
-        plotNumbers = new Number[500];
-        for (int i = 0; i < plotNumbers.length - 1; i++) {
-            plotNumbers[i] = 60;
         }
     }
 }

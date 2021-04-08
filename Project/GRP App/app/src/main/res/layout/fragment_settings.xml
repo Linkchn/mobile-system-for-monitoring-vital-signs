@@ -84,8 +84,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_marginBottom="10dp">
+            android:layout_marginBottom="10dp"
+            android:orientation="horizontal">
 
             <TextView
                 android:layout_width="0dp"
@@ -131,9 +131,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:layout_marginStart="50dp"
-            android:layout_marginEnd="50dp">
+            android:layout_marginEnd="50dp"
+            android:orientation="horizontal">
 
             <TextView
                 android:layout_width="0dp"
@@ -153,12 +153,13 @@
                 android:gravity="center|start"
                 android:text="Not Set"
                 android:textSize="16sp"
-                android:textStyle="normal"/>
+                android:textStyle="normal" />
 
             <FrameLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="0.4">
+
                 <Button
                     android:id="@+id/button_set_age"
                     style="?attr/materialButtonOutlinedStyle"
@@ -188,82 +189,82 @@
 
 
     <View
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:background="?android:attr/listDivider" />
-
-<!--
-    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical" >
+        android:layout_height="2dp"
+        android:background="?android:attr/listDivider" />
 
+    <!--
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:paddingTop="20dp"
-            android:paddingLeft="60dp"
-            android:paddingRight="60dp">
+            android:orientation="vertical" >
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="0.4"
-                android:layout_gravity="start"
-                android:text="Today's Weight"
-                android:textSize="16sp"
-                android:gravity="center|start"/>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/outlinedTextField"
-                android:layout_width="130dp"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:suffixText="kg"
-                app:suffixTextColor="@color/main_color"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                android:orientation="horizontal"
+                android:paddingTop="20dp"
+                android:paddingLeft="60dp"
+                android:paddingRight="60dp">
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:layout_width="match_parent"
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.4"
+                    android:layout_gravity="start"
+                    android:text="Today's Weight"
+                    android:textSize="16sp"
+                    android:gravity="center|start"/>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/outlinedTextField"
+                    android:layout_width="130dp"
                     android:layout_height="wrap_content"
-                    android:textSize="14sp"
-                    android:maxLines="1"
-                    android:hint="Weight"
-                    android:inputType="number"
-                    android:maxLength="3"
-                    />
+                    app:suffixText="kg"
+                    app:suffixTextColor="@color/main_color"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
 
-            </com.google.android.material.textfield.TextInputLayout>
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="14sp"
+                        android:maxLines="1"
+                        android:hint="Weight"
+                        android:inputType="number"
+                        android:maxLength="3"
+                        />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/button_update_weight"
+                android:layout_width="250dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:layout_marginBottom="30dp"
+                android:text="Update Today's Weight"
+                android:layout_gravity="center"
+                style="?attr/materialButtonOutlinedStyle"
+                app:strokeColor="@color/main_color"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"/>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="?android:attr/listDivider" />
 
         </LinearLayout>
-
-        <Button
-            android:id="@+id/button_update_weight"
-            android:layout_width="250dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:layout_marginBottom="30dp"
-            android:text="Update Today's Weight"
-            android:layout_gravity="center"
-            style="?attr/materialButtonOutlinedStyle"
-            app:strokeColor="@color/main_color"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:background="?android:attr/listDivider" />
-
-    </LinearLayout>
-    -->
+        -->
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginTop="20dp">
+        android:layout_marginTop="20dp"
+        android:orientation="vertical">
 
         <com.google.android.material.switchmaterial.SwitchMaterial
             android:id="@+id/switch_msg_not_wear_device"
@@ -298,10 +299,10 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:layout_marginTop="10dp"
             android:layout_marginStart="35dp"
-            android:layout_marginEnd="35dp">
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="35dp"
+            android:orientation="horizontal">
 
             <Button
                 android:id="@+id/export_database"
@@ -309,7 +310,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginRight="20dp"
                 android:text="Export Data"
-                android:textSize="12sp"/>
+                android:textSize="12sp" />
 
             <Button
                 android:id="@+id/reset_database"
@@ -317,7 +318,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="20dp"
                 android:text="Clear Data"
-                android:textSize="12sp"/>
+                android:textSize="12sp" />
 
         </LinearLayout>
 
@@ -325,12 +326,12 @@
 
     <Button
         android:id="@+id/view_recorded_data"
+        style="?attr/materialButtonOutlinedStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="View recorded data"
         android:layout_marginStart="35dp"
-        android:layout_marginEnd="35dp"
         android:layout_marginTop="10dp"
-        style="?attr/materialButtonOutlinedStyle"/>
+        android:layout_marginEnd="35dp"
+        android:text="View recorded data" />
 
 </LinearLayout>

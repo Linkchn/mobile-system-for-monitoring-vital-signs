@@ -13,6 +13,7 @@ import androidx.core.app.NotificationManagerCompat;
 /**
  * This class is to send notification wo user.
  * It create notification channel which enables to send notification to user.
+ *
  * @author UNNC GRP G19
  */
 
@@ -22,8 +23,8 @@ public class GRPNotification {
     private String CHANNEL_ID = "CHANNEL_ID";
     private int notificationId = 1;
 
-    public static GRPNotification getInstance(Context context){
-        if(GRPNotification == null) {
+    public static GRPNotification getInstance(Context context) {
+        if (GRPNotification == null) {
             GRPNotification = new GRPNotification();
             NotificationManager notificationManager = (NotificationManager) context.getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
         }
@@ -32,6 +33,7 @@ public class GRPNotification {
 
     /**
      * This method is to create a channel to send notification to user.
+     *
      * @param context The app context
      */
     private void createNotificationChannel(Context context) {
@@ -52,9 +54,10 @@ public class GRPNotification {
 
     /**
      * This method is to send user notification if the user does not wear the device properly.
+     *
      * @param context The app context
      */
-    public void sendMsgOnNotWearDevice(Context context){
+    public void sendMsgOnNotWearDevice(Context context) {
         createNotificationChannel(context);
         String message = "The device has not worn properly!";
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
@@ -69,9 +72,10 @@ public class GRPNotification {
 
     /**
      * This method is to send user notification if the system does not capture data.
+     *
      * @param context The app context
      */
-    public void sendMsgOnNotCaptureData(Context context){
+    public void sendMsgOnNotCaptureData(Context context) {
         createNotificationChannel(context);
         String message = "The data is not captured";
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
@@ -86,9 +90,10 @@ public class GRPNotification {
 
     /**
      * This method is to send user notification if the report is generated.
+     *
      * @param context The app context
      */
-    public void sendMsgOnReportGenerated(Context context){
+    public void sendMsgOnReportGenerated(Context context) {
         createNotificationChannel(context);
         String message = "A report is generated";
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
@@ -103,9 +108,10 @@ public class GRPNotification {
 
     /**
      * This method is to send user notification if the heart rate is too high.
+     *
      * @param context The app context
      */
-    public void sendMsgOnHighHR(Context context){
+    public void sendMsgOnHighHR(Context context) {
         createNotificationChannel(context);
         String message = "Your heart rate is too high. Take a rest!";
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)

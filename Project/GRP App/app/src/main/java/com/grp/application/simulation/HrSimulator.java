@@ -16,11 +16,10 @@ import polar.com.sdk.api.model.PolarHrData;
  * @author UNNC GRP G19
  * @version 1.0
  */
-public class   HrSimulator {
-
-    BufferedReader dataReader;
+public class HrSimulator {
 
     private static HrSimulator instance;
+    BufferedReader dataReader;
 
     /**
      * Private constructor.
@@ -31,6 +30,7 @@ public class   HrSimulator {
 
     /**
      * Get the unique instance of HrSimulator.
+     *
      * @return instance of HrSimulator
      */
     public static HrSimulator getInstance() {
@@ -43,6 +43,7 @@ public class   HrSimulator {
 
     /**
      * Get next PolarHrData
+     *
      * @return next PolarHrData
      * @throws IOException IOException
      */
@@ -52,6 +53,7 @@ public class   HrSimulator {
 
     /**
      * Read next hr data from csv file
+     *
      * @return next hr data
      * @throws IOException IOException
      */

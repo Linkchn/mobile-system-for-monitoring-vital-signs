@@ -48,6 +48,7 @@ import polar.com.sdk.api.model.PolarHrData;
  */
 public class SettingsFragment extends Fragment {
 
+    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(Application.context);
     private Monitor monitor;
     private PolarDevice polarDevice;
     private ImageView symbolHrDevice;
@@ -57,21 +58,21 @@ public class SettingsFragment extends Fragment {
     private Button hrDeviceDisconenctButton;
     private Button scaleDeviceDisconnectButton;
     private Button ageSetButton;
-    private  Button resetDatabaseButton;
-    private  Button exportDatabaseButton;
-    private  Button viewRecordedButton;
+    private Button resetDatabaseButton;
+    private Button exportDatabaseButton;
+    private Button viewRecordedButton;
     private SwitchMaterial simulationSwitch;
     private SwitchMaterial msgOnNotWearDeviceSwitch;
     private SwitchMaterial msgOnNotCaptureDataSwitch;
     private SwitchMaterial msgOnReportGenerated;
     private TextView ageText;
-    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(Application.context);
 
 
-    public SettingsFragment() {}
+    public SettingsFragment() {
+    }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
-            ViewGroup container, Bundle savedInstanceState) {
+                             ViewGroup container, Bundle savedInstanceState) {
 
         View root = inflater.inflate(R.layout.fragment_settings, container, false);
         monitor = Monitor.getInstance();
@@ -87,8 +88,8 @@ public class SettingsFragment extends Fragment {
         msgOnNotWearDeviceSwitch = root.findViewById(R.id.switch_msg_not_wear_device);
         msgOnNotCaptureDataSwitch = root.findViewById(R.id.switch_msg_not_capture_data);
         msgOnReportGenerated = root.findViewById(R.id.switch_msg_report_generated);
-        resetDatabaseButton =  root.findViewById(R.id.reset_database);
-        exportDatabaseButton =  root.findViewById(R.id.export_database);
+        resetDatabaseButton = root.findViewById(R.id.reset_database);
+        exportDatabaseButton = root.findViewById(R.id.export_database);
         viewRecordedButton = root.findViewById(R.id.view_recorded_data);
         ageText = root.findViewById(R.id.text_age);
 
@@ -118,7 +119,7 @@ public class SettingsFragment extends Fragment {
         });
 
         // Set action for disconnect button of scale device
-        scaleDeviceDisconnectButton.setOnClickListener((buttonView) ->  {
+        scaleDeviceDisconnectButton.setOnClickListener((buttonView) -> {
             SharedPreferences.Editor editor = sharedPreferences.edit();
             editor.remove(Application.SCALE_NAME_KEY);
             editor.remove(Application.SCALE_ADDRESS_KEY);
@@ -268,7 +269,7 @@ public class SettingsFragment extends Fragment {
 
             @Override
             public void hrNotificationReceived(@NonNull String identifier, @NonNull PolarHrData data) {
-                if(data.hr <= 0 && monitor.getMonitorState().isMsgOnNotWearDeviceEnabled()){
+                if (data.hr <= 0 && monitor.getMonitorState().isMsgOnNotWearDeviceEnabled()) {
                     GRPNotification grpNotification = GRPNotification.getInstance(Application.context);
                     grpNotification.sendMsgOnNotWearDevice(Application.context);
                 } else {
@@ -298,7 +299,7 @@ public class SettingsFragment extends Fragment {
         monitor.getViewSetter().setDeviceView(symbolBrainWaveDevice, scaleConnectButton, scaleDeviceDisconnectButton,
                 monitor.getMonitorState().isScaleDeviceConnected(), monitor.getMonitorState().isSimulationEnabled());
         monitor.getViewSetter().setSwitchView(simulationSwitch, monitor.getMonitorState().isSimulationEnabled(), !monitor.getMonitorState().isHRDeviceConnected()
-        && !monitor.getMonitorState().isScaleDeviceConnected());
+                && !monitor.getMonitorState().isScaleDeviceConnected());
         monitor.getViewSetter().setSwitchView(msgOnNotWearDeviceSwitch, monitor.getMonitorState().isMsgOnNotWearDeviceEnabled());
         monitor.getViewSetter().setSwitchView(msgOnNotCaptureDataSwitch, monitor.getMonitorState().isMsgOnNotCaptureDataEnabled());
         monitor.getViewSetter().setSwitchView(msgOnReportGenerated, monitor.getMonitorState().isMsgOnReportGeneratedEnabled());
@@ -307,6 +308,7 @@ public class SettingsFragment extends Fragment {
 
     /**
      * Show heart rate device connection dialog.
+     *
      * @param view view
      */
     private void showPolarDeviceDialog(View view) {
@@ -336,6 +338,7 @@ public class SettingsFragment extends Fragment {
 
     /**
      * Show scale device connection dialog.
+     *
      * @param view view
      */
     private void showScaleDialog(View view) {
@@ -354,7 +357,7 @@ public class SettingsFragment extends Fragment {
             Scale scale = Scale.getInstance();
             if (buttonRenpho.isChecked()) {
                 scale.setDeviceName("QN-Scale");
-            } else if (buttonYunmai.isChecked()){
+            } else if (buttonYunmai.isChecked()) {
                 scale.setDeviceName("YUNMAI-SIGNAL");
             }
             scale.setHwAddress(input.getText().toString());

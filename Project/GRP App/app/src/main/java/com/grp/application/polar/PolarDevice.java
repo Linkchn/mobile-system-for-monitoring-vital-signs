@@ -12,10 +12,9 @@ import polar.com.sdk.api.PolarBleApiDefaultImpl;
  * @version 1.0
  */
 public class PolarDevice {
+    private static PolarDevice instance;
     private String deviceId;
     private PolarBleApi polarApi;
-
-    private static PolarDevice instance;
 
     /**
      * Private constructor.
@@ -26,6 +25,7 @@ public class PolarDevice {
 
     /**
      * Get the unique instance of PolarDevice.
+     *
      * @return instance of PolarDevice
      */
     public static PolarDevice getInstance() {
@@ -37,6 +37,7 @@ public class PolarDevice {
 
     /**
      * Call for Polar API.
+     *
      * @return Polar API
      */
     public PolarBleApi api() {
@@ -45,6 +46,7 @@ public class PolarDevice {
 
     /**
      * Get device ID
+     *
      * @return device ID
      */
     public String getDeviceId() {
@@ -53,6 +55,7 @@ public class PolarDevice {
 
     /**
      * Set device ID
+     *
      * @param deviceId device ID
      */
     public void setDeviceId(String deviceId) {

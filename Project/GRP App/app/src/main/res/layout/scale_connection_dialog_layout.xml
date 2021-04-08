@@ -21,16 +21,16 @@
             android:id="@+id/button_renpho"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="RENPHO"
             android:checked="true"
-            android:textColor="@color/main_color"/>
+            android:text="RENPHO"
+            android:textColor="@color/main_color" />
 
         <RadioButton
             android:id="@+id/button_yunmai"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="YUNMAI"
-            android:textColor="@color/main_color"/>
+            android:textColor="@color/main_color" />
     </RadioGroup>
 
 </LinearLayout>

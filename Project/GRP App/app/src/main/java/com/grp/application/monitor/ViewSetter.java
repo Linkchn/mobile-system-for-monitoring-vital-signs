@@ -17,12 +17,12 @@ import com.google.android.material.switchmaterial.SwitchMaterial;
  */
 public class ViewSetter {
 
-    private Context context;
-
     private static ViewSetter instance;
+    private Context context;
 
     /**
      * Private constructor.
+     *
      * @param context context of the application
      */
     private ViewSetter(Context context) {
@@ -31,6 +31,7 @@ public class ViewSetter {
 
     /**
      * Get the unique instance of ViewSetter.
+     *
      * @return instance of ViewSetter
      */
     protected static ViewSetter getInstance(Context context) {
@@ -42,8 +43,9 @@ public class ViewSetter {
 
     /**
      * Set switch view to on/off based on relative state of monitor.
+     *
      * @param switchButton target switch
-     * @param isChecked boolean parameter whether the switch is on
+     * @param isChecked    boolean parameter whether the switch is on
      */
     public void setSwitchView(SwitchMaterial switchButton, boolean isChecked) {
         switchButton.setChecked(isChecked);
@@ -51,9 +53,10 @@ public class ViewSetter {
 
     /**
      * Set switch view to on/off and enabled/disabled based on relative state of monitor.
+     *
      * @param switchButton target switch
-     * @param isChecked boolean parameter whether the switch is on
-     * @param isEnabled boolean parameter whether the switch is enabled
+     * @param isChecked    boolean parameter whether the switch is on
+     * @param isEnabled    boolean parameter whether the switch is enabled
      */
     public void setSwitchView(SwitchMaterial switchButton, boolean isChecked, boolean isEnabled) {
         switchButton.setEnabled(isEnabled);
@@ -62,10 +65,11 @@ public class ViewSetter {
 
     /**
      * Set device connection button view to enabled/disabled based on the connection of the device.
-     * @param symbol target symbol to show the connection state
-     * @param connectButton button to connect device
-     * @param disconnectButton button to disconnect device
-     * @param isConnected boolean parameter whether the device is connected
+     *
+     * @param symbol              target symbol to show the connection state
+     * @param connectButton       button to connect device
+     * @param disconnectButton    button to disconnect device
+     * @param isConnected         boolean parameter whether the device is connected
      * @param isSimulationEnabled boolean parameter whether the simulation is enabled
      */
     public void setDeviceView(ImageView symbol, Button connectButton, Button disconnectButton, boolean isConnected, boolean isSimulationEnabled) {
@@ -85,7 +89,8 @@ public class ViewSetter {
 
     /**
      * Set button view to enabled/disabled based on relative state of monitor.
-     * @param button target button
+     *
+     * @param button    target button
      * @param isEnabled boolean parameter whether the button is enabled
      */
     public void setButtonView(Button button, boolean isEnabled) {
@@ -94,9 +99,10 @@ public class ViewSetter {
 
     /**
      * Set age view to  based on relative state of monitor.
+     *
      * @param setButton age set button
-     * @param ageText displayed age number
-     * @param isAgeSet boolean parameter whether age is set
+     * @param ageText   displayed age number
+     * @param isAgeSet  boolean parameter whether age is set
      */
     public void setAgeView(Button setButton, TextView ageText, boolean isAgeSet) {
         if (isAgeSet) {

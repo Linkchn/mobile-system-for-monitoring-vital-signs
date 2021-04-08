@@ -2,8 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="720px"
     android:layout_height="1280px"
-    android:orientation="vertical"
-    android:background="#ffffff">
+    android:background="#ffffff"
+    android:orientation="vertical">
 
     <TextView
         android:layout_width="match_parent"
@@ -17,8 +17,8 @@
         android:id="@+id/tv_info"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_marginBottom="20px"
         android:layout_marginTop="20px"
+        android:layout_marginBottom="20px"
         android:layout_weight="1"
         android:gravity="center_horizontal"
         android:textSize="40px" />

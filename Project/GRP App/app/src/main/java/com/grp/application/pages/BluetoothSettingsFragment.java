@@ -1,18 +1,18 @@
 /* Copyright (C) 2019  olie.xdev <olie.xdev@googlemail.com>
-*
-*    This program is free software: you can redistribute it and/or modify
-*    it under the terms of the GNU General Public License as published by
-*    the Free Software Foundation, either version 3 of the License, or
-*    (at your option) any later version.
-*
-*    This program is distributed in the hope that it will be useful,
-*    but WITHOUT ANY WARRANTY; without even the implied warranty of
-*    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-*    GNU General Public License for more details.
-*
-*    You should have received a copy of the GNU General Public License
-*    along with this program.  If not, see <http://www.gnu.org/licenses/>
-*/
+ *
+ *    This program is free software: you can redistribute it and/or modify
+ *    it under the terms of the GNU General Public License as published by
+ *    the Free Software Foundation, either version 3 of the License, or
+ *    (at your option) any later version.
+ *
+ *    This program is distributed in the hope that it will be useful,
+ *    but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *    GNU General Public License for more details.
+ *
+ *    You should have received a copy of the GNU General Public License
+ *    along with this program.  If not, see <http://www.gnu.org/licenses/>
+ */
 package com.grp.application.pages;
 
 import android.app.Activity;
@@ -80,10 +80,32 @@ public class BluetoothSettingsFragment extends Fragment {
     private Map<String, BluetoothDevice> foundDevices = new HashMap<>();
 
     private LinearLayout deviceListView;
+    private final BluetoothCentralCallback bluetoothCentralCallback = new BluetoothCentralCallback() {
+        @Override
+        public void onDiscoveredPeripheral(BluetoothPeripheral peripheral, ScanResult scanResult) {
+            new Handler().post(new Runnable() {
+                @Override
+                public void run() {
+                    onDeviceFound(scanResult);
+                }
+            });
+        }
+    };
     private TextView txtSearching;
     private ProgressBar progressBar;
     private Handler progressHandler;
     private BluetoothCentral central;
+
+    private static final String formatDeviceName(String name, String address) {
+        if (name.isEmpty() || address.isEmpty()) {
+            return "-";
+        }
+        return String.format("%s [%s]", name, address);
+    }
+
+    private static final String formatDeviceName(BluetoothDevice device) {
+        return formatDeviceName(device.getName(), device.getAddress());
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -108,7 +130,7 @@ public class BluetoothSettingsFragment extends Fragment {
     public void onResume() {
         if (PermissionHelper.requestBluetoothPermission(this)) {
             if (PermissionHelper.requestLocationServicePermission(this)) {
-                 startBluetoothDiscovery();
+                startBluetoothDiscovery();
             }
         }
         super.onResume();
@@ -118,29 +140,6 @@ public class BluetoothSettingsFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         menu.clear();
     }
-
-    private static final String formatDeviceName(String name, String address) {
-        if (name.isEmpty() || address.isEmpty()) {
-            return "-";
-        }
-        return String.format("%s [%s]", name, address);
-    }
-
-    private static final String formatDeviceName(BluetoothDevice device) {
-        return formatDeviceName(device.getName(), device.getAddress());
-    }
-
-    private final BluetoothCentralCallback bluetoothCentralCallback = new BluetoothCentralCallback() {
-        @Override
-        public void onDiscoveredPeripheral(BluetoothPeripheral peripheral, ScanResult scanResult) {
-            new Handler().post(new Runnable() {
-                @Override
-                public void run() {
-                    onDeviceFound(scanResult);
-                }
-            });
-        }
-    };
 
     private void startBluetoothDiscovery() {
         deviceListView.removeAllViews();
@@ -182,11 +181,11 @@ public class BluetoothSettingsFragment extends Fragment {
                                 }
                             });
                             deviceListView.addView(notSupported);
-                        } catch(IllegalStateException ex) {
+                        } catch (IllegalStateException ex) {
                             Timber.e(ex.getMessage());
                         }
-                        }
-                    });
+                    }
+                });
             }
         }, 20 * 1000);
     }
@@ -219,8 +218,7 @@ public class BluetoothSettingsFragment extends Fragment {
             deviceView.setDeviceAddress(device.getAddress());
             deviceView.setIcon(R.drawable.ic_bluetooth_device_supported);
             deviceView.setSummaryText(btDevice.driverName());
-        }
-        else {
+        } else {
             Timber.d("Found unsupported device %s",
                     formatDeviceName(device));
             deviceView.setIcon(R.drawable.ic_bluetooth_device_not_supported);
@@ -231,6 +229,35 @@ public class BluetoothSettingsFragment extends Fragment {
 
         foundDevices.put(device.getAddress(), btDevice != null ? device : null);
         deviceListView.addView(deviceView);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == PermissionHelper.ENABLE_BLUETOOTH_REQUEST) {
+            if (resultCode == Activity.RESULT_OK) {
+                if (PermissionHelper.requestBluetoothPermission(this)) {
+                    startBluetoothDiscovery();
+                }
+            }
+        }
+
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PermissionHelper.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    if (PermissionHelper.requestLocationServicePermission(this)) {
+                        startBluetoothDiscovery();
+                    }
+                } else {
+                    Toast.makeText(requireContext(), "Permission not granted", Toast.LENGTH_SHORT).show();
+                }
+                break;
+            }
+        }
     }
 
     private class BluetoothDeviceView extends LinearLayout implements View.OnClickListener {
@@ -250,11 +277,12 @@ public class BluetoothSettingsFragment extends Fragment {
 
             deviceName = new TextView(context);
             deviceName.setLines(2);
-            deviceIcon = new ImageView(context);;
+            deviceIcon = new ImageView(context);
+            ;
 
             LayoutParams centerLayoutParams = new LayoutParams(
                     LayoutParams.WRAP_CONTENT, LayoutParams.MATCH_PARENT);
-            layoutParams.gravity= Gravity.CENTER;
+            layoutParams.gravity = Gravity.CENTER;
 
             deviceIcon.setLayoutParams(centerLayoutParams);
             deviceName.setLayoutParams(centerLayoutParams);
@@ -267,12 +295,12 @@ public class BluetoothSettingsFragment extends Fragment {
             addView(deviceName);
         }
 
-        public void setDeviceAddress(String address) {
-            deviceAddress = address;
-        }
-
         public String getDeviceAddress() {
             return deviceAddress;
+        }
+
+        public void setDeviceAddress(String address) {
+            deviceAddress = address;
         }
 
         public void setDeviceName(String name) {
@@ -288,9 +316,9 @@ public class BluetoothSettingsFragment extends Fragment {
             int deviceNameLength = deviceName.getText().length();
 
             stringBuilder.append(text);
-            stringBuilder.setSpan(new ForegroundColorSpan(Color.GRAY), deviceNameLength, deviceNameLength + text.length()+1,
+            stringBuilder.setSpan(new ForegroundColorSpan(Color.GRAY), deviceNameLength, deviceNameLength + text.length() + 1,
                     Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-            stringBuilder.setSpan(new RelativeSizeSpan(0.8f), deviceNameLength, deviceNameLength + text.length()+1,
+            stringBuilder.setSpan(new RelativeSizeSpan(0.8f), deviceNameLength, deviceNameLength + text.length() + 1,
                     Spanned.SPAN_INCLUSIVE_INCLUSIVE);
 
             deviceName.setText(stringBuilder);
@@ -346,40 +374,12 @@ public class BluetoothSettingsFragment extends Fragment {
 
             stopBluetoothDiscovery();
 
-            if (getActivity().findViewById(R.id.nav_host_fragment) != null){
+            monitor.showToast("Scale Connected");
+            if (getActivity().findViewById(R.id.nav_host_fragment) != null) {
                 Navigation.findNavController(requireActivity(), R.id.nav_host_fragment).getPreviousBackStackEntry().getSavedStateHandle().set("update", true);
                 Navigation.findNavController(requireActivity(), R.id.nav_host_fragment).navigateUp();
             } else
                 getActivity().finish();
-            }
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == PermissionHelper.ENABLE_BLUETOOTH_REQUEST) {
-            if (resultCode == Activity.RESULT_OK) {
-                if (PermissionHelper.requestBluetoothPermission(this)) {
-                    startBluetoothDiscovery();
-                }
-            }
-        }
-
-        super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case PermissionHelper.PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION: {
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    if (PermissionHelper.requestLocationServicePermission(this)) {
-                        startBluetoothDiscovery();
-                    }
-                } else {
-                    Toast.makeText(requireContext(), "Permission not granted", Toast.LENGTH_SHORT).show();
-                }
-                break;
-            }
         }
     }
 }

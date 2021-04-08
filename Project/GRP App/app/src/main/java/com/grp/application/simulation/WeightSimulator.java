@@ -15,9 +15,8 @@ import java.io.InputStreamReader;
  */
 public class WeightSimulator {
 
-    BufferedReader dataReader;
-
     private static WeightSimulator instance;
+    BufferedReader dataReader;
 
     /**
      * Private constructor.
@@ -28,6 +27,7 @@ public class WeightSimulator {
 
     /**
      * Get the unique instance of WeightSimulator.
+     *
      * @return instance of WeightSimulator
      */
     public static WeightSimulator getInstance() {
@@ -40,6 +40,7 @@ public class WeightSimulator {
 
     /**
      * Read next weight data from csv file
+     *
      * @return next weight data
      * @throws IOException IOException
      */

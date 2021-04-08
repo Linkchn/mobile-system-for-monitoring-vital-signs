@@ -19,7 +19,7 @@ public class FileLog {
      * @param fileName name of the file to export
      */
     public static void saveLog(String message, String fileName, String type) throws IOException {
-        String path = Environment.getExternalStorageDirectory() + File.separator +type;
+        String path = Environment.getExternalStorageDirectory() + File.separator + type;
         File files = new File(path);
         Date date = new Date();
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-M-dd HH:mm:ss,EE", Locale.getDefault());
@@ -33,11 +33,11 @@ public class FileLog {
             FileWriter fw = new FileWriter(path + File.separator
                     + fileName + ".csv");
             fw.write(formatDate);
-            if (type == "VitalSigns/HR" || type == "VitalSigns/Exported"){
+            if (type == "VitalSigns/HR" || type == "VitalSigns/Exported") {
                 fw.write("timestamp,bpm\n");
-            }else if (type == "VitalSigns/ECG"){
+            } else if (type == "VitalSigns/ECG") {
                 fw.write("timestamp,uV\n");
-            }else if (type == "VitalSigns/ACC"){
+            } else if (type == "VitalSigns/ACC") {
                 fw.write("timestamp,x,y,z\n");
             }
             fw.write(message);

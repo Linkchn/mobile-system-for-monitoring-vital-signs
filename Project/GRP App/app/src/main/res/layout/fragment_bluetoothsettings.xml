@@ -13,7 +13,7 @@
         android:paddingBottom="10px"
         android:text="Search for your Bluetooth scale"
         android:textColor="@android:color/white"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
     <ProgressBar
         android:id="@+id/progressBar"

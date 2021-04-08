@@ -8,6 +8,15 @@ import com.github.abel533.echarts.series.Line;
 
 public class EchartOptionUtil {
 
+    /**
+     * This method is to create the chart x Axis and y Axis
+     *
+     * @param xAxis The x Axis of the chart
+     * @param yAxis The y Axis of the chart
+     * @param name  The name shown in the chart
+     * @return the GsonOption
+     * @author UNNC GRP G19
+     */
     public static GsonOption getLineChartOptions(Object[] xAxis, Object[] yAxis, String name) {
         GsonOption option = new GsonOption();
         option.legend(name);

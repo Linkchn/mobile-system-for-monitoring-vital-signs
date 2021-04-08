@@ -35,10 +35,86 @@ import timber.log.Timber;
  */
 public class Monitor {
 
+    private static Monitor instance;
+    Disposable accDisposable = null;
     private MonitorState monitorState;
     private ViewSetter viewSetter;
+    private String hrValue;
+    private String ecgValue;
+    private String accValue;
+    private boolean hrStatus;
+    private boolean ecgStatus;
+    private boolean accStatus;
+    private int age;
+    private PolarDevice polarDevice;
+    private Toast toast;
+    private Context context;
+    private TimePlotter plotterHR;
+    private Plotter plotterECG;
+    private AccPlotter plotterAcc;
+    private float weight;
+    private Disposable ecgDisposable = null;
 
-    public String getHrValue() { return hrValue; }
+    /**
+     * Private constructor.
+     *
+     * @param context context of the application
+     */
+    private Monitor(Context context) {
+        this.context = context;
+        monitorState = MonitorState.getInstance();
+        viewSetter = ViewSetter.getInstance(context);
+        polarDevice = PolarDevice.getInstance();
+        PixelUtils.init(context);
+        plotterHR = new TimePlotter();
+        plotterECG = new Plotter("ECG");
+        plotterAcc = new AccPlotter();
+
+        /*initialize the ecg and acc recording variable*/
+        ecgValue = "";
+        accValue = "";
+        ecgStatus = false;
+        accStatus = false;
+    }
+
+    /**
+     * Initial Monitor instance.
+     *
+     * @param context context of the application
+     */
+    public static void createInstance(Context context) {
+        if (instance != null) {
+            return;
+        }
+
+        instance = new Monitor(context);
+    }
+
+    /**
+     * Get the unique instance of Monitor.
+     *
+     * @return instance of Monitor
+     */
+    public static Monitor getInstance() {
+        if (instance == null) {
+            throw new RuntimeException("No Monitor instance created");
+        }
+
+        return instance;
+    }
+
+    public static String stampToDate(long s) {
+        String res;
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        long lt = s;
+        Date date = new Date(lt);
+        res = simpleDateFormat.format(date);
+        return res;
+    }
+
+    public String getHrValue() {
+        return hrValue;
+    }
 
     public String getEcgValue() {
         return ecgValue;
@@ -48,22 +124,15 @@ public class Monitor {
         return accValue;
     }
 
-    private String hrValue;
-    private String ecgValue;
-    private String accValue;
-    private boolean hrStatus;
-    private boolean ecgStatus;
-    private boolean accStatus;
+    private void resetHr() {
+        hrValue = "";
+    }
 
-    private int age;
-
-    private void resetHr() { hrValue = "";}
-
-    private void resetECG(){
+    private void resetECG() {
         ecgValue = "";
     }
 
-    private void resetACC(){
+    private void resetACC() {
         accValue = "";
 
     }
@@ -92,64 +161,6 @@ public class Monitor {
         this.accStatus = accStatus;
     }
 
-    private PolarDevice polarDevice;
-    private Toast toast;
-
-    private static Monitor instance;
-    private Context context;
-
-    private TimePlotter plotterHR;
-    private Plotter plotterECG;
-    private AccPlotter plotterAcc;
-    private float weight;
-    private Disposable ecgDisposable = null;
-    Disposable accDisposable = null;
-
-    /**
-     * Private constructor.
-     * @param context context of the application
-     */
-    private Monitor(Context context) {
-        this.context = context;
-        monitorState = MonitorState.getInstance();
-        viewSetter = ViewSetter.getInstance(context);
-        polarDevice = PolarDevice.getInstance();
-        PixelUtils.init(context);
-        plotterHR = new TimePlotter();
-        plotterECG = new Plotter("ECG");
-        plotterAcc = new AccPlotter();
-
-        /*initialize the ecg and acc recording variable*/
-        ecgValue = "";
-        accValue = "";
-        ecgStatus = false;
-        accStatus = false;
-    }
-
-    /**
-     * Initial Monitor instance.
-     * @param context context of the application
-     */
-    public static void createInstance(Context context) {
-        if (instance != null) {
-            return;
-        }
-
-        instance = new Monitor(context);
-    }
-
-    /**
-     * Get the unique instance of Monitor.
-     * @return instance of Monitor
-     */
-    public static Monitor getInstance() {
-        if (instance == null) {
-            throw new RuntimeException("No Monitor instance created");
-        }
-
-        return instance;
-    }
-
     /**
      * Collect ECG data from Polar device.
      */
@@ -165,8 +176,8 @@ public class Monitor {
                                     polarEcgData -> {
                                         for (Integer data : polarEcgData.samples) {
                                             plotterECG.sendSingleSample((float) ((float) data / 1000.0));
-                                            if (ecgStatus){
-                                                ecgValue = ecgValue + polarEcgData.timeStamp/1000000 + "," + data + "\n";
+                                            if (ecgStatus) {
+                                                ecgValue = ecgValue + polarEcgData.timeStamp / 1000000 + "," + data + "\n";
                                             }
                                         }
                                     },
@@ -181,7 +192,7 @@ public class Monitor {
         }
     }
 
-    public void streamACC(){
+    public void streamACC() {
         if (accDisposable == null) {
             accDisposable =
                     polarDevice.api().requestAccSettings(polarDevice.getDeviceId())
@@ -192,16 +203,16 @@ public class Monitor {
                             .subscribe(
                                     polarAccelerometerData -> {
                                         for (PolarAccelerometerData.PolarAccelerometerSample data : polarAccelerometerData.samples) {
-                                            if (accStatus){
-                                                System.out.println("ACC: "+ data.x + "," + data.y + "," + data.z + "\n");
-                                                accValue = accValue + polarAccelerometerData.timeStamp/1000000 + "," + data.x + "," + data.y + "," + data.z + "\n";
+                                            if (accStatus) {
+                                                System.out.println("ACC: " + data.x + "," + data.y + "," + data.z + "\n");
+                                                accValue = accValue + polarAccelerometerData.timeStamp / 1000000 + "," + data.x + "," + data.y + "," + data.z + "\n";
                                             }
                                         }
                                     },
                                     throwable -> {
                                         accDisposable = null;
                                     }
-                    );
+                            );
         } else {
             // NOTE dispose will stop streaming if it is "running"
             accDisposable.dispose();
@@ -211,6 +222,7 @@ public class Monitor {
 
     /**
      * Get {@code context}.
+     *
      * @return context
      */
     public Context getContext() {
@@ -219,14 +231,16 @@ public class Monitor {
 
     /**
      * Get {@code monitorState}.
+     *
      * @return monitorState
      */
     public MonitorState getMonitorState() {
-        return  monitorState;
+        return monitorState;
     }
 
     /**
      * Get {@code viewSetter}.
+     *
      * @return viewSetter
      */
     public ViewSetter getViewSetter() {
@@ -235,9 +249,10 @@ public class Monitor {
 
     /**
      * Show toast in current interface.
+     *
      * @param text text to display
      */
-    public void showToast(String text){
+    public void showToast(String text) {
         if (toast != null) {
             toast.cancel();
         }
@@ -247,6 +262,7 @@ public class Monitor {
 
     /**
      * Get {@code plotterHR}.
+     *
      * @return plotterHR
      */
     public TimePlotter getPlotterHR() {
@@ -255,6 +271,7 @@ public class Monitor {
 
     /**
      * Get {@code plotterECG}.
+     *
      * @return plotterECG
      */
     public Plotter getPlotterECG() {
@@ -263,6 +280,7 @@ public class Monitor {
 
     /**
      * Get {@code weight}.
+     *
      * @return weight
      */
     public double getWeight() {
@@ -271,32 +289,24 @@ public class Monitor {
 
     /**
      * Get {@code weight}.
+     *
      * @param weight measured weight
      */
     public void setWeight(float weight) {
         this.weight = weight;
     }
 
-    public static String stampToDate(long  s){
-        String res;
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        long lt = s;
-        Date date = new Date(lt);
-        res = simpleDateFormat.format(date);
-        return res;
-    }
-
-    public void stopHr(){
+    public void stopHr() {
         this.hrStatus = false;
         resetHr();
     }
 
-    public void stopECG(){
+    public void stopECG() {
         this.ecgStatus = false;
         resetECG();
     }
 
-    public void stopACC(){
+    public void stopACC() {
         this.accStatus = false;
         resetACC();
     }

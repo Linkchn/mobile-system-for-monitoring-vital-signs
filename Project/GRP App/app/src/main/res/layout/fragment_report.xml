@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:app="http://schemas.android.com/apk/res-auto"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    android:layout_height="match_parent">
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context="com.grp.application.pages.ReportFragment"
-        android:paddingBottom="90dp">
+        android:paddingBottom="90dp"
+        tools:context="com.grp.application.pages.ReportFragment">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintTop_toTopOf="parent"
-            >
+            app:layout_constraintTop_toTopOf="parent">
 
             <TextView
                 android:id="@+id/healthReport"
@@ -40,8 +40,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 app:tabGravity="start"
-                app:tabSelectedTextColor="@color/main_color"
-                app:tabIndicatorColor="@color/main_color">
+                app:tabIndicatorColor="@color/main_color"
+                app:tabSelectedTextColor="@color/main_color">
 
                 <com.google.android.material.tabs.TabItem
                     android:id="@+id/tab_item_daily"
@@ -66,79 +66,75 @@
                 android:id="@+id/lineChart"
                 android:layout_width="400dp"
                 android:layout_height="400dp"
-                android:layout_gravity="center">
-            </com.grp.application.GRPchart.EchartView>
+                android:layout_gravity="center"></com.grp.application.GRPchart.EchartView>
 
             <com.grp.application.GRPchart.EchartView
                 android:id="@+id/weightChart"
                 android:layout_width="400dp"
                 android:layout_height="400dp"
-                android:layout_gravity="center">
-            </com.grp.application.GRPchart.EchartView>
+                android:layout_gravity="center"></com.grp.application.GRPchart.EchartView>
 
             <TextView
                 android:id="@+id/Weight"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="80dp"
+                android:layout_marginBottom="5dp"
                 android:text=""
-                android:textSize="18sp"
-                android:layout_marginBottom="5dp"/>
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/low"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="80dp"
-                android:textSize="18sp"
                 android:layout_marginBottom="5dp"
-                />
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/high"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="80dp"
-                android:textSize="18sp"
-                android:layout_marginBottom="5dp"/>
+                android:layout_marginBottom="5dp"
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/average"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="80dp"
-                android:textSize="18sp"
-                android:layout_marginBottom="10dp"/>
+                android:layout_marginBottom="10dp"
+                android:textSize="18sp" />
 
 
+            <!--            <FrameLayout-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                app:layout_constraintBottom_toBottomOf="parent"-->
+            <!--                android:paddingStart="60dp"-->
+            <!--                android:paddingEnd="40dp">-->
 
-<!--            <FrameLayout-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                android:paddingStart="60dp"-->
-<!--                android:paddingEnd="40dp">-->
 
+            <!--                <Button-->
+            <!--                    android:id="@+id/button_save"-->
+            <!--                    style="?attr/materialButtonOutlinedStyle"-->
+            <!--                    android:layout_width="140dp"-->
+            <!--                    android:layout_height="wrap_content"-->
+            <!--                    android:layout_gravity="start"-->
+            <!--                    android:text="@string/save"-->
+            <!--                    app:strokeColor="@color/main_color" />-->
 
-<!--                <Button-->
-<!--                    android:id="@+id/button_save"-->
-<!--                    style="?attr/materialButtonOutlinedStyle"-->
-<!--                    android:layout_width="140dp"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:layout_gravity="start"-->
-<!--                    android:text="@string/save"-->
-<!--                    app:strokeColor="@color/main_color" />-->
+            <!--                <Button-->
+            <!--                    android:id="@+id/button_export"-->
+            <!--                    android:layout_width="140dp"-->
+            <!--                    android:layout_height="wrap_content"-->
+            <!--                    android:text="@string/export"-->
+            <!--                    android:layout_gravity="end"-->
+            <!--                    style="?attr/materialButtonOutlinedStyle"-->
+            <!--                    app:strokeColor="@color/main_color"/>-->
 
-<!--                <Button-->
-<!--                    android:id="@+id/button_export"-->
-<!--                    android:layout_width="140dp"-->
-<!--                    android:layout_height="wrap_content"-->
-<!--                    android:text="@string/export"-->
-<!--                    android:layout_gravity="end"-->
-<!--                    style="?attr/materialButtonOutlinedStyle"-->
-<!--                    app:strokeColor="@color/main_color"/>-->
-
-<!--            </FrameLayout>-->
+            <!--            </FrameLayout>-->
         </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+
 import com.grp.application.R;
 
 import androidx.annotation.NonNull;
@@ -28,7 +29,6 @@ public class ShareView extends FrameLayout {
     }
 
     /**
-     *
      * @param info
      */
     public void setInfo(String info) {
@@ -36,7 +36,6 @@ public class ShareView extends FrameLayout {
     }
 
     /**
-     *
      * @return
      */
     public Bitmap createImage() {

@@ -35,12 +35,12 @@ import polar.com.sdk.api.errors.PolarInvalidArgument;
  */
 public class MainActivity extends AppCompatActivity {
 
-    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(Application.context);
-
     //
     private static final String[] PERMISSIONS_STORAGE = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE};
+    private static final int REQUEST_EXTERNAL_STORAGE = 1;
+    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(Application.context);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +75,6 @@ public class MainActivity extends AppCompatActivity {
         // Create database
         DatabaseHelper helper = new DatabaseHelper(this);
         helper.getWritableDatabase();
-
 
 
         // Database simulator
@@ -115,6 +114,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Check preferences of the application.
+     */
     private void checkPreferences() throws PolarInvalidArgument {
         String polarDeviceID = sharedPreferences.getString(Application.POLAR_KEY, "");
         String scaleDeviceAddress = sharedPreferences.getString(Application.SCALE_ADDRESS_KEY, "");
@@ -149,8 +151,6 @@ public class MainActivity extends AppCompatActivity {
             monitor.getMonitorState().setAge();
         }
     }
-
-    private static final int REQUEST_EXTERNAL_STORAGE = 1;
 
     private void alarmTry() {
 

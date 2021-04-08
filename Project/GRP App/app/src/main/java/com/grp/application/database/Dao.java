@@ -25,7 +25,7 @@ import java.util.Date;
 /**
  * {@code Dao} is the class for database
  *
- * @author Hudie Liu
+ * @author UNNC GRP G19
  * @version 1.0
  */
 public class Dao {
@@ -38,6 +38,12 @@ public class Dao {
         mHelper = new DatabaseHelper(context);
     }
 
+    /**
+     * This method is to insert data into database
+     * @param timestamp the timestamp of the data
+     * @param data the data
+     * @param tableName the table name to store the data
+     */
     public void insert(long timestamp, long data, String tableName) {
         SQLiteDatabase db = mHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
@@ -51,6 +57,10 @@ public class Dao {
         db.close();
     }
 
+    /**
+     * This method is to insert the hr data into database
+     * @param list  the array list that store heart rate
+     */
     public void insertHRdata(ArrayList<HeartRateData> list) {
         SQLiteDatabase db = mHelper.getWritableDatabase();
         long timestampCurrent = 0;
@@ -141,6 +151,13 @@ public class Dao {
 
     }
 
+    /**
+     * This method is to replace the heart rate. If the max is bigger then replace the data.
+     * If the min is smaller then replace the data.
+     * @param timestamp the time stamp.
+     * @param maxHr the maximum heart rate
+     * @param minHr the minimum heart rate
+     */
     private void replaceHrData(long timestamp, long maxHr, long minHr) {
         SQLiteDatabase db = mHelper.getWritableDatabase();
         long currMaxHr = 0;
@@ -170,6 +187,10 @@ public class Dao {
         db.close();
     }
 
+    /**
+     * Get the day that has the max heart rate.
+     * @return the day that has the max heart rate
+     */
     public HeartRateData getMaxHrDay() {
         long timestamp = System.currentTimeMillis();
         SQLiteDatabase db = mHelper.getWritableDatabase();
@@ -187,6 +208,10 @@ public class Dao {
         return new HeartRateData(maxHr,time);
     }
 
+    /**
+     * Get the day that has the min heart rate.
+     * @return the day that has the min heart rate
+     */
     public HeartRateData getMinHrDay() {
         long timestamp = System.currentTimeMillis();
         SQLiteDatabase db = mHelper.getWritableDatabase();
@@ -204,6 +229,10 @@ public class Dao {
         return new HeartRateData(minHr,time);
     }
 
+    /**
+     * Get the weekday that has the max heart rate
+     * @return the weekday that has the max heart rate
+     */
     public HeartRateData getMaxHrWeek() {
         long timestamp = System.currentTimeMillis();
         SQLiteDatabase db = mHelper.getWritableDatabase();
@@ -226,6 +255,10 @@ public class Dao {
         return new HeartRateData(maxHr,time);
     }
 
+    /**
+     * Get the weekday that has the min heart rate
+     * @return the weekday that has the min heart rate
+     */
     public HeartRateData getMinHrWeek() {
         long timestamp = System.currentTimeMillis();
         SQLiteDatabase db = mHelper.getWritableDatabase();
@@ -248,6 +281,10 @@ public class Dao {
         return new HeartRateData(minHr,time);
     }
 
+    /**
+     * Get the date in a month that has the max heart rate
+     * @return the date in a month that has the max heart rate
+     */
     public HeartRateData getMaxHrMonth() {
         long timestamp = System.currentTimeMillis();
         SQLiteDatabase db = mHelper.getWritableDatabase();
@@ -270,6 +307,10 @@ public class Dao {
         return new HeartRateData(maxHr,time);
     }
 
+    /**
+     * Get the date in a month that has the min heart rate
+     * @return the date in a month that has the min heart rate
+     */
     public HeartRateData getMinHrMonth() {
         long timestamp = System.currentTimeMillis();
         SQLiteDatabase db = mHelper.getWritableDatabase();
@@ -292,8 +333,12 @@ public class Dao {
         return new HeartRateData(minHr,time);
     }
 
-
-
+    /**
+     * This method is to delete the data in a time period in database
+     * @param startTime the start time
+     * @param endTime the end time
+     * @param tableName the table name to delete the data
+     */
     public void delete(long startTime, long endTime, String tableName) {
         SQLiteDatabase db = mHelper.getWritableDatabase();
         db.delete(tableName, "timestamp>? AND timestamp<?", new String[]{String.valueOf(startTime), String.valueOf(endTime)});
@@ -308,6 +353,10 @@ public class Dao {
         return cursor;
     }
 
+    /**
+     * Get the data of the heart rate in a day to show in the chart.
+     * @return the data of the heart rate in a day
+     */
     public Number[] getDailyData() {
         Number[] hrList = new Number[24];
         long startTime = TimeHelper.getDailyStartTime(System.currentTimeMillis());
@@ -336,6 +385,10 @@ public class Dao {
         return hrList;
     }
 
+    /**
+     * Get the data of the heart rate in past week to show in the chart.
+     * @return the data of the heart rate in a week
+     */
     public Number[] getWeeklyData() {
         Number[] hrList = new Number[7];
         long startTime = TimeHelper.getDailyStartTime(System.currentTimeMillis()) - 6*ONE_DAY;
@@ -366,6 +419,10 @@ public class Dao {
         return hrList;
     }
 
+    /**
+     * Get the data of the heart rate in past 31 days to show in the chart.
+     * @return the data of the heart rate in past 31 days
+     */
     public Number[] getMonthlyData() {
         Number[] hrList = new Number[31];
         long startTime =  TimeHelper.getDailyStartTime(System.currentTimeMillis()) - 30*ONE_DAY;
@@ -418,6 +475,10 @@ public class Dao {
         return weightList;
     }
 
+    /**
+     * Get the data of the weight in past week.
+     * @return the data of the weight in past week.
+     */
     public Number[] getWeeklyWeight() {
         Number[] weightList = new Number[7];
         long startTime = TimeHelper.getDailyStartTime(System.currentTimeMillis()) - 6*ONE_DAY;
@@ -446,6 +507,10 @@ public class Dao {
         return weightList;
     }
 
+    /**
+     * Get the data of the weight in past 31 days.
+     * @return the data of the weight in past 31 days.
+     */
     public Number[] getMonthlyWeight() {
         Number[] weightList = new Number[31];
         long startTime =  TimeHelper.getDailyStartTime(System.currentTimeMillis()) - 30*ONE_DAY;
@@ -473,6 +538,9 @@ public class Dao {
         return weightList;
     }
 
+    /**
+     * This method is to clear all the data in database.
+     */
     public void clearDatabase() {
         SQLiteDatabase db = mHelper.getWritableDatabase();
         db.delete(Constants.HR_TABLE_MAX,"1=1",null);
@@ -485,6 +553,9 @@ public class Dao {
 
     }
 
+    /**
+     * This method is to export the heart rate data.
+     */
     public void exportHrData() {
         SQLiteDatabase db = mHelper.getWritableDatabase();
         String sql = "SELECT timestamp,hr FROM "+Constants.HR_TABLE_STORE;
@@ -508,6 +579,10 @@ public class Dao {
         db.close();
     }
 
+    /**
+     * This method is to store the data into a file.
+     * @param hrData The heart rate
+     */
     private void saveInFile(String hrData) {
         String fileName = "HR_Recording_" + new Date().getTime();
         try {
@@ -517,6 +592,10 @@ public class Dao {
         }
     }
 
+    /**
+     * Get the SQLiteDatabase
+     * @return the SQLiteDatabase
+     */
     public SQLiteDatabase getDatabase() {
         return mHelper.getWritableDatabase();
     }

@@ -423,7 +423,7 @@ public class Dao {
         long startTime = TimeHelper.getDailyStartTime(System.currentTimeMillis());
         long endTime = startTime+1*ONE_DAY;
         SQLiteDatabase db = mHelper.getWritableDatabase();
-        String sql = "SELECT timestamp,weitgt FROM "+Constants.WEIGHT_TABLE+" WHERE timestamp>"+startTime+" AND timestamp<"+endTime;
+        String sql = "SELECT timestamp,weight FROM "+Constants.WEIGHT_TABLE+" WHERE timestamp>"+startTime+" AND timestamp<"+endTime;
         Cursor cursor = db.rawQuery(sql, null);
         long totalWeight = 0;
         int totalCount = 0;
